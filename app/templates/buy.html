@@ -1,0 +1,42 @@
+<div class="loaded-content">
+	<h2>Buy securities</h2>
+	<p>This is a sandbox version so any purchases made are NOT done on the real market.</p>
+
+	<div id="buy_using_usdc" class="mt-3">
+		<h3>Select USD token to buy in</h3>
+		<select name="buy_using" id="buy_using">
+			<option value="USDC">USDC</option>
+			<option value="aUSD" disabled>aUSD (disabled)</option>
+		</select>
+	</div>
+
+	<div class="mt-3">
+		<h3>Type in amount to buy for</h3>
+		<input type="text" id="buy_amount" value="" placeholder="e.g. 100 for buying $100 worth" />
+	</div>
+
+	<div id="buy_securities" class="mt-3">
+		<h3>Select security to buy <span id="addWalletSpan"></span></h3>
+		<select name="symbol" id="symbols">
+			<option value="MSFT">--- Select symbol to buy ---</option>
+		</select>
+		<div id="add-token-info" class="alert alert-warning mt-3" role="alert"></div>
+	</div>
+
+
+	<div>
+		<div id="buy-info" class="alert alert-success mt-3"></div>
+	</div>
+	<div id="buy_button" class="mt-3">
+		<button id="execute-trade" class="disabled btn btn-primary mb-3">Execute trade</button>
+	</div>
+	<div class="alert alert-success" role="alert" id="buy_success_message"></div>
+	<div class="alert alert-danger" role="alert" id="buy_danger_message"></div>
+
+
+	<div class="progress mb-5" id="buy_progress" style="display:none;height:58px;">
+		<div id="buying_steps" style="height:58px;" class="progress-bar progress-bar-striped progress-bar-animated"
+			role="progressbar" style="width: 16%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Approve USDC
+		</div>
+	</div>
+</div>

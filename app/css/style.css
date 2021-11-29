@@ -1,0 +1,85 @@
+body {
+	background-color:#f6f7fc !important;
+}
+header {
+	background-color: #104060;
+	color:#fff;
+}
+header a, header a.nav-link {
+	color:#fff;
+}
+.navbar-toggler-icon {
+	color:#fff;
+	margin-right: 15px;
+}
+.form-floating label, .form-floating input.form-control, .form-floating textarea.form-control {
+	font-size:1rem !important;
+}
+
+.progress_text {
+	padding:4px;
+	white-space: normal;
+	text-align: left;
+}
+
+.loaded-content input[type=checkbox] {
+	height:18px;
+	width:19px;
+	margin-right:8px;
+}
+
+#not_kyc_verified, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
+	display:none;
+}
+
+#execute-trade.disabled {
+	display: none;
+}
+#execute-trade.enabled {
+	display:block;
+}
+
+.white-link {
+	color:#fff;
+}
+.loaded-content h2 {
+	font-size: 1.7rem;
+}
+.loaded-content h3 {
+	font-size:1.2rem;
+}
+.loaded-content, .loaded-content2 {
+	margin:0 auto;
+	width:450px;
+	padding:8px;
+}
+.loaded-content2 {
+	width:850px;
+}
+.loaded-content input, .loaded-content select {
+	padding:8px;
+	border: none;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 35%);
+    border-radius: 2px;
+    height: 54px;
+    background: #fff;
+	font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #32363a;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+	width:100%
+}
+
+.loaded-content2 th {
+		font-size: 12px;
+		padding-right: 40px;
+		text-align: left;
+
+}
+.loaded-content2 td {
+	padding-right: 17px;
+    padding-top: 6px;
+}
+
+#addTokenToWallet, #copyAddress, #maxQty {font-size:12px;}

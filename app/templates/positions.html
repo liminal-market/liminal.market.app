@@ -1,0 +1,32 @@
+<div class="loaded-content2">
+	<h3>Positions</h3>
+	<p>These are your positions registered with the broker.</p>
+	<table>
+		<thead>
+			<tr>
+				<th>Symbol</th>
+				<th>Current price</th>
+				<th>Avg. entry value</th>
+				<th>Quantity</th>
+				<th>Market value</th>
+				<th>Unrealize PL</th>
+				<th>Sell</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#if result}}
+			{{#each result}}
+			<tr>
+				<td>{{symbol}}</td>
+				<td>{{current_price}}</td>
+				<td>{{round2 avg_entry_price}}</td>
+				<td>{{round2 qty}}</td>
+				<td>${{round market_value}}</td>
+				<td class="{{classColor unrealized_pl}}">${{round unrealized_pl}} ({{perc unrealized_plpc}})</td>
+				<td><a href="#" class="sellAsset" data-symbol="{{symbol}}" data-qty={{qty}}>Sell</a></td>
+			</tr>
+			{{/each}}
+			{{/if}}
+		</tbody>
+	</table>
+</div>

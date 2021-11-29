@@ -1,0 +1,23 @@
+<div class="loaded-content">
+	<h2>Sell your securities</h2>
+	<p>This is a sandbox version so any purchases made are not done on the real market.</p>
+
+	<div id="sell_securities" class="mt-3">
+		<h3>Select security to sell</h3>
+		<select name="symbol" id="symbols">
+			<option value="">--- Select security to sell ---</option>
+			{{#each result}}
+			<option value="{{symbol}}" data-qty="{{qty}}">{{symbol}} - {{qty}}</option>
+			{{/each}}
+		</select>
+	</div>
+	<div class="mt-3">
+		<h3>Type in quantity you want sell <span><a href="#" id="maxQty">Max</a></span></h3>
+		<input type="text" id="sell_qty" value="" />
+
+	</div>
+	<div id="sell_button" class="mt-3">
+		<button id="execute-trade" class="btn btn-primary mb-3">Execute sell</button>
+	</div>
+	<div class="alert alert-success" role="alert" id="sell_message"></div>
+</div>
