@@ -53,8 +53,8 @@ const isValidAccountId = function(str) {
 
 
 export const KYCUserToSmartContract = async function (accountId) {
-	if (!isValidAccountId(accountId)) {
-		console.log('accountId ' + accountId + ' didnt match regex');
+	if (!isValidAccountId(accountId.alpacaId)) {
+		console.log('accountId ' + accountId.alpacaId + ' didnt match regex');
 		return;
 	}
 

@@ -12,8 +12,17 @@ import {
 import { sellPageInit } from './modules/sell.js';
 import { buyPageInit } from './modules/buy.js';
 
-const serverUrl = "https://rucsd2xip9xc.usemoralis.com:2053/server";
-const appId = "WrszROWRp7oShP39MWHMLl4mMA6n2QMN8LDRD6gi";
+//localhost
+let serverUrl = "https://xcqqzykqhjwv.usemoralis.com:2053/server";
+let appId = "XP6fMmUXTiAH4yYBeigdjtkTmVOKhrTqdguMTE88";
+
+if (true) {
+  //rinkeby
+  serverUrl = "https://rucsd2xip9xc.usemoralis.com:2053/server";
+  appId = "WrszROWRp7oShP39MWHMLl4mMA6n2QMN8LDRD6gi";
+}
+
+
 
 try {
   await Moralis.start({
