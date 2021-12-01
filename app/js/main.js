@@ -77,6 +77,11 @@ Moralis.enableWeb3().then(async function (evt) {
     location.reload();
   });
 
+}, function(e) {
+  if (e.toString().indexOf('Non ethereum enabled browser') != -1) {
+    showSetupMetamask();
+  }
+  console.log('error', e);
 });
 
 console.log('2');
@@ -94,6 +99,10 @@ const loadPath = async function () {
   }
 
   //render(path);
+}
+
+const showSetupMetamask = async function() {
+  render('metamask');
 }
 const showSell = async function (evt) {
   if (evt) evt.preventDefault();

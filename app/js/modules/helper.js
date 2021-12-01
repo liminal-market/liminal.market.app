@@ -28,7 +28,7 @@ Handlebars.registerHelper('classColor', function (number) {
 });
 
 export const addTokenToWallet = async function(address, symbol) {
-	const asset = getAssetBySymbol(symbol);
+	const asset = await getAssetBySymbol(symbol);
 	// wasAdded is a boolean. Like any RPC method, an error may be thrown.
 	const wasAdded = await ethereum.request({
 	  method: 'wallet_watchAsset',
@@ -38,7 +38,7 @@ export const addTokenToWallet = async function(address, symbol) {
 		  address: address, // The address that the token is at.
 		  symbol: symbol, // A ticker symbol or shorthand, up to 5 chars.
 		  decimals: 18, // The number of decimals in the token
-		  image: 'https://rucsd2xip9xc.usemoralis.com/img/logos/' + asset.Logo, // A string url of the token logo
+		  image: 'https://app.liminal.market/img/logos/' + asset.Logo, // A string url of the token logo
 		},
 	  },
 	});
@@ -68,5 +68,5 @@ export const getAssets = async function() {
 
 const getAssetBySymbol = async function(symbol) {
 	let assets = await getAssets();
-	return assets[symbol];
+	return assets.get(symbol);
 }

@@ -18,6 +18,10 @@ export const login = async function (callback) {
   }
   return false;
 } catch (e) {
+  if (e.message.indexOf("Request of type 'wallet_requestPermissions' already pending") != -1) {
+    
+  }
+
   console.log('login error', JSON.stringify(e));
 }
 }

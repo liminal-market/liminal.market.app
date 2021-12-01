@@ -72,6 +72,9 @@ const loadBuyTokens = async function () {
 			account: ethAddress
 		}
 	};
+console.log('eth chainid:', window.ethereum.chainId);
+	const web3 = await Moralis.enableWeb3();
+
 	Moralis.executeFunction(usdcOptions).then((balanceOf) => {
 		addUSDTokenValue('USDC', Moralis.Units.FromWei(balanceOf, USDC_DECIMAL));
 		console.log('USDC balance:', Moralis.Units.FromWei(balanceOf, USDC_DECIMAL));
@@ -111,12 +114,12 @@ const setupAssets = async function () {
 	document.getElementById('symbols').onchange = getSymbolPrice;
 	document.getElementById('buy_amount').onchange = updateBuyInfo;
 
-	const assets = await getAssets();
-
 	let str = '';
-	for (var i = 0; i < assets.length; i++) {
-		str += '<option value="' + assets[i].Symbol + '">' + assets[i].Symbol + ' - ' + assets[i].Name + '</option>';
-	}
+	const assets = await getAssets();
+	assets.forEach(function (asset) {
+		str += '<option value="' + asset.Symbol + '">' + asset.Symbol + ' - ' + asset.Name + '</option>';
+	});
+
 	$('#symbols').append(str);
 
 
