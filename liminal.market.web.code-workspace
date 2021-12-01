@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "..\\liminal.market.cloud"
+		},
+		{
+			"path": "..\\liminal.market.contracts"
 		}
 	],
 	"settings": {}

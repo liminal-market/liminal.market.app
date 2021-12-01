@@ -99,7 +99,6 @@ function serialize(data) {
 export let IsValidKYC = false;
 
 export const KYCUserIsValid = async function () {
-	console.log(Moralis.User.current().get('ethAddress'));
 	const kycOptions = {
 		contractAddress: KYC_ADDRESS,
 		functionName: "isValid",
@@ -127,8 +126,6 @@ export const KYCUserIsValid = async function () {
 					evt.preventDefault();
 					render('kyc', null, initKYC)
 				})
-			} else {
-				showKycWriteToBlockchain(Moralis.User.current().id);
 			}
 
 

@@ -15,7 +15,7 @@ import {
 } from './constants.js'
 import {
 	addTokenToWallet,
-	roundNumber
+	roundNumber,getAssets
 } from './helper.js';
 import {
 	IsValidKYC,
@@ -32,7 +32,7 @@ import {
 export const buyPageInit = function () {
 	document.getElementById('buy_amount').onchange = updateBuyInfo
 	document.getElementById('buy_using').onchange = updateBuyInfo
-	loadAssets();
+	setupAssets();
 	loadBuyTokens();
 }
 
@@ -107,19 +107,18 @@ const addUSDTokenValue = async function (token, balanceOf) {
 }
 
 
-const loadAssets = async function () {
+const setupAssets = async function () {
 	document.getElementById('symbols').onchange = getSymbolPrice;
 	document.getElementById('buy_amount').onchange = updateBuyInfo;
 
-	fetch('/assets/assets.json')
-		.then(response => response.json())
-		.then(assets => {
-			let str = '';
-			for (var i = 0; i < assets.length; i++) {
-				str += '<option value="' + assets[i].Symbol + '">' + assets[i].Symbol + ' - ' + assets[i].Name + '</option>';
-			}
-			$('#symbols').append(str);
-		});
+	const assets = await getAssets();
+
+	let str = '';
+	for (var i = 0; i < assets.length; i++) {
+		str += '<option value="' + assets[i].Symbol + '">' + assets[i].Symbol + ' - ' + assets[i].Name + '</option>';
+	}
+	$('#symbols').append(str);
+
 
 }
 
@@ -152,17 +151,7 @@ const getSymbolPrice = async function (evt) {
 			document.getElementById('add-token-info').style.display='block';
 			document.getElementById('add-token-info').innerHTML = '<div >We will need to create the token when you buy it. Since you are the first one to buy this symbol, this will incure extra cost.</div>';
 		} else {
-			let str = '<a href="#" id="addTokenToWallet">Add ' + symbol + ' symbol to wallet</a> - <a href="#" id="copyAddress">Copy addr</a>';
-			document.getElementById('addWalletSpan').innerHTML = str;
-			document.getElementById('addTokenToWallet').onclick = async function (evt) {
-				evt.preventDefault();
-				await addTokenToWallet(contractAddress, symbol);
-			}
-			document.getElementById('copyAddress').onclick = async function (evt) {
-				evt.preventDefault();
-				navigator.clipboard.writeText(contractAddress);
-			}
-			document.getElementById('add-token-info').style.display='none';
+			addTokenLink(symbol, contractAddress);
 		}
 
 	});
@@ -181,6 +170,20 @@ const getSymbolPrice = async function (evt) {
 	});
 }
 
+const addTokenLink = function(symbol, contractAddress) {
+
+	let str = '<a href="#" id="addTokenToWallet">Add ' + symbol + ' symbol to wallet</a> - <a href="#" id="copyAddress">Copy addr</a>';
+	document.getElementById('addWalletSpan').innerHTML = str;
+	document.getElementById('addTokenToWallet').onclick = async function (evt) {
+		evt.preventDefault();
+		await addTokenToWallet(contractAddress, symbol);
+	}
+	document.getElementById('copyAddress').onclick = async function (evt) {
+		evt.preventDefault();
+		navigator.clipboard.writeText(contractAddress);
+	}
+	document.getElementById('add-token-info').style.display='none';
+}
 
 
 const updateBuyInfo = async function () {
@@ -270,9 +273,9 @@ const getApproveTokenResult = async function (buyUsing, buyAmount) {
 				},
 			};
 			let allowance = await Moralis.executeFunction(usdcOptions);
-			console.log('allowance:', allowance);
-			if (Moralis.Units.Token(buyAmount, USDC_DECIMAL) <= allowance) {
-				return allowance;
+			console.log('allowance:', Moralis.Units.Token(allowance, USDC_DECIMAL).toString(), Moralis.Units.Token(buyAmount, USDC_DECIMAL).toString());
+			if (parseFloat(Moralis.Units.Token(buyAmount, USDC_DECIMAL).toString()) <= allowance) {
+				return parseFloat(Moralis.Units.Token(allowance, USDC_DECIMAL).toString());
 			}
 
 			usdcOptions = {
@@ -356,6 +359,9 @@ const transfer = async function () {
 		let ethLink = ' <a class="white-link" target="_blank" href="https://rinkeby.etherscan.io/tx/' + object.transaction_hash + '">View transaction</a>';
 
 		console.log('status:', object.status);
+		if (object.tokenAddress) {
+			addTokenLink(symbol, object.tokenAddress);
+		}
 
 		if ((!object.status && object.confirmed) || object.status == 'money_sent') {
 			showProgressStep('Blockchain has confirmed, money has been sent to broker.' + ethLink, 56)

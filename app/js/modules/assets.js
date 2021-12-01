@@ -1,3 +1,5 @@
+import {getAssets} from './helper.js';
+
 
 let assetPrice = 0;
 let lastTraded = '';
@@ -46,16 +48,17 @@ const updateSellInfo = async function() {
     $('#buy-info').html('Estimated you will sell:' + (buyAmount / assetPrice) + ' shares at the price of ' + assetPrice);
 }
 
-export const loadAssets = async function() {
+
+export const setupAssetsPage = async function() {
 	document.getElementById('symbols').onchange = getSymbolPrice;
 	document.getElementById('buy_amount').onchange = updateBuyInfo;
 
-    jQuery.getJSON('/assets/assets.json', function(assets) {
-        let str = '';
-        for (var i=0;i<assets.length;i++) {
-            str += '<option value="' + assets[i].Symbol + '">' + assets[i].Symbol + ' - ' + assets[i].Name + '</option>';
-        }
-        $('#symbols').append(str);
-        $('#symbols').select2();
-    });
+    let assets = await getAssets();
+    let str = '';
+    for (var i=0;i<assets.length;i++) {
+        str += '<option value="' + assets[i].Symbol + '">' + assets[i].Symbol + ' - ' + assets[i].Name + '</option>';
+    }
+    $('#symbols').append(str);
+    $('#symbols').select2();
+
 }

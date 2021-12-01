@@ -7,6 +7,8 @@ moralis-admin-cli watch-cloud-folder --moralisSubdomain rucsd2xip9xc.usemoralis.
 #moralis monitor contract event
 moralis-admin-cli add-contract --abiPath ".\app\js\abi\LiminalExchange.json"
 
+#deploy to moralis
+moralis-admin-cli deploy --moralisSubdomain rucsd2xip9xc.usemoralis.com -p C:\Users\ingig\source\repos\liminal.market.web\app
 
 #new server
  1. change main.js serverUrl and appId

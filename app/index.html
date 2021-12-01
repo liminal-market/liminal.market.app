@@ -10,7 +10,6 @@
   <link href="css/styles.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
@@ -21,7 +20,8 @@
   <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
-    integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </head>
 
@@ -29,7 +29,7 @@
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Liminal.market</a>
+        <a class="navbar-brand" href="/">Liminal.market - sandbox</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon">Menu</span>
@@ -43,9 +43,17 @@
               <a class="nav-link" id="nav-sell" href="/sell">Sell</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="nav-positions" aria-current="page"  href="/positions">Positions</a>
+              <a class="nav-link" id="nav-positions" aria-current="page" href="/positions">Positions</a>
             </li>
           </ul>
+          <div class="d-flex" id="offHours">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="enableOffHours">
+              <label class="form-check-label" for="enableOffHours" data-bs-html="true" data-bs-toggle="tooltip" title="Off hours trading will give you a little wrong token quantity, as we estimate the quantity of shares you will get. When trade will execute you'll see the real quantity on Positions page.<br><br> Markets are only open between 09:30 and 17:00 ET. Any trade exeucted outsite that time will happen when market opens next.">
+                Off hours trading
+              </label>
+            </div>
+          </div>
           <form class="d-flex">
             <button id="not_kyc_verified">Do (fake) KYC verification</button>
             <button id="btn-login">Login</button>
@@ -55,6 +63,16 @@
       </div>
     </nav>
   </header>
+
+    <div class="alert alert-danger" id="wrongChainId" role="alert">You are on the wrong chain. Only Rinkeby is
+      available. <a href="" id="switchNetwork">Click to switch</a></div>
+
+    <div class="alert alert-warning" id="closedMarket" role="alert">Market is closed so not trades will go through, but
+      we can fake it for you if you like. Click the Off hours trading in the top right corner.
+      <p class="small_print">You wont see any positions until market opens and token quantity will be wrong as we
+        estimate the quantity on off hours times</p>
+    </div>
+
 
   <div class="container pt-4" id="main_container"></div>
 

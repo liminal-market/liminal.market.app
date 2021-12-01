@@ -15,7 +15,14 @@ header a, header a.nav-link {
 .form-floating label, .form-floating input.form-control, .form-floating textarea.form-control {
 	font-size:1rem !important;
 }
-
+.small_print {
+	font-size:12px;
+	margin-bottom:0;
+}
+#offHours {
+	margin-right:10px;
+}
+.symbol_logo { height:32px;}
 .progress_text {
 	padding:4px;
 	white-space: normal;
