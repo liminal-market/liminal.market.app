@@ -45,44 +45,10 @@ try {
 }
 console.log('1');
 
-Moralis.enableWeb3().then(async function (evt) {
+let user = await Moralis.User.current();
+console.log('user', user);
 
-  const showWrongChainBanner = function () {
-    document.getElementById('wrongChainId').style.display = 'block';
-    document.getElementById('switchNetwork').addEventListener('click', async function (evt) {
-      evt.preventDefault();
-      const chainIdHex = await Moralis.switchNetwork(chainId);
-      location.reload();
-    })
 
-  }
-  console.log('3');
-  const userChainId = await Moralis.getChainId();
-  if (chainId != userChainId) {
-    showWrongChainBanner();
-  } else {
-    document.getElementById('wrongChainId').style.display = 'none';
-  }
-  console.log('4');
-  Moralis.onChainChanged(function (accounts) {
-    location.reload();
-  });
-  Moralis.onAccountsChanged(function (accounts) {
-    location.reload();
-  });
-  Moralis.onDisconnect(function (accounts) {
-    location.reload();
-  });
-  Moralis.onConnect(function (accounts) {
-    location.reload();
-  });
-
-}, function(e) {
-  if (e.toString().indexOf('Non ethereum enabled browser') != -1) {
-    showSetupMetamask();
-  }
-  console.log('error', e);
-});
 
 console.log('2');
 window.onpopstate = function (event) {

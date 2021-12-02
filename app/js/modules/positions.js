@@ -29,6 +29,7 @@ export const initPositionsPage = async function() {
     for (let i=0;i<addToWalletLinks.length;i++) {
         addToWalletLinks[i].addEventListener('click', async function (evt) {
             evt.preventDefault();
+            console.log(evt.target);
 
             let symbol = addToWalletLinks[i].dataset.symbol;
 
