@@ -4,71 +4,59 @@ import {
 import {
   KYCUserIsValid
 } from './kyc.js';
+import {
+  ChainId
+} from './helper.js'
 
 export const login = async function (callback) {
-  try {
-    let user = await Moralis.User.current({
-      provider: "walletconnect"
-    });
+
+    let user = await Moralis.User.current();
 
     if (!user) {
       user = await Moralis.authenticate({
-        provider: "walletconnect",
-        mobileLinks: [
-          "rainbow",
-          "metamask",
-          "argent",
-          "trust",
-          "imtoken",
-          "pillar",
-        ],
-        signingMessage: "You are login into Liminal.market"
-      }).then(function (user) {
-        console.log('user ethaddr:', user.get('ethAddress'));
-        attachWalletEvents()
-      }, function (err) {
-        errorHandler('login', e);
-      })
+        signingMessage: "You are login into Liminal.market.\n\n"
+      }).then(function(user) {
+        attachWalletEvents();
+        showLogout();
+        if (callback) callback();
+        window.location.reload();
+      }).catch(function (e) {
 
-      showLogout();
-      if (callback) callback();
-      window.location.reload();
+        if (e.message.indexOf("Request of type 'wallet_requestPermissions' already pending") != -1) {
+          document.getElementById('weSentSigninRequest').style.display = 'block';
+        } else {
+          errorHandler('login', e);
+        }
+        return;
+      });
+
     } else {
       showLogin();
     }
     return false;
-  } catch (e) {
-    if (e.message.indexOf("Request of type 'wallet_requestPermissions' already pending") != -1) {
 
-    }
-
-    console.log('login error', JSON.stringify(e));
-  }
 }
 
-const attachWalletEvents = async function () {
+export const attachWalletEvents = async function () {
 
-  let enableWeb3Result = await Moralis.enableWeb3({
-    provider: "walletconnect"
-  }).then(async function (evt) {
-
+  let enableWeb3Result = await Moralis.enableWeb3().then(async function (evt) {
       const showWrongChainBanner = function () {
         document.getElementById('wrongChainId').style.display = 'block';
         document.getElementById('switchNetwork').addEventListener('click', async function (evt) {
           evt.preventDefault();
-          const chainIdHex = await Moralis.switchNetwork(chainId);
+          const chainIdHex = await Moralis.switchNetwork(ChainId());
           location.reload();
         })
 
       }
-      console.log('3');
       const userChainId = await Moralis.getChainId();
-      if (chainId != userChainId) {
+
+      if (ChainId() != userChainId) {
         showWrongChainBanner();
       } else {
         document.getElementById('wrongChainId').style.display = 'none';
       }
-      console.log('4');
+
       Moralis.onChainChanged(function (accounts) {
         location.reload();
       });
@@ -95,9 +83,9 @@ const showLogin = function () {
   document.getElementById('btn-login').style.display = 'block';
   document.getElementById('btn-logout').style.display = 'none';
 
-  document.getElementById("btn-login").addEventListener('click', function (e) { //say this is an anchor
+  document.getElementById("btn-login").addEventListener('click', async function (e) { //say this is an anchor
     e.preventDefault();
-    login();
+    await login();
   });
 }
 

@@ -1,5 +1,6 @@
 export const isMarketOpen = async function () {
 	let user = Moralis.User.current();
+	if (!user) return;
 
 	let offHours = false;
 	if (user) {
@@ -10,8 +11,10 @@ export const isMarketOpen = async function () {
 		let result = await Moralis.Cloud.run('isOpen');
 		if (!result) {
 			document.getElementById('closedMarket').style.display = 'block';
+			document.getElementById('offHours').style.display = "block";
 		} else {
 			document.getElementById('closedMarket').style.display = 'none';
+			document.getElementById('offHours').style.display = "none";
 		}
 	} else {
 		document.getElementById('enableOffHours').checked = true;

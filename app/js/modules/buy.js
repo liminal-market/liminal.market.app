@@ -72,12 +72,8 @@ const loadBuyTokens = async function () {
 			account: ethAddress
 		}
 	};
-console.log('eth chainid:', window.ethereum.chainId);
-	const web3 = await Moralis.enableWeb3({
-		provider: "walletconnect", mobileLinks : [
-			"metamask"
-		]
-	});
+
+	const web3 = await Moralis.enableWeb3();
 
 	Moralis.executeFunction(usdcOptions).then((balanceOf) => {
 		addUSDTokenValue('USDC', Moralis.Units.FromWei(balanceOf, USDC_DECIMAL));

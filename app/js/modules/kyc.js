@@ -99,6 +99,7 @@ function serialize(data) {
 export let IsValidKYC = false;
 
 export const KYCUserIsValid = async function () {
+	console.log('KYCUserIsValid')
 	const kycOptions = {
 		contractAddress: KYC_ADDRESS,
 		functionName: "isValid",
@@ -119,7 +120,7 @@ export const KYCUserIsValid = async function () {
 			}
 		},
 		function (error) {
-
+console.log(error);
 			if (error.message.indexOf('Address is not KYC valid') != -1) {
 				document.getElementById('not_kyc_verified').style.display = 'block';
 				document.getElementById('not_kyc_verified').addEventListener('click', function(evt) {

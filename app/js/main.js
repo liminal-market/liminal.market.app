@@ -18,6 +18,7 @@ import {
 import {
   isMarketOpen
 } from './modules/market.js';
+import {attachWalletEvents} from './modules/account.js';
 
 //localhost
 let serverUrl = "https://xcqqzykqhjwv.usemoralis.com:2053/server";
@@ -43,14 +44,13 @@ try {
   }
   console.log('ERROR', ex);
 }
-console.log('1');
+
 
 let user = await Moralis.User.current();
-console.log('user', user);
+if(user) {
+  await attachWalletEvents();
+}
 
-
-
-console.log('2');
 window.onpopstate = function (event) {
   alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
 }
@@ -63,13 +63,12 @@ const loadPath = async function () {
   if (typeof fn === 'function') {
     fn();
   }
-
-  //render(path);
 }
 
 const showSetupMetamask = async function() {
   render('metamask');
 }
+
 const showSell = async function (evt) {
   if (evt) evt.preventDefault();
   await renderWithMoralis('positions', null, 'sell', sellPageInit);

@@ -70,3 +70,7 @@ const getAssetBySymbol = async function(symbol) {
 	let assets = await getAssets();
 	return assets.get(symbol);
 }
+
+export const ChainId = function() {
+	return 4;
+}

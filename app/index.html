@@ -22,15 +22,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
     integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <script src="https://github.com/WalletConnect/walletconnect-monorepo/releases/download/1.6.6/web3-provider.min.js"></script>
 </head>
 
 <body>
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">Liminal.market - sandbox</a>
+        <a class="navbar-brand" href="/">Liminal.market</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon">Menu</span>
@@ -63,11 +61,16 @@
         </div>
       </div>
     </nav>
+    <div class="alert alert-info" id="metamask-only" style="display: block;" role="alert">
+      ATTN: You can only run liminal.market using Metamask in your browser. This is alpha version, it will be improved.
+    </div>
   </header>
 
     <div class="alert alert-danger" id="wrongChainId" role="alert">You are on the wrong chain. Only Rinkeby is
       available. <a href="" id="switchNetwork">Click to switch</a></div>
-
+    <div class="alert alert-danger" id="weSentSigninRequest" role="alert">You already have sign in request. Click the Metamask icon in your browser
+      <img src="/img/metamask-pending.png" />
+    </div>
     <div class="alert alert-warning" id="closedMarket" role="alert">Market is closed so not trades will go through, but
       we can fake it for you if you like. Click the Off hours trading in the top right corner.
       <p class="small_print">You wont see any positions until market opens and token quantity will be wrong as we
