@@ -24,6 +24,8 @@ export const login = async function (callback) {
 
         if (e.message.indexOf("Request of type 'wallet_requestPermissions' already pending") != -1) {
           document.getElementById('weSentSigninRequest').style.display = 'block';
+        } else if (e.toString().indexOf('Non ethereum enabled browser')) {
+          document.getElementById('ethereumNotInBrowser').style.display = 'block';
         } else {
           errorHandler('login', e);
         }
