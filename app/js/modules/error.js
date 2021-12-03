@@ -9,7 +9,6 @@ export const errorHandler = async function(message, source, lineno, colno, error
 	console.log('colno', colno);
 	console.log('error', error);
 
-	await Moralis.Cloud.run("jsError", errorInfo);
 }
 
 window.onerror = function(message, source, lineno, colno, error) {
