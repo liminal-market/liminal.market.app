@@ -397,7 +397,7 @@ const transfer = async function () {
 			showProgressStep('Buy order has been executed. We will update you when it has been filled.' + ethLink, 84)
 		} else if (object.status == 'order_filled') {
 			//order has been filled, you got object.filledQty of shares. You will see it soon in your wallet
-			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + symbol + ' soon into your wallet.' + ethLink, 100);
+			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + ' ' + symbol + ' soon into your wallet.' + ethLink, 100);
 		}
 	  });
 
