@@ -24,12 +24,17 @@ import {getContractsInfo} from './contracts/contract-addresses.js'
 
 
 
+export const NetworkInfo = await getNetworkInfo();
+export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
+
 
 export const NetworkInfo = await getNetworkInfo();
 export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
 
 
 const initMoralis = async function() {
+
+
 
 
   await Moralis.start({

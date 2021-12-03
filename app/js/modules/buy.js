@@ -382,7 +382,6 @@ const transfer = async function () {
 
 
 
-
 const checkToShowMetamaskIcon = function(txt) {
 	//Waiting on approval to execute
 	if (document.getElementById('buy_progress').style.display != "none" && document.getElementById('buying_steps').innerText.indexOf(txt) != -1) {
