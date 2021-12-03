@@ -15,7 +15,7 @@ import {
 } from './constants.js'
 import {
 	addTokenToWallet,
-	roundNumber,getAssets
+	roundNumber, getAssets, getAssetBySymbol
 } from './helper.js';
 import {
 	IsValidKYC,
@@ -188,6 +188,20 @@ const addTokenLink = function(symbol, contractAddress) {
 	document.getElementById('add-token-info').style.display='none';
 }
 
+export const addTokenLinkBottom = async function(symbol, contractAddress) {
+	const asset = await getAssetBySymbol(symbol);
+
+	document.getElementById('addNewTokenToWallet').style.display = 'block';
+	document.getElementById('tokenLogo').src = '/img/logos/' + asset.Logo;
+	document.getElementById('addNewTokenText').innerHTML = 'Add ' + symbol + ' to your wallet.';
+	document.getElementById('addNewToken').onclick = async function (evt) {
+		evt.preventDefault();
+		await addTokenToWallet(contractAddress, symbol);
+	}
+
+}
+
+window.addTokenLinkBottom = addTokenLinkBottom;
 
 const updateBuyInfo = async function () {
 
@@ -202,7 +216,7 @@ const updateBuyInfo = async function () {
 	checkTokenValueVsBuyAmount();
 }
 
-const checkTokenValueVsBuyAmount = async function () {
+export const checkTokenValueVsBuyAmount = async function () {
 	document.getElementById('buy_danger_message').style.display = 'none';
 	let buyAmount = document.getElementById('buy_amount').value;
 	const buy_using = document.getElementById('buy_using').value;
@@ -245,6 +259,7 @@ const checkTokenValueVsBuyAmount = async function () {
 
 }
 
+
 const showProgressStep = async function (text, perc) {
 	document.getElementById('buy_progress').style.display = "block";
 	var element = document.getElementById('buying_steps');
@@ -258,6 +273,7 @@ const showProgressStep = async function (text, perc) {
 
 const hideProcessStep = function() {
 	document.getElementById('buy_progress').style.display = "none";
+	document.getElementById('execute-trade').style.display='block';
 }
 
 const getApproveTokenResult = async function (buyUsing, buyAmount) {
@@ -325,6 +341,8 @@ const getApproveTokenResult = async function (buyUsing, buyAmount) {
 	}
 }
 
+
+
 const transfer = async function () {
 	const buyAmount = document.getElementById('buy_amount').value;
 	const buyUsing = document.getElementById('buy_using').value;
@@ -332,6 +350,7 @@ const transfer = async function () {
 	if (symbol === '' || buyAmount === '') return;
 
 	if (!checkTokenValueVsBuyAmount()) return false;
+	document.getElementById('execute-trade').style.display='none';
 
 	showProgressStep('Approving ' + buyUsing + ' token.', 14);
 
@@ -351,6 +370,7 @@ const transfer = async function () {
 	var bought = buyResult.events.Bought;
 	showProgressStep('Waiting for blockchain to confirm transaction.', 42);
 
+	document.getElementById('add-token-info').style.display = 'none';
 
 	let query = new Moralis.Query('OrderBuy');
 	let subscription = await query.subscribe();
@@ -363,7 +383,7 @@ const transfer = async function () {
 
 		console.log('status:', object.status);
 		if (object.tokenAddress) {
-			addTokenLink(symbol, object.tokenAddress);
+			addTokenLinkBottom(symbol, object.tokenAddress);
 		}
 
 		if ((!object.status && object.confirmed) || object.status == 'money_sent') {

@@ -12,7 +12,7 @@
 
 	<div class="mt-3">
 		<h3>Type in amount to buy for</h3>
-		<input type="text" id="buy_amount" value="" placeholder="e.g. 100 for buying $100 worth" />
+		<input type="text" id="buy_amount" autocomplete="off" value="" placeholder="e.g. 100 for buying $100 worth" />
 	</div>
 
 	<div id="buy_securities" class="mt-3">
@@ -38,5 +38,10 @@
 		<div id="buying_steps" style="height:58px;" class="progress-bar progress-bar-striped progress-bar-animated"
 			role="progressbar" style="width: 16%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Approve USDC
 		</div>
+	</div>
+
+	<div id="addNewTokenToWallet">
+		<h4>Don't forget</h4>
+		<p><a href="" id="addNewToken"><img src="" id="tokenLogo" /><span id="addNewTokenText"></span></a></p>
 	</div>
 </div>

@@ -32,29 +32,28 @@ if (true) {
 }
 
 
+const initMoralis = async function() {
 
-try {
-  await Moralis.start({
-    serverUrl,
-    appId
+
+
+  const server = await Moralis.start({serverUrl,appId})
+                .catch(function(ex) {
+    if (ex.message.indexOf('Invalid session token') != -1) {
+      Moralis.User.logOut();
+    }
+    console.log('ERROR', ex);
   });
-} catch (ex) {
-  if (ex.message.indexOf('Invalid session token') != -1) {
-    Moralis.User.logOut();
+
+
+  let user = await Moralis.User.current();
+  if(user) {
+    await attachWalletEvents();
   }
-  console.log('ERROR', ex);
+
+  window.onpopstate = function (event) {
+    alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
+  }
 }
-
-
-let user = await Moralis.User.current();
-if(user) {
-  await attachWalletEvents();
-}
-
-window.onpopstate = function (event) {
-  alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
-}
-
 const loadPath = async function () {
   let path = window.location.pathname.replace('/', '');
   if (path === '') path = 'buy';
@@ -106,11 +105,13 @@ window.settings = {
 };
 
 const start = async function () {
-  initAccount();
+  initMoralis().then(function() {
+    initAccount();
+  });
+
   loadPath();
   attachNavLinks();
   isMarketOpen();
-
 
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

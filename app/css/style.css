@@ -35,7 +35,7 @@ header a, header a.nav-link {
 	margin-right:8px;
 }
 
-#not_kyc_verified, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
+#not_kyc_verified, #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
 	display:none;
 }
 
@@ -98,4 +98,9 @@ header a, header a.nav-link {
     font-size: 0.8rem;
     padding: 0.3rem;
     border-radius: 0;
+}
+
+#tokenLogo {
+	width:32px;
+	margin:0.3rem;
 }
