@@ -12,16 +12,17 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
 
-    <script src="/js/sendtry.bundle.min.js" integrity="sha384-uAr9Te+rNkmpaCjPTu4/ipQDpO1nR6fEY8JX+NHVNO5mY6LUs362JWJD8rHyaLEt" crossorigin="anonymous"></script>
-    <script>Sentry.init({
-      dsn: "https://1237a6f4596f43f1889ad827ead1a46f@o1074405.ingest.sentry.io/6074136",
-      //integrations: [new Integrations.BrowserTracing()],
+    <script src="/js/external/sendtry.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
 
-      // Set tracesSampleRate to 1.0 to capture 100%
-      // of transactions for performance monitoring.
-      // We recommend adjusting this value in production
-      tracesSampleRate: 1.0,
-    });</script>
+      console.log('sentry:', typeof(Sentry), typeof(Sentry) !== 'undefined');
+    if (typeof(Sentry) !== 'undefined') {
+      Sentry.init({
+        dsn: "https://1237a6f4596f43f1889ad827ead1a46f@o1074405.ingest.sentry.io/6074136",
+        //integrations: [new Integrations.BrowserTracing()],
+        tracesSampleRate: 1.0,
+      });
+    }</script>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
