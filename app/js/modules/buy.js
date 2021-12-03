@@ -416,7 +416,7 @@ const transfer = async function () {
 
 const checkToShowMetamaskIcon = function(txt) {
 	//Waiting on approval to execute
-	if (document.getElementById('buying_steps').innerText.indexOf(txt) != -1) {
+	if (document.getElementById('buy_progress').style.display != "none" && document.getElementById('buying_steps').innerText.indexOf(txt) != -1) {
 		showProgressStep('Hey Ho! Is Metamask be waiting for you?<br />Check top right corner of your browser <img src="/img/metamask-pending.png"/>', 99, true);
 	}
 
@@ -425,7 +425,7 @@ const checkToShowMetamaskIcon = function(txt) {
 
 const blockshainSlowMessage = function() {
 
-	if (document.getElementById('buying_steps').innerText.indexOf('Hey Ho!') != -1) {
+	if (document.getElementById('buy_progress').style.display != "none" && document.getElementById('buying_steps').innerText.indexOf('Hey Ho!') != -1) {
 		showProgressStep('If you have already approved, maybe blockchain is slow. Lets give it a bit. Just double check for <img src="/img/metamask-pending.png"/>', 99, true);
 	}
 }
