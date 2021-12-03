@@ -24,30 +24,35 @@ import {getContractsInfo} from './contracts/contract-addresses.js'
 
 
 
+
 export const NetworkInfo = await getNetworkInfo();
 export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
 
 
-await Moralis.start({
-  serverUrl: NetworkInfo.ServerUrl,
-  appId: NetworkInfo.AppId
-}).catch(function(err) {
-  if (err.message.indexOf('Invalid session token') != -1) {
-    Moralis.User.logOut();
+const initMoralis = async function() {
+
+
+  await Moralis.start({
+    serverUrl: NetworkInfo.ServerUrl,
+    appId: NetworkInfo.AppId
+  }).catch(function(err) {
+    if (err.message.indexOf('Invalid session token') != -1) {
+      Moralis.User.logOut();
+    }
+    console.log('ERROR', err);
+  });
+
+
+  let user = await Moralis.User.current();
+  if(user) {
+    await attachWalletEvents();
   }
-  console.log('ERROR', err);
-});
 
+  window.onpopstate = function (event) {
+    alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
+  }
+};
 
-
-let user = await Moralis.User.current();
-if(user) {
-  await attachWalletEvents();
-}
-
-window.onpopstate = function (event) {
-  alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
-}
 
 const loadPath = async function () {
   let path = window.location.pathname.replace('/', '');

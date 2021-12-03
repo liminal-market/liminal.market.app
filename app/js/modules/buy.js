@@ -380,21 +380,41 @@ const transfer = async function () {
 
 };
 
+
+
+
+const checkToShowMetamaskIcon = function(txt) {
+	//Waiting on approval to execute
+	if (document.getElementById('buy_progress').style.display != "none" && document.getElementById('buying_steps').innerText.indexOf(txt) != -1) {
+		showProgressStep('Hey Ho! Is Metamask be waiting for you?<br />Check top right corner of your browser <img src="/img/metamask-pending.png"/>', 99, true);
+	}
+
+	setTimeout(function () { blockshainSlowMessage(); }, 8 * 1000)
+}
+
+const blockshainSlowMessage = function() {
+
+	if (document.getElementById('buy_progress').style.display != "none" && document.getElementById('buying_steps').innerText.indexOf('Hey Ho!') != -1) {
+		showProgressStep('If you have already approved, maybe blockchain is slow. Lets give it a bit. Just double check for <img src="/img/metamask-pending.png"/>', 99, true);
+	}
+}
+
+
 const executeBuy = async function(symbol, buyAmount) {
 	try {
-	const liminalOptions = {
-		contractAddress: ContractAddressesInfo.LIMINAL_ADDRESS,
-		functionName: "buy",
-		abi: LiminalExchangeInfo.abi,
-		params: {
-			symbol: symbol,
-			amount: Moralis.Units.Token(buyAmount, USDC_DECIMAL)
-		},
-	};
+		const liminalOptions = {
+			contractAddress: ContractAddressesInfo.LIMINAL_ADDRESS,
+			functionName: "buy",
+			abi: LiminalExchangeInfo.abi,
+			params: {
+				symbol: symbol,
+				amount: Moralis.Units.Token(buyAmount, USDC_DECIMAL)
+			},
+		};
 
-	return await Moralis.executeFunction(liminalOptions);
-} catch (ex) {
-	console.log(ex);
-	return null;
-}
+		return await Moralis.executeFunction(liminalOptions);
+	} catch (ex) {
+		console.log(ex);
+		return null;
+	}
 }
