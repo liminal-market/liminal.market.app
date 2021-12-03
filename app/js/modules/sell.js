@@ -1,6 +1,6 @@
 import { errorHandler } from "./error.js";
 import { renderWithMoralis } from "./render.js";
-import { SECURITY_FACTORY_ADDRESS, AUSD_ADDRESS } from './contract-addresses.js';
+import { getContractsInfo } from '../contracts/contract-addresses.js';
 import SecurityFactoryInfo from "../abi/SecurityFactory.json" assert {	type: "json"};
 import SecurityTokenInfo from "../abi/SecurityToken.json" assert {	type: "json"};
 import {addTokenToWallet } from './helper.js';

@@ -1,6 +1,6 @@
 import { render, renderWithMoralis } from "./render.js";
 import { sellPageInit } from "./sell.js";
-import { SECURITY_FACTORY_ADDRESS } from './contract-addresses.js';
+import { getContractsInfo } from '../contracts/contract-addresses.js';
 import SecurityFactoryInfo from "../abi/SecurityFactory.json" assert {	type: "json"};
 import { addTokenToWallet, getAssets} from './helper.js';
 

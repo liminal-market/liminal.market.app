@@ -1,9 +1,11 @@
 import KYCInfo from "../abi/KYC.json" assert {	type: "json"};
-import { KYC_ADDRESS } from './contract-addresses.js';
+import { ContractAddressesInfo }  from '../main.js';
+
 import { errorHandler } from "./error.js";
 import { render } from "./render.js";
 import {buyPageInit} from './buy.js';
 import { isJSON } from "./helper.js";
+
 
 export const initKYC = async function () {
 	var brokerId = await Moralis.User.current().get('alpacaId');
@@ -54,7 +56,7 @@ export const KYCUserToSmartContract = async function (accountId) {
 	}
 
 	const kycOptions = {
-		contractAddress: KYC_ADDRESS,
+		contractAddress: ContractAddressesInfo.KYC_ADDRESS,
 		functionName: "validateAccount",
 		abi: KYCInfo.abi,
 		params: {
@@ -94,9 +96,10 @@ function serialize(data) {
 export let IsValidKYC = false;
 
 export const KYCUserIsValid = async function () {
+
 	console.log('KYCUserIsValid')
 	const kycOptions = {
-		contractAddress: KYC_ADDRESS,
+		contractAddress: ContractAddressesInfo.KYC_ADDRESS,
 		functionName: "isValid",
 		abi: KYCInfo.abi,
 		params: {
@@ -113,8 +116,7 @@ export const KYCUserIsValid = async function () {
 				console.log('KYCUser is invalid', result);
 				document.getElementById('not_kyc_verified').style.display = 'block';
 			}
-		},
-		function (error) {
+		}).catch(function (error) {
 console.log(error);
 			if (error.message.indexOf('Address is not KYC valid') != -1) {
 				document.getElementById('not_kyc_verified').style.display = 'block';

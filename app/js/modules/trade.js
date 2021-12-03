@@ -1,6 +1,6 @@
 import {
-	LIMINAL_ADDRESS
-} from './contract-addresses.js';
+	getContractsInfo
+} from '../contracts/contract-addresses.js';
 import LiminalExchangeInfo from "../abi/LiminalExchange.json" assert {	type: "json"};
 
 import {

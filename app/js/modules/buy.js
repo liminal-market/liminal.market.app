@@ -1,12 +1,9 @@
-import {
-	AUSD_ADDRESS,
-	LIMINAL_ADDRESS,
-	SECURITY_FACTORY_ADDRESS
-} from './contract-addresses.js';
+import { ContractAddressesInfo }  from '../main.js';
+
 import LiminalExchangeInfo from "../abi/LiminalExchange.json" assert {	type: "json"};
 import SecurityFactoryInfo from "../abi/SecurityFactory.json" assert {	type: "json"};
 import SecurityTokenInfo from "../abi/SecurityToken.json" assert {	type: "json"};
-import AUSDInfo from "../abi/aUSD.json"assert {	type: "json"};
+import AUSDInfo from "../abi/aUSD.json" assert { type: "json"};
 
 import {
 	USDC_ABI,
@@ -37,7 +34,7 @@ export const buyPageInit = function () {
 }
 
 const setupBuyButton = function () {
-	console.log(IsValidKYC);
+
 	document.getElementById('execute-trade').classList.remove('disabled')
 	document.getElementById('execute-trade').classList.add('enabled');
 	if (IsValidKYC) {
@@ -65,7 +62,7 @@ const loadBuyTokens = async function () {
 	const ethAddress = await user.get('ethAddress');
 
 	const usdcOptions = {
-		contractAddress: USDC_ADDRESS,
+		contractAddress: ContractAddressesInfo.USDC_ADDRESS,
 		functionName: "balanceOf",
 		abi: USDC_ABI,
 		params: {
@@ -81,11 +78,11 @@ const loadBuyTokens = async function () {
 	}, function (error) {
 		console.log('error', JSON.stringify(error));
 	});
-
+/*
 	const ausdcOptions = {
-		contractAddress: AUSD_ADDRESS,
+		contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
 		functionName: "balanceOf",
-		abi: SecurityTokenInfo.abi,
+		abi: AUSDInfo.abi,
 		params: {
 			account: ethAddress
 		}
@@ -93,7 +90,7 @@ const loadBuyTokens = async function () {
 	Moralis.executeFunction(ausdcOptions).then((balanceOf) => {
 		addUSDTokenValue('aUSD', Moralis.Units.FromWei(balanceOf, 18));
 		console.log('aUSDC balance:', Moralis.Units.FromWei(balanceOf, 18));
-	});
+	});*/
 }
 
 let usdTokenValues = new Map();
@@ -141,7 +138,7 @@ const getSymbolPrice = async function (evt) {
 	}
 
 	const securityTokenOptions = {
-		contractAddress: SECURITY_FACTORY_ADDRESS,
+		contractAddress: ContractAddressesInfo.SECURITY_FACTORY_ADDRESS,
 		functionName: "getSecurityToken",
 		abi: SecurityFactoryInfo.abi,
 		params: {
@@ -267,12 +264,12 @@ const getApproveTokenResult = async function (buyUsing, buyAmount) {
 
 			console.log('buyamount:', Moralis.Units.Token(buyAmount, USDC_DECIMAL), Moralis.Units.Token(buyAmount, USDC_DECIMAL).toString());
 			let usdcOptions = {
-				contractAddress: USDC_ADDRESS,
+				contractAddress: ContractAddressesInfo.USDC_ADDRESS,
 				functionName: "allowance",
 				abi: USDC_ABI,
 				params: {
 					owner: ethAddress,
-					spender: LIMINAL_ADDRESS
+					spender: ContractAddressesInfo.LIMINAL_ADDRESS
 				},
 			};
 			let allowance = await Moralis.executeFunction(usdcOptions);
@@ -282,11 +279,11 @@ const getApproveTokenResult = async function (buyUsing, buyAmount) {
 			}
 
 			usdcOptions = {
-				contractAddress: USDC_ADDRESS,
+				contractAddress: ContractAddressesInfo.USDC_ADDRESS,
 				functionName: "approve",
 				abi: USDC_ABI,
 				params: {
-					_spender: LIMINAL_ADDRESS,
+					_spender: ContractAddressesInfo.LIMINAL_ADDRESS,
 					_value: Moralis.Units.Token(buyAmount, USDC_DECIMAL)
 				},
 			};
@@ -294,12 +291,12 @@ const getApproveTokenResult = async function (buyUsing, buyAmount) {
 
 		} else {
 			let aUsdOptions = {
-				contractAddress: AUSD_ADDRESS,
+				contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
 				functionName: "allowance",
 				abi: AUSDInfo.abi,
 				params: {
 					owner: ethAddress,
-					spender: LIMINAL_ADDRESS
+					spender: ContractAddressesInfo.LIMINAL_ADDRESS
 				},
 			};
 			let allowance = await Moralis.executeFunction(aUsdOptions);
@@ -309,11 +306,11 @@ const getApproveTokenResult = async function (buyUsing, buyAmount) {
 			}
 
 			aUsdOptions = {
-				contractAddress: AUSD_ADDRESS,
+				contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
 				functionName: "approve",
 				abi: AUSDInfo.abi,
 				params: {
-					_spender: LIMINAL_ADDRESS,
+					_spender: ContractAddressesInfo.LIMINAL_ADDRESS,
 					_value: Moralis.Units.Token(buyAmount, 18)
 				},
 			};
@@ -383,10 +380,10 @@ const transfer = async function () {
 
 };
 
-const executeBuy = async function(symbol, buyAmount, buyUsing) {
+const executeBuy = async function(symbol, buyAmount) {
 	try {
 	const liminalOptions = {
-		contractAddress: LIMINAL_ADDRESS,
+		contractAddress: ContractAddressesInfo.LIMINAL_ADDRESS,
 		functionName: "buy",
 		abi: LiminalExchangeInfo.abi,
 		params: {
