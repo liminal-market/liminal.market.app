@@ -19,31 +19,25 @@ import {
   isMarketOpen
 } from './modules/market.js';
 import {attachWalletEvents} from './modules/account.js';
-
-//localhost
-let serverUrl = "https://xcqqzykqhjwv.usemoralis.com:2053/server";
-let appId = "XP6fMmUXTiAH4yYBeigdjtkTmVOKhrTqdguMTE88";
-let chainId = 31337;
-if (true) {
-  //rinkeby
-  serverUrl = "https://rucsd2xip9xc.usemoralis.com:2053/server";
-  appId = "WrszROWRp7oShP39MWHMLl4mMA6n2QMN8LDRD6gi";
-  chainId = 4;
-}
+import {getNetworkInfo} from './networks/network.js';
+import {getContractsInfo} from './contracts/contract-addresses.js'
 
 
 
-try {
-  await Moralis.start({
-    serverUrl,
-    appId
-  });
-} catch (ex) {
-  if (ex.message.indexOf('Invalid session token') != -1) {
+export const NetworkInfo = await getNetworkInfo();
+export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
+
+
+await Moralis.start({
+  serverUrl: NetworkInfo.ServerUrl,
+  appId: NetworkInfo.AppId
+}).catch(function(err) {
+  if (err.message.indexOf('Invalid session token') != -1) {
     Moralis.User.logOut();
   }
-  console.log('ERROR', ex);
-}
+  console.log('ERROR', err);
+});
+
 
 
 let user = await Moralis.User.current();
