@@ -29,6 +29,15 @@ header a, header a.nav-link {
 	text-align: left;
 }
 
+.progress_text_attn .progress_text {
+	color: #000;
+    font-weight: bold;
+    text-align: center;
+}
+.progress_text_attn .progress_text img {
+	margin-left:9px;
+}
+
 .loaded-content input[type=checkbox] {
 	height:18px;
 	width:19px;
