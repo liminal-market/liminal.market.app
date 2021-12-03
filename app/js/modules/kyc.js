@@ -30,18 +30,13 @@ const submitKYC = async function () {
 
 	let params = serialize(data);
 
-	var response = await Moralis.Cloud.run("kycRegistration", params);
+	var alpacaId = await Moralis.Cloud.run("kycRegistration", params);
 
-	console.log(response);
-	const result = JSON.parse(response);
-	if (result.code) {
-		showError(result.message);
-		return;
-	}
+	console.log(alpacaId);
 
-	await Moralis.User.current().set('alpacaId', result)
-	console.log(result);
-	KYCUserToSmartContract(result);
+	await Moralis.User.current().set('alpacaId', alpacaId)
+
+	KYCUserToSmartContract(alpacaId);
 	return false;
 }
 
