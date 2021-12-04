@@ -1,6 +1,6 @@
 <div class="loaded-content">
 	<h2>Sell your securities</h2>
-	<p>This is a sandbox version so any purchases made are not done on the real market.</p>
+	<p>This is a sandbox version so any selling made are not done on the real market.</p>
 
 	<div id="sell_securities" class="mt-3">
 		<h3>Select security to sell</h3>
@@ -20,4 +20,9 @@
 		<button id="execute-trade" class="btn btn-primary mb-3">Execute sell</button>
 	</div>
 	<div class="alert alert-success" role="alert" id="sell_message"></div>
+	<div class="progress mb-5" id="execution_progress" style="display:none;height:58px;">
+		<div id="execution_steps" style="height:58px;" class="progress-bar progress-bar-striped progress-bar-animated"
+			role="progressbar" style="width: 16%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+		</div>
+	</div>
 </div>

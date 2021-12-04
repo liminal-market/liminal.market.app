@@ -101,6 +101,7 @@ header a, header a.nav-link {
 }
 
 #addTokenToWallet, #copyAddress, #maxQty {font-size:12px;}
+#addTokenToWallet, #copyAUSDAddress { color: #fff; }
 
 #metamask-only {
 	display: block;
