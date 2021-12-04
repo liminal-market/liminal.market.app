@@ -36,6 +36,7 @@ const initMoralis = async function() {
 
 
 
+const initMoralis = async function() {
 
   await Moralis.start({
     serverUrl: NetworkInfo.ServerUrl,
@@ -110,11 +111,13 @@ window.settings = {
 };
 
 const start = async function () {
-  initAccount();
+  initMoralis().then(function() {
+    initAccount();
+  });
+
   loadPath();
   attachNavLinks();
   isMarketOpen();
-
 
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

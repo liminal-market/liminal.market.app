@@ -66,7 +66,7 @@ export const getAssets = async function() {
     return Assets;
 }
 
-const getAssetBySymbol = async function(symbol) {
+export const getAssetBySymbol = async function(symbol) {
 	let assets = await getAssets();
 	return assets.get(symbol);
 }

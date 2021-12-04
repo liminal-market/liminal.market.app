@@ -12,7 +12,7 @@ import {
 } from './constants.js'
 import {
 	addTokenToWallet,
-	roundNumber,getAssets
+	roundNumber, getAssets, getAssetBySymbol
 } from './helper.js';
 import {
 	IsValidKYC,
@@ -185,6 +185,20 @@ const addTokenLink = function(symbol, contractAddress) {
 	document.getElementById('add-token-info').style.display='none';
 }
 
+export const addTokenLinkBottom = async function(symbol, contractAddress) {
+	const asset = await getAssetBySymbol(symbol);
+
+	document.getElementById('addNewTokenToWallet').style.display = 'block';
+	document.getElementById('tokenLogo').src = '/img/logos/' + asset.Logo;
+	document.getElementById('addNewTokenText').innerHTML = 'Add ' + symbol + ' to your wallet.';
+	document.getElementById('addNewToken').onclick = async function (evt) {
+		evt.preventDefault();
+		await addTokenToWallet(contractAddress, symbol);
+	}
+
+}
+
+window.addTokenLinkBottom = addTokenLinkBottom;
 
 const updateBuyInfo = async function () {
 
@@ -199,7 +213,7 @@ const updateBuyInfo = async function () {
 	checkTokenValueVsBuyAmount();
 }
 
-const checkTokenValueVsBuyAmount = async function () {
+export const checkTokenValueVsBuyAmount = async function () {
 	document.getElementById('buy_danger_message').style.display = 'none';
 	let buyAmount = document.getElementById('buy_amount').value;
 	const buy_using = document.getElementById('buy_using').value;
@@ -242,7 +256,9 @@ const checkTokenValueVsBuyAmount = async function () {
 
 }
 
-const showProgressStep = async function (text, perc) {
+
+const showProgressStep = async function (text, perc, warning) {
+
 	document.getElementById('buy_progress').style.display = "block";
 	var element = document.getElementById('buying_steps');
 	element.innerHTML = '<div class="progress_text">' + text + '</div>';
@@ -250,11 +266,19 @@ const showProgressStep = async function (text, perc) {
 
 	element.classList.toggle('progress-bar-striped', (perc != 100));
 	element.classList.toggle('progress-bar-animated', (perc != 100));
+	if (warning) {
+		element.classList.add('bg-warning');
+		element.classList.add('progress_text_attn');
+	} else {
+		element.classList.remove('bg-warning');
+		element.classList.remove('progress_text_attn');
+	}
 
 }
 
 const hideProcessStep = function() {
 	document.getElementById('buy_progress').style.display = "none";
+	document.getElementById('execute-trade').style.display='block';
 }
 
 const getApproveTokenResult = async function (buyUsing, buyAmount) {
@@ -322,6 +346,8 @@ const getApproveTokenResult = async function (buyUsing, buyAmount) {
 	}
 }
 
+
+
 const transfer = async function () {
 	const buyAmount = document.getElementById('buy_amount').value;
 	const buyUsing = document.getElementById('buy_using').value;
@@ -329,16 +355,20 @@ const transfer = async function () {
 	if (symbol === '' || buyAmount === '') return;
 
 	if (!checkTokenValueVsBuyAmount()) return false;
+	document.getElementById('execute-trade').style.display='none';
 
-	showProgressStep('Approving ' + buyUsing + ' token.', 14);
-
+	let approvalStr = 'Approving ' + buyUsing + ' token.';
+	showProgressStep(approvalStr, 14);
+	setTimeout(function () { checkToShowMetamaskIcon(approvalStr) }, 10 * 1000)
 	const tokenApproveResult = await getApproveTokenResult(buyUsing, buyAmount);
 	if (tokenApproveResult == null) {
 		hideProcessStep();
 		return;
 	}
 
-	showProgressStep('Waiting on approval to execute to buy ' + symbol + ' for $' + buyAmount + '(-fee).', 28);
+	let waitingStr = 'Waiting on approval to execute to buy ';
+	showProgressStep(waitingStr + symbol + ' for $' + buyAmount + '(-fee).', 28);
+	setTimeout(function () { checkToShowMetamaskIcon(waitingStr) }, 10 * 1000)
 	var buyResult = await executeBuy(symbol, buyAmount, buyUsing);
 	if (buyResult == null) {
 		hideProcessStep();
@@ -348,6 +378,7 @@ const transfer = async function () {
 	var bought = buyResult.events.Bought;
 	showProgressStep('Waiting for blockchain to confirm transaction.', 42);
 
+	document.getElementById('add-token-info').style.display = 'none';
 
 	let query = new Moralis.Query('OrderBuy');
 	let subscription = await query.subscribe();
@@ -360,7 +391,7 @@ const transfer = async function () {
 
 		console.log('status:', object.status);
 		if (object.tokenAddress) {
-			addTokenLink(symbol, object.tokenAddress);
+			addTokenLinkBottom(symbol, object.tokenAddress);
 		}
 
 		if ((!object.status && object.confirmed) || object.status == 'money_sent') {
@@ -374,7 +405,7 @@ const transfer = async function () {
 			showProgressStep('Buy order has been executed. We will update you when it has been filled.' + ethLink, 84)
 		} else if (object.status == 'order_filled') {
 			//order has been filled, you got object.filledQty of shares. You will see it soon in your wallet
-			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + symbol + ' soon into your wallet.' + ethLink, 100);
+			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + ' ' + symbol + ' soon into your wallet.' + ethLink, 100);
 		}
 	  });
 
