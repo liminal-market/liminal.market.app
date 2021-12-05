@@ -5,8 +5,8 @@ import {
   KYCUserIsValid
 } from './kyc.js';
 import {
-  ChainId
-} from './helper.js'
+  NetworkInfo
+} from '../main.js'
 
 export const login = async function (callback) {
 
@@ -53,7 +53,7 @@ export const attachWalletEvents = async function () {
       }
       const userChainId = await Moralis.getChainId();
 
-      if (ChainId() != userChainId) {
+      if (NetworkInfo.ChainId != userChainId) {
         showWrongChainBanner();
       } else {
         document.getElementById('wrongChainId').style.display = 'none';

@@ -21,20 +21,11 @@ import {
 import {attachWalletEvents} from './modules/account.js';
 import {getNetworkInfo} from './networks/network.js';
 import {getContractsInfo} from './contracts/contract-addresses.js'
-
-
-
-export const NetworkInfo = await getNetworkInfo();
-export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
+import {addTokenToWallet} from './modules/helper.js';
 
 
 export const NetworkInfo = await getNetworkInfo();
 export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
-
-
-const initMoralis = async function() {
-
-
 
 const initMoralis = async function() {
 
@@ -102,6 +93,11 @@ const attachNavLinks = function () {
     showPositions(evt);
     history.pushState(null, 'Positions', '/positions');
   });
+
+  document.getElementById('add_ausd_to_wallet_menu').addEventListener('click', function(evt) {
+    evt.preventDefault();
+    addTokenToWallet(ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
+  })
 }
 
 window.settings = {
