@@ -1,4 +1,4 @@
-import { ContractAddressesInfo }  from '../main.js';
+import { ContractAddressesInfo, NetworkInfo }  from '../main.js';
 
 import LiminalExchangeInfo from "../abi/LiminalExchange.json" assert {	type: "json"};
 import SecurityFactoryInfo from "../abi/SecurityFactory.json" assert {	type: "json"};
@@ -6,13 +6,8 @@ import SecurityTokenInfo from "../abi/SecurityToken.json" assert {	type: "json"}
 import AUSDInfo from "../abi/aUSD.json" assert { type: "json"};
 
 import {
-	USDC_ABI,
-	USDC_ADDRESS,
-	USDC_DECIMAL
-} from './constants.js'
-import {
 	addTokenToWallet,
-	roundNumber, getAssets, getAssetBySymbol
+	roundNumber, getAssets, getAssetBySymbol, AddressZero
 } from './helper.js';
 import {
 	IsValidKYC,
@@ -24,6 +19,7 @@ import {
 import {
 	login
 } from './account.js';
+import {tryGetNetwork} from '../networks/network-info.js';
 import {IsMarketOpen, UserIsOffHours, isMarketOpen} from './market.js';
 
 let aUsdAmount;
@@ -35,7 +31,7 @@ export const buyPageInit = function () {
 	setupAssets();
 };
 
-const setupSteps = async function() {
+export const setupSteps = async function(showNetwork) {
 	document.querySelectorAll('.step').forEach((value, key) => {
 		value.style.display = 'none';
 	})
@@ -58,21 +54,52 @@ const setupSteps = async function() {
 		});
 		return;
 	}
+	await Moralis.enableWeb3();
+
+	const chainId = await Moralis.getChainId();
+	let networkInfo = tryGetNetwork(chainId);
+	if (networkInfo) {
+		NetworkInfo.setNetwork(networkInfo);
+	}
+
+	if (networkInfo.ChainId != chainId || showNetwork) {
+		document.getElementById('select_network').style.display = 'block';
+		const options = document.querySelectorAll('.network_chooser');
+		for (let i=0;i<options.length;i++) {
+			options[i].addEventListener('click', async function(evt) {
+				evt.preventDefault();
+				console.log('chain id:', evt.target.dataset.chainid);
+				const chainIdHex = await Moralis.switchNetwork(evt.target.dataset.chainid)
+				.then(async function() {
+					await Moralis.User.logOut();
+					window.location.reload();
+				}).catch(function(err) {
+						console.log(err);
+					});
+			})
+		}
+
+		return;
+	}
 
 	if (Moralis.User.current() == null) {
 		//user is not logged in, lets log you in
 		document.getElementById('login_user').style.display = 'block';
 		document.getElementById('click_to_login_user').addEventListener('click', function(evt) {
 			evt.preventDefault();
-			Moralis.authenticate().then(function (user) {
+
+			login(function() {
+				setupSteps();
+			})
+			/*Moralis.authenticate().then(function (user) {
 				setupSteps();
 			}).catch(function(err) {
 				document.getElementById('login_user_error').style.display = 'block';
-			})
+			})*/
 		});
 		return;
 	}
-	await Moralis.enableWeb3();
+
 	await KYCUserIsValid();
 	console.log('IsValidKYC:', IsValidKYC);
 	if (!IsValidKYC) {
@@ -93,6 +120,7 @@ const setupSteps = async function() {
 	if (aUsdAmount == 0) {
 		//show funding step
 		document.getElementById('fund_account').style.display = 'block';
+		document.getElementById('account_not_ready').style.display = "none";
 		document.getElementById('add_ausd_to_wallet').addEventListener('click', async function(evt) {
 			evt.preventDefault();
 
@@ -116,16 +144,16 @@ const setupSteps = async function() {
 
 	//lets buy securities
 	checkBalanceOfAUsd();
-
-
 };
 
 const fundUser = async function() {
+	document.getElementById('account_not_ready').style.display = "none";
 	Moralis.Cloud.run('fundUser').then(function(response) {
-		showTransferSteps('Sending you $50 aUSD', 50);
 		showWaitingForFunding();
 		return;
 
+	}).catch(function(err) {
+		document.getElementById('account_not_ready').style.display = "block";
 	});
 }
 
@@ -151,24 +179,6 @@ const setupBuyButton = function () {
 	}
 }
 
-const transferUSDC = async function() {
-	// sending 0.5 tokens with 18 decimals
-	const amount = document.getElementById('fund_account_amount').value;
-	let bigInt = Moralis.Units.Token(amount, "6");
-
-	console.log('bigInt', bigInt, bigInt.toString())
-	const options = {
-		type: "erc20",
-		amount: bigInt,
-		receiver: ContractAddressesInfo.AUSD_ADDRESS,
-		contractAddress: ContractAddressesInfo.USDC_ADDRESS
-	};
-
-	showTransferSteps('Lets transfer', 50);
-	showWaitingForFunding();
-	return;
-
-}
 
 const showWaitingForFunding = function() {
 	document.getElementById('waiting_for_funding').style.display = 'block';
@@ -184,9 +194,8 @@ const showWaitingForFunding = function() {
 }
 
 const checkBalanceOfAUsd = async function() {
-	console.log('checkBalanceOfAUsd');
 
-	let aUsdAmount = await getAUSDAmount();
+	aUsdAmount = await getAUSDAmount();
 
 	if (aUsdAmount > 0) {
 		document.getElementById('waiting_for_funding').style.display = 'none';
@@ -243,6 +252,7 @@ const getAUSDAmount = async function () {
 
 	let amount = await Moralis.executeFunction(ausdcOptions).then((balanceOf) => {
 		let amount = Moralis.Units.FromWei(balanceOf, 18);
+		document.getElementById('add_ausd_to_wallet_menu').innerHTML = 'You have ' + amount + ' aUSD in your broker account';
 		return amount;
 	}).catch(function(err) {
 		console.error(err);
@@ -270,6 +280,7 @@ const setupAssets = async function () {
 
 let assetPrice = null;
 let lastTraded = null;
+let selectedSymbolAddress = null;
 
 const getSymbolPrice = async function (evt) {
 	evt.preventDefault();
@@ -284,25 +295,18 @@ const getSymbolPrice = async function (evt) {
 	}
 
 	offHoursInfo();
-
-	const securityTokenOptions = {
-		contractAddress: ContractAddressesInfo.SECURITY_FACTORY_ADDRESS,
-		functionName: "getSecurityToken",
-		abi: SecurityFactoryInfo.abi,
-		params: {
-			symbol: symbol
-		}
-	};
-	Moralis.executeFunction(securityTokenOptions).then((contractAddress) => {
-		if (contractAddress == "0x0000000000000000000000000000000000000000") {
-			document.getElementById('addWalletSpan').innerHTML = '';
-			//TODO for sandbox lets not show this, but for live we need to show.
-			//document.getElementById('add-token-info').style.display='block';
-			//document.getElementById('add-token-info').innerHTML = "<div >We will need to create the token when you buy it. Since you are the first one to buy this symbol, this will incure extra cost. It's a low cost</div>";
-		} else {
-			addTokenLink(symbol, contractAddress);
-		}
-	});
+	selectedSymbolAddress = await getSymbolContractAddress(symbol);
+	console.log('contractAddresss:', selectedSymbolAddress);
+	if (selectedSymbolAddress == AddressZero) {
+		document.getElementById('addWalletSpan').innerHTML = '';
+		document.getElementById('execute-trade').innerHTML = "Create token & execute trade";
+		//TODO for sandbox lets not show this, but for live we need to show.
+		//document.getElementById('add-token-info').style.display='block';
+		//document.getElementById('add-token-info').innerHTML = "<div >We will need to create the token when you buy it. Since you are the first one to buy this symbol, this will incure extra cost. It's a low cost</div>";
+	} else {
+		document.getElementById('execute-trade').innerHTML = "Execute trade";
+		addTokenLink(symbol, selectedSymbolAddress);
+	}
 
 	const params = {
 		symbol: symbol
@@ -318,13 +322,28 @@ const getSymbolPrice = async function (evt) {
 	});
 }
 
+const getSymbolContractAddress = async function(symbol) {
+	const securityTokenOptions = {
+		contractAddress: ContractAddressesInfo.SECURITY_FACTORY_ADDRESS,
+		functionName: "getSecurityToken",
+		abi: SecurityFactoryInfo.abi,
+		params: {
+			symbol: symbol
+		}
+	};
+	return await Moralis.executeFunction(securityTokenOptions);
+}
+export const ExecuteTradeOffHoursTxt = 'Execute trade <div class="small_print">It will take few hours to process, market is closed<br>You can enable "Off hours trading" in the Menu</div>';
+
 const offHoursInfo = async function() {
 	await isMarketOpen();
 
 	if (!IsMarketOpen && !UserIsOffHours) {
 		document.getElementById('offHoursInfo').style.display = 'block';
+		document.getElementById('execute-trade').innerHTML = ExecuteTradeOffHoursTxt;
 	} else {
 		document.getElementById('offHoursInfo').style.display = 'none';
+		document.getElementById('execute-trade').innerHTML = 'Execute trade';
 	}
 }
 
@@ -359,13 +378,17 @@ export const addTokenLinkBottom = async function(symbol, contractAddress) {
 window.addTokenLinkBottom = addTokenLinkBottom;
 
 const updateBuyInfo = async function () {
-
+	let symbol = document.getElementById('symbols').value;
 	let buyAmount = document.getElementById('buy_amount').value;
 	if (buyAmount === '' || assetPrice == null) return;
 
 	document.getElementById('buy_success_message').style.display = 'none';
 	let str = 'Estimated you will buy ' + roundNumber(buyAmount / assetPrice) + ' shares at the price of $' + assetPrice + ' per share. ';
 	str += 'Last trade was ' + (new Date(lastTraded)).toLocaleString();
+	if (selectedSymbolAddress == AddressZero) {
+		str += '<br /><span class="small_print">Since you are the first one to buy ' + symbol + " you will be asked to create the token first, then we'll execute the trade</span>";
+	}
+
 	document.getElementById('buy-info').innerHTML = str;
 	document.getElementById('buy-info').style.display = 'block';
 	checkTokenValueVsBuyAmount();
@@ -374,29 +397,21 @@ const updateBuyInfo = async function () {
 export const checkTokenValueVsBuyAmount = async function () {
 	document.getElementById('buy_danger_message').style.display = 'none';
 	let buyAmount = document.getElementById('buy_amount').value;
-	const buy_using = document.getElementById('buy_using').value;
-	const userTokenValue = usdTokenValues.get(buy_using);
 
 	var user = Moralis.User.current();
 	if (!user) {
 		document.getElementById('buy_danger_message').style.display = 'block';
 		let str = 'You are not logged in. Login in the menu at top.'
 		document.getElementById('buy_danger_message').innerHTML = str;
-		return;
+		return false;
 	}
 
 	document.getElementById('execute-trade').classList.add('disabled')
 	document.getElementById('execute-trade').classList.remove('enabled');
-	if (!userTokenValue) {
-		document.getElementById('buy_danger_message').style.display = 'block';
-		let str = "You don't have any aUSD tokens in your wallet. aUSD is only available after you have sold shares. Go through step above to fill up your aUSD.";
-		document.getElementById('buy_danger_message').innerHTML = str;
 
-		return false;
-	}
-	if (userTokenValue < buyAmount) {
+	if (aUsdAmount < buyAmount) {
 		document.getElementById('buy_danger_message').style.display = 'block';
-		document.getElementById('buy_danger_message').innerHTML = "You don't have enough " + buy_using + " tokens in your wallet."
+		document.getElementById('buy_danger_message').innerHTML = "You don't have enough aUSD tokens in your wallet."
 		return false;
 	}
 	await setupBuyButton();
@@ -428,117 +443,68 @@ const hideProcessStep = function() {
 	document.getElementById('execute-trade').style.display='block';
 }
 
-const getApproveTokenResult = async function (buyUsing, buyAmount) {
-	try {
-		let ethAddress = Moralis.User.current().get('ethAddress');
-		if (buyUsing === 'USDC') {
-
-			console.log('buyamount:', Moralis.Units.Token(buyAmount, USDC_DECIMAL), Moralis.Units.Token(buyAmount, USDC_DECIMAL).toString());
-			let usdcOptions = {
-				contractAddress: ContractAddressesInfo.USDC_ADDRESS,
-				functionName: "allowance",
-				abi: USDC_ABI,
-				params: {
-					owner: ethAddress,
-					spender: ContractAddressesInfo.LIMINAL_ADDRESS
-				},
-			};
-			let allowance = await Moralis.executeFunction(usdcOptions);
-			console.log('allowance:', Moralis.Units.Token(allowance, USDC_DECIMAL).toString(), Moralis.Units.Token(buyAmount, USDC_DECIMAL).toString());
-			if (parseFloat(Moralis.Units.Token(buyAmount, USDC_DECIMAL).toString()) <= allowance) {
-				return parseFloat(Moralis.Units.Token(allowance, USDC_DECIMAL).toString());
-			}
-
-			usdcOptions = {
-				contractAddress: ContractAddressesInfo.USDC_ADDRESS,
-				functionName: "approve",
-				abi: USDC_ABI,
-				params: {
-					_spender: ContractAddressesInfo.LIMINAL_ADDRESS,
-					_value: Moralis.Units.Token(buyAmount, USDC_DECIMAL)
-				},
-			};
-			return await Moralis.executeFunction(usdcOptions);
-
-		} else {
-			let aUsdOptions = {
-				contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
-				functionName: "allowance",
-				abi: AUSDInfo.abi,
-				params: {
-					owner: ethAddress,
-					spender: ContractAddressesInfo.LIMINAL_ADDRESS
-				},
-			};
-			let allowance = await Moralis.executeFunction(aUsdOptions);
-			console.log('allowance:', allowance);
-			if (Moralis.Units.Token(buyAmount, 18) <= allowance) {
-				return allowance;
-			}
-
-			aUsdOptions = {
-				contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
-				functionName: "approve",
-				abi: AUSDInfo.abi,
-				params: {
-					_spender: ContractAddressesInfo.LIMINAL_ADDRESS,
-					_value: Moralis.Units.Token(buyAmount, 18)
-				},
-			};
-			return await Moralis.executeFunction(usdcOptions);
-		}
-	} catch (ex) {
-		console.log('error', ex);
-		return null;
-	}
-}
 
 
 
 const transfer = async function () {
 	const buyAmount = document.getElementById('buy_amount').value;
-	const buyUsing = document.getElementById('buy_using').value;
 	const symbol = document.getElementById('symbols').value;
 	if (symbol === '' || buyAmount === '') return;
 
 	if (!checkTokenValueVsBuyAmount()) return false;
 	document.getElementById('execute-trade').style.display='none';
 
-	let approvalStr = 'Approving ' + buyUsing + ' token.';
-	showProgressStep(approvalStr, 14);
-	setTimeout(function () { checkToShowMetamaskIcon(approvalStr) }, 10 * 1000)
-	const tokenApproveResult = await getApproveTokenResult(buyUsing, buyAmount);
-	if (tokenApproveResult == null) {
-		hideProcessStep();
-		return;
+	if(selectedSymbolAddress == null) {
+		selectedSymbolAddress = await getSymbolContractAddress(symbol);
 	}
 
+	if (selectedSymbolAddress == AddressZero) {
+
+		showProgressStep('First we need to create token, you need to confirm', 99);
+		setTimeout(function () { checkToShowMetamaskIcon('First we need') }, 10 * 1000);
+
+		let txResult = await executeCreateToken(symbol).catch(function(err) {
+			hideProcessStep();
+			return null;
+		});
+		if(txResult == null) return;
+
+		console.log(txResult);
+		if (txResult.events.TokenCreated) {
+			selectedSymbolAddress = txResult.events.TokenCreated.returnValues.tokenAddress;
+		}
+	}
+
+	console.log('recipent', selectedSymbolAddress);
+	if (selectedSymbolAddress == AddressZero) return;
+	document.getElementById('execute-trade').innerHTML = "Execute trade";
 	let waitingStr = 'Waiting on approval to execute to buy ';
-	showProgressStep(waitingStr + symbol + ' for $' + buyAmount + '(-fee).', 28);
-	setTimeout(function () { checkToShowMetamaskIcon(waitingStr) }, 10 * 1000)
-	var buyResult = await executeBuy(symbol, buyAmount, buyUsing);
-	if (buyResult == null) {
-		hideProcessStep();
-		return;
-	}
+	showProgressStep(waitingStr + symbol + ' for $' + buyAmount + '.', 99);
+	setTimeout(function () { checkToShowMetamaskIcon(waitingStr) }, 10 * 1000);
 
-	var bought = buyResult.events.Bought;
-	showProgressStep('Waiting for blockchain to confirm transaction.', 42);
+	var buyResult = await executeBuy(selectedSymbolAddress, buyAmount).catch(function(err) {
+		hideProcessStep();
+	});
+
+	if (buyResult == null) return;
+
+	console.log('buyResult', buyResult);
+
+	showProgressStep('Waiting for blockchain to confirm transaction.', 99);
 
 	document.getElementById('add-token-info').style.display = 'none';
 
 	let query = new Moralis.Query('OrderBuy');
 	let subscription = await query.subscribe();
 
-
-	  subscription.on('update', (response) => {
+	subscription.on('update', (response) => {
 		const object = response.toJSON();
 		console.log('object updated', JSON.stringify(object), object);
 		let ethLink = ' <a class="white-link" target="_blank" href="https://rinkeby.etherscan.io/tx/' + object.transaction_hash + '">View transaction</a>';
 
 		console.log('status:', object.status);
 		if (object.tokenAddress) {
-			addTokenLinkBottom(symbol, object.tokenAddress);
+			addTokenLinkBottom(symbol, selectedSymbolAddress);
 		}
 
 		if ((!object.status && object.confirmed) || object.status == 'money_sent') {
@@ -551,10 +517,11 @@ const transfer = async function () {
 			//order has been executed, we are waiting on response from the stock exchange
 			showProgressStep('Buy order has been executed. We will update you when it has been filled.' + ethLink, 84)
 		} else if (object.status == 'order_filled') {
+			document.getElementById('buy-info').style.display = 'none';
 			//order has been filled, you got object.filledQty of shares. You will see it soon in your wallet
 			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + ' ' + symbol + ' soon into your wallet.' + ethLink, 100);
 		}
-	  });
+	});
 
 };
 
@@ -577,15 +544,15 @@ const blockshainSlowMessage = function() {
 }
 
 
-const executeBuy = async function(symbol, buyAmount) {
+const executeBuy = async function(recipient, buyAmount) {
 	try {
 		const liminalOptions = {
-			contractAddress: ContractAddressesInfo.LIMINAL_ADDRESS,
-			functionName: "buy",
-			abi: LiminalExchangeInfo.abi,
+			contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
+			functionName: "transfer",
+			abi: AUSDInfo.abi,
 			params: {
-				symbol: symbol,
-				amount: Moralis.Units.Token(buyAmount, USDC_DECIMAL)
+				recipient: recipient,
+				amount: Moralis.Units.Token(buyAmount, 18)
 			},
 		};
 
@@ -594,4 +561,20 @@ const executeBuy = async function(symbol, buyAmount) {
 		console.log(ex);
 		return null;
 	}
+}
+
+const executeCreateToken = async function(symbol) {
+
+	const liminalOptions = {
+		contractAddress: ContractAddressesInfo.SECURITY_FACTORY_ADDRESS,
+		functionName: "createToken",
+		abi: SecurityFactoryInfo.abi,
+		params: {
+			name: 'Liminal.market - ' + symbol,
+			symbol: symbol
+		},
+	};
+
+	return await Moralis.executeFunction(liminalOptions);
+
 }

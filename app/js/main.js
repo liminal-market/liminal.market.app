@@ -19,7 +19,7 @@ import {
   isMarketOpen
 } from './modules/market.js';
 import {attachWalletEvents} from './modules/account.js';
-import {getNetworkInfo} from './networks/network.js';
+import {getNetworkInfo} from './networks/network-info.js';
 import {getContractsInfo} from './contracts/contract-addresses.js'
 import {addTokenToWallet} from './modules/helper.js';
 

@@ -9,7 +9,7 @@ import { isJSON } from "./helper.js";
 export let AlpacaId;
 
 export const initKYC = async function () {
-	AlpacaId = await Moralis.User.current().get('alpacaId');
+	AlpacaId = (await Moralis.User.current().fetch()).get('alpacaId');
 	AlpacaId = undefined;
 	console.log('alpacaId:', AlpacaId);
 	if (!AlpacaId) {
@@ -99,16 +99,15 @@ export const KYCUserToSmartContract = async function (accountId) {
 
 const checkToShowMetamaskIcon = function(txt) {
 	//Waiting on approval to execute
-	if (document.getElementById('kyc_progress').style.display != "none" && document.getElementById('kyc_steps').innerText.indexOf(txt) != -1) {
+	if (document.getElementById('kyc_progress') && document.getElementById('kyc_progress').style.display != "none" && document.getElementById('kyc_steps').innerText.indexOf(txt) != -1) {
 		showProgressStep('Hey Ho! Is Metamask be waiting for you?<br />Check top right corner of your browser <img src="/img/metamask-pending.png"/>', 99, true);
+		setTimeout(function () { blockshainSlowMessage(); }, 8 * 1000);
 	}
-
-	setTimeout(function () { blockshainSlowMessage(); }, 8 * 1000);
 };
 
 const blockshainSlowMessage = function() {
 
-	if (document.getElementById('kyc_progress').style.display != "none" && document.getElementById('kyc_steps').innerText.indexOf('Hey Ho!') != -1) {
+	if (document.getElementById('kyc_progress') && document.getElementById('kyc_progress').style.display != "none" && document.getElementById('kyc_steps').innerText.indexOf('Hey Ho!') != -1) {
 		showProgressStep('If you have already approved, maybe blockchain is slow. Lets give it a bit. Just double check for <img src="/img/metamask-pending.png"/>', 99, true);
 	}
 }
@@ -160,8 +159,17 @@ export const KYCUserIsValid = async function () {
 		console.log('kyc result:', result);
 		if (isValidAccountId(result)) {
 			IsValidKYC = true;
+
+			var user = Moralis.User.current();
+			if (!user.get('alpacaId')) {
+				user.save({alpacaId : result});
+				await Moralis.User.current().fetch();
+			}
+
 			return;
 		}
+	}).catch(function(err) {
+		console.log('Not KYC valid', err);
 	});
 
 }

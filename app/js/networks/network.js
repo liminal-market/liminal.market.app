@@ -1,28 +1,21 @@
-import {localhostNetwork} from './localhost-network.js';
-import { rinkebyNetwork } from './rinkeby-network.js';
+import {setCookieNetwork} from './network-info.js'
 
+export class Network {
+	constructor() {
+		this.ServerUrl = "";
+		this.AppId = "";
+		this.ChainId = 0;
+		this.Name = "";
 
-const contractInfos = { localhostNetwork, rinkebyNetwork };
+		this.setNetwork = function(networkInfo) {
 
-export const getNetworkInfo = async function() {
+			this.ServerUrl = networkInfo.ServerUrl;
+			this.AppId = networkInfo.AppId;
+			this.ChainId = networkInfo.ChainId;
+			this.Name = networkInfo.Name;
 
-	let networkName = getCookieValue('network');
-	if (!networkName) networkName = 'localhost';
-
-	let networkInfoType = contractInfos[networkName + 'Network']
-	if (!networkInfoType) {
-		console.error('Network name ' + networkName + ' not found. Setting rinkeby as default');
-		setCookieNetwork('rinkeby');
-		networkName = 'rinkeby';
-		networkInfoType = contractInfos[networkName + 'Network']
+			setCookieNetwork(this.Name);
+		}
 	}
-	return new networkInfoType();
 }
 
-export const setCookieNetwork = (name) => {
-	document.cookie = "network=" + name + "; expires=Mon, 2 Dec 2024 12:00:00 UTC;path=/";
-}
-
-const getCookieValue = (name) => (
-	document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
-)

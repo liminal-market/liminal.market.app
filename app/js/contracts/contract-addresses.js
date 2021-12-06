@@ -8,12 +8,13 @@ export const USDC_ADDRESS = "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b";
 */
 import {localhostContractAddresses} from './localhost-contract-addresses.js';
 import {rinkebyContractAddresses} from './rinkeby-contract-addresses.js';
+import {mumbaiContractAddresses} from './mumbai-contract-addresses.js';
 
-const contractInfos = { localhostContractAddresses, rinkebyContractAddresses  };
+const contractInfos = { localhostContractAddresses, rinkebyContractAddresses, mumbaiContractAddresses  };
 
 export const getContractsInfo = function(networkName) {
 
-	const contractInfoType = contractInfos[networkName + 'ContractAddresses']
+	const contractInfoType = contractInfos[networkName + 'ContractAddresses'];
 
 	return new contractInfoType();
 }

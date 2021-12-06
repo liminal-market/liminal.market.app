@@ -1,11 +1,16 @@
-
+import {Network} from './network.js';
 //localhost
-export class localhostNetwork {
+export class localhostNetwork extends Network {
 	constructor() {
-		this.ServerUrl = "https://17nhgnogptv1.usemoralis.com:2053/server";
-		this.AppId = "4dRXtAbVr8R3vHyCYKJBrYujd2IdxYqrGbe7ePAy";
+		super();
+
+		this.ServerUrl = "https://om9bgoayltsu.usemoralis.com:2053/server";
+		this.AppId = "SMpXWAEXGEeH4jAmTYYs2UrnCSrYhdArY6hsCupc";
 		this.ChainId = 31337;
 		this.Name = "localhost";
 	}
+
+
+
 }
 

@@ -34,6 +34,8 @@ const getAUsdAsset = function() {
 	return asset;
 }
 
+export const AddressZero = "0x0000000000000000000000000000000000000000";
+
 export const addTokenToWallet = async function(address, symbol) {
 	const asset = (symbol == 'aUSD') ? getAUsdAsset() : await getAssetBySymbol(symbol);
 	// wasAdded is a boolean. Like any RPC method, an error may be thrown.

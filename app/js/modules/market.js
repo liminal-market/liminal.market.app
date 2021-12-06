@@ -1,3 +1,6 @@
+import {ExecuteTradeOffHoursTxt} from './buy.js';
+
+
 export let IsMarketOpen  = false;
 export let UserIsOffHours = false;
 export const isMarketOpen = async function () {
@@ -25,5 +28,14 @@ console.log('UserIsOffHours:', UserIsOffHours);
 		let input = e.target;
 		user.set('offHours', input.checked); // do stuff with your user
 		user.save();
+
+		if (document.getElementById('execute-trade')) {
+			if (input.checked) {
+				document.getElementById('execute-trade').innerHTML = "Execute trade";
+			} else {
+				document.getElementById('execute-trade').innerHTML = ExecuteTradeOffHoursTxt;
+			}
+		}
+
 	})
 }
