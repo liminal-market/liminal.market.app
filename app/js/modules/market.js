@@ -1,34 +1,41 @@
+import {ExecuteTradeOffHoursTxt} from './buy.js';
+
+
+export let IsMarketOpen  = false;
+export let UserIsOffHours = false;
 export const isMarketOpen = async function () {
 	let user = Moralis.User.current();
 	if (!user) return;
 
-	let offHours = false;
 	if (user) {
-		offHours = user.get('offHours');
+		UserIsOffHours = user.get('offHours');
 	}
-
-	if (!offHours) {
-		let result = await Moralis.Cloud.run('isOpen');
-		if (!result) {
-			document.getElementById('closedMarket').style.display = 'block';
+console.log('UserIsOffHours:', UserIsOffHours);
+	if (!UserIsOffHours) {
+		IsMarketOpen = await Moralis.Cloud.run('isOpen');
+		if (!IsMarketOpen) {
 			document.getElementById('offHours').style.display = "block";
 		} else {
-			document.getElementById('closedMarket').style.display = 'none';
 			document.getElementById('offHours').style.display = "none";
 		}
 	} else {
+		IsMarketOpen = true;
 		document.getElementById('enableOffHours').checked = true;
 	}
 
 	document.getElementById('enableOffHours').addEventListener('click', function (e) {
 
 		let input = e.target;
-		Moralis.Cloud.run('offHours', {
-			offHours: input.checked
-		});
+		user.set('offHours', input.checked); // do stuff with your user
+		user.save();
 
-		Moralis.User.currentAsync().then(function (user) {
-			user.set('offHours', input.checked); // do stuff with your user
-		});
+		if (document.getElementById('execute-trade')) {
+			if (input.checked) {
+				document.getElementById('execute-trade').innerHTML = "Execute trade";
+			} else {
+				document.getElementById('execute-trade').innerHTML = ExecuteTradeOffHoursTxt;
+			}
+		}
+
 	})
 }

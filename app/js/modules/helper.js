@@ -27,8 +27,17 @@ Handlebars.registerHelper('classColor', function (number) {
     return (number > 0) ? "green" : "red";
 });
 
+const getAUsdAsset = function() {
+	let asset = {
+		Logo : '../ausd.png'
+	}
+	return asset;
+}
+
+export const AddressZero = "0x0000000000000000000000000000000000000000";
+
 export const addTokenToWallet = async function(address, symbol) {
-	const asset = await getAssetBySymbol(symbol);
+	const asset = (symbol == 'aUSD') ? getAUsdAsset() : await getAssetBySymbol(symbol);
 	// wasAdded is a boolean. Like any RPC method, an error may be thrown.
 	const wasAdded = await ethereum.request({
 	  method: 'wallet_watchAsset',

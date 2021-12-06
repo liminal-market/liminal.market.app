@@ -19,29 +19,24 @@ import {
   isMarketOpen
 } from './modules/market.js';
 import {attachWalletEvents} from './modules/account.js';
+import {getNetworkInfo} from './networks/network-info.js';
+import {getContractsInfo} from './contracts/contract-addresses.js'
+import {addTokenToWallet} from './modules/helper.js';
 
-//localhost
-let serverUrl = "https://xcqqzykqhjwv.usemoralis.com:2053/server";
-let appId = "XP6fMmUXTiAH4yYBeigdjtkTmVOKhrTqdguMTE88";
-let chainId = 31337;
-if (true) {
-  //rinkeby
-  serverUrl = "https://rucsd2xip9xc.usemoralis.com:2053/server";
-  appId = "WrszROWRp7oShP39MWHMLl4mMA6n2QMN8LDRD6gi";
-  chainId = 4;
-}
 
+export const NetworkInfo = await getNetworkInfo();
+export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
 
 const initMoralis = async function() {
 
-
-
-  const server = await Moralis.start({serverUrl,appId})
-                .catch(function(ex) {
-    if (ex.message.indexOf('Invalid session token') != -1) {
+  await Moralis.start({
+    serverUrl: NetworkInfo.ServerUrl,
+    appId: NetworkInfo.AppId
+  }).catch(function(err) {
+    if (err.message.indexOf('Invalid session token') != -1) {
       Moralis.User.logOut();
     }
-    console.log('ERROR', ex);
+    console.log('ERROR', err);
   });
 
 
@@ -53,7 +48,9 @@ const initMoralis = async function() {
   window.onpopstate = function (event) {
     alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
   }
-}
+};
+
+
 const loadPath = async function () {
   let path = window.location.pathname.replace('/', '');
   if (path === '') path = 'buy';
@@ -96,6 +93,11 @@ const attachNavLinks = function () {
     showPositions(evt);
     history.pushState(null, 'Positions', '/positions');
   });
+
+  document.getElementById('add_ausd_to_wallet_menu').addEventListener('click', function(evt) {
+    evt.preventDefault();
+    addTokenToWallet(ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
+  })
 }
 
 window.settings = {

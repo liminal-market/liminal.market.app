@@ -1,7 +1,7 @@
 import { errorHandler } from "./error.js";
 import { renderWithMoralis } from "./render.js";
-import { SECURITY_FACTORY_ADDRESS, AUSD_ADDRESS } from './contract-addresses.js';
-import SecurityFactoryInfo from "../abi/SecurityFactory.json" assert {	type: "json"};
+import { getContractsInfo } from '../contracts/contract-addresses.js';
+import LiminalMarketInfo from "../abi/LiminalMarket.json" assert {	type: "json"};
 import SecurityTokenInfo from "../abi/SecurityToken.json" assert {	type: "json"};
 import {addTokenToWallet } from './helper.js';
 
@@ -45,9 +45,9 @@ const executeTrade = async function() {
 	showProgressStep('Please confirm transaction in Metamask', 50, false);
 
 	const options = {
-		contractAddress: SECURITY_FACTORY_ADDRESS,
+		contractAddress: LIMINAL_MARKET_ADDRESS,
 		functionName: "getSecurityToken",
-		abi: SecurityFactoryInfo.abi,
+		abi: LiminalMarketInfo.abi,
 		params : {
 			symbol : symbol
 		}
@@ -61,7 +61,7 @@ const executeTrade = async function() {
 	const options2 = {
 		type: "erc20",
 		amount: Moralis.Units.Token(qty, 18),
-		receiver: SECURITY_FACTORY_ADDRESS,
+		receiver: LIMINAL_MARKET_ADDRESS,
 		contractAddress: contractAddress
 	}
 	let userCancelled = false;

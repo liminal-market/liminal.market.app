@@ -8,7 +8,7 @@
 	"scripts": {
 		"test": "jest"
 	},
-	"jshintConfig": {
-		"esversion": 11
+	"jshintConfig" : {
+		"esversion":11
 	}
 }
