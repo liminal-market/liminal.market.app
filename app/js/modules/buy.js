@@ -1,7 +1,6 @@
 import { ContractAddressesInfo, NetworkInfo }  from '../main.js';
 
-import LiminalExchangeInfo from "../abi/LiminalExchange.json" assert {	type: "json"};
-import SecurityFactoryInfo from "../abi/SecurityFactory.json" assert {	type: "json"};
+import LiminalMarketInfo from "../abi/LiminalMarket.json" assert {	type: "json"};
 import SecurityTokenInfo from "../abi/SecurityToken.json" assert {	type: "json"};
 import AUSDInfo from "../abi/aUSD.json" assert { type: "json"};
 
@@ -203,7 +202,7 @@ const checkBalanceOfAUsd = async function() {
 		let text = "You currently have <strong>$" + aUsdAmount + " aUSD.</strong>"
 				+ " You can now buy your own securities.";
 		document.getElementById('buy_text').innerHTML = text;
-
+		updateBuyInfo();
 		showUseWalletForOrders();
 	} else {
 		setTimeout(await checkBalanceOfAUsd, 30 * 1000);
@@ -214,7 +213,7 @@ const showUseWalletForOrders = function() {
 	document.getElementById('create-order').classList.add('sidebar');
 	document.getElementById('use_wallet_for_orders').style.display = 'inline-block';
 }
-
+/*
 const hideTransferSteps = function() {
 	document.getElementById('fund_progress').style.display = 'none';
 }
@@ -235,6 +234,7 @@ const showTransferSteps = function(text, perc, warning) {
 		element.classList.remove('progress_text_attn');
 	}
 }
+*/
 
 const getAUSDAmount = async function () {
 	const user = await Moralis.User.current();
@@ -323,15 +323,17 @@ const getSymbolPrice = async function (evt) {
 }
 
 const getSymbolContractAddress = async function(symbol) {
-	const securityTokenOptions = {
-		contractAddress: ContractAddressesInfo.SECURITY_FACTORY_ADDRESS,
-		functionName: "getSecurityToken",
-		abi: SecurityFactoryInfo.abi,
-		params: {
-			symbol: symbol
-		}
-	};
-	return await Moralis.executeFunction(securityTokenOptions);
+
+			const securityTokenOptions = {
+			contractAddress: ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
+			functionName: "getSecurityToken",
+			abi: LiminalMarketInfo.abi,
+			params: {
+				symbol: symbol
+			}
+		};
+		return await Moralis.executeFunction(securityTokenOptions);
+
 }
 export const ExecuteTradeOffHoursTxt = 'Execute trade <div class="small_print">It will take few hours to process, market is closed<br>You can enable "Off hours trading" in the Menu</div>';
 
@@ -482,11 +484,11 @@ const transfer = async function () {
 	showProgressStep(waitingStr + symbol + ' for $' + buyAmount + '.', 99);
 	setTimeout(function () { checkToShowMetamaskIcon(waitingStr) }, 10 * 1000);
 
-	var buyResult = await executeBuy(selectedSymbolAddress, buyAmount).catch(function(err) {
+	var buyResult = await executeBuy(selectedSymbolAddress, buyAmount);
+	if (buyResult == null) {
 		hideProcessStep();
-	});
-
-	if (buyResult == null) return;
+		return;
+	}
 
 	console.log('buyResult', buyResult);
 
@@ -566,11 +568,10 @@ const executeBuy = async function(recipient, buyAmount) {
 const executeCreateToken = async function(symbol) {
 
 	const liminalOptions = {
-		contractAddress: ContractAddressesInfo.SECURITY_FACTORY_ADDRESS,
+		contractAddress: ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
 		functionName: "createToken",
-		abi: SecurityFactoryInfo.abi,
+		abi: LiminalMarketInfo.abi,
 		params: {
-			name: 'Liminal.market - ' + symbol,
 			symbol: symbol
 		},
 	};
