@@ -184,7 +184,7 @@ const showWaitingForFunding = function() {
 	document.getElementById('fund_account').style.display = 'none';
 
 	document.getElementById('buy_headline').innerHTML = "Let's play... 🚀🚀🚀";
-	let text = "You currently have <strong>$" + aUsdAmount + " aUSD</strong>."
+	let text = "You currently have <strong>$" + roundNumber(aUsdAmount) + " aUSD</strong>."
 		+ " Lets try it anyway. Type in any amount in the box below and select a symbol."
 		+ " You will see how many shares you will get for that amount";
 	document.getElementById('buy_text').innerHTML = text;
@@ -199,7 +199,7 @@ const checkBalanceOfAUsd = async function() {
 	if (aUsdAmount > 0) {
 		document.getElementById('waiting_for_funding').style.display = 'none';
 		document.getElementById('buy_headline').innerHTML = "Let's buy something!";
-		let text = "You currently have <strong>$" + aUsdAmount + " aUSD.</strong>"
+		let text = "You currently have <strong>$" + roundNumber(aUsdAmount) + " aUSD.</strong>"
 				+ " You can now buy your own securities.";
 		document.getElementById('buy_text').innerHTML = text;
 		updateBuyInfo();
@@ -252,7 +252,7 @@ const getAUSDAmount = async function () {
 
 	let amount = await Moralis.executeFunction(ausdcOptions).then((balanceOf) => {
 		let amount = Moralis.Units.FromWei(balanceOf, 18);
-		document.getElementById('add_ausd_to_wallet_menu').innerHTML = 'You have ' + amount + ' aUSD in your broker account';
+		document.getElementById('add_ausd_to_wallet_menu').innerHTML = 'You have ' + roundNumber(amount) + ' aUSD in your broker account';
 		return amount;
 	}).catch(function(err) {
 		console.error(err);
