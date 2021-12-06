@@ -11,6 +11,12 @@ export class mumbaiNetwork extends Network {
 		this.AppId = "bhvFURhCqNvKGfVggu50fkcbm9ijMJqK3HRnfM79";
 		this.ChainId = 80001;
 		this.Name = "mumbai";
+		this.ChainName = 'Polygon Mumbai';
+		this.NativeCurrencyName = "Matic";
+		this.NativeSymbol = "MATIC";
+		this.NativeDecimal = 18;
+		this.RpcUrl = 'https://matic-mumbai.chainstacklabs.com/';
+		this.BlockExplorer = 'https://mumbai.polygonscan.com/';
 	}
 
 

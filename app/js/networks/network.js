@@ -14,6 +14,13 @@ export class Network {
 			this.ChainId = networkInfo.ChainId;
 			this.Name = networkInfo.Name;
 
+			this.ChainName = networkInfo.ChainName;
+			this.NativeCurrencyName = networkInfo.NativeCurrencyName;
+			this.NativeSymbol = networkInfo.NativeSymbol;
+			this.NativeDecimal = networkInfo.NativeDecimal;
+			this.RpcUrl = networkInfo.RpcUrl;
+			this.BlockExplorer = networkInfo.BlockExplorer;
+
 			setCookieNetwork(this.Name);
 		}
 	}

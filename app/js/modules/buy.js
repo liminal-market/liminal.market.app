@@ -20,6 +20,7 @@ import {
 } from './account.js';
 import {tryGetNetwork} from '../networks/network-info.js';
 import {IsMarketOpen, UserIsOffHours, isMarketOpen} from './market.js';
+import { Network } from '../networks/network.js';
 
 let aUsdAmount;
 
@@ -73,8 +74,9 @@ export const setupSteps = async function(showNetwork) {
 					await Moralis.User.logOut();
 					window.location.reload();
 				}).catch(function(err) {
-						console.log(err);
-					});
+					addNetworkToWallet(evt.target.dataset.chainid);
+					console.log(err);
+				});
 			})
 		}
 
@@ -144,6 +146,26 @@ export const setupSteps = async function(showNetwork) {
 	//lets buy securities
 	checkBalanceOfAUsd();
 };
+
+const addNetworkToWallet = async function(chainId) {
+	let networkInfo = tryGetNetwork(chainId);
+	window.ethereum.request({
+		method: 'wallet_addEthereumChain',
+		params: [{
+			chainId: chainId,
+			chainName: networkInfo.ChainName,
+			nativeCurrency: {
+				name: networkInfo.NativeCurrencyName,
+				symbol: networkInfo.NativeSymbol,
+				decimals: networkInfo.NativeDecimal
+			},
+			rpcUrls: [networkInfo.RpcUrl],
+			blockExplorerUrls: [networkInfo.BlockExplorer]
+		}]
+	}).catch((error) => {
+		console.log(error)
+	})
+}
 
 const fundUser = async function() {
 	document.getElementById('account_not_ready').style.display = "none";
