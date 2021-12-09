@@ -317,7 +317,6 @@ const getSymbolPrice = async function (evt) {
 	SelectedSymbolAddress = await getSymbolContractAddress(Symbol);
 	console.log('contractAddresss:', SelectedSymbolAddress);
 	if (SelectedSymbolAddress == AddressZero) {
-		document.getElementById('addWalletSpan').innerHTML = '';
 		document.getElementById('execute-trade').innerHTML = "Create token & execute trade";
 		//TODO for sandbox lets not show this, but for live we need to show.
 		//document.getElementById('add-token-info').style.display='block';
@@ -369,17 +368,6 @@ const offHoursInfo = async function() {
 };
 
 const addTokenLink = function(symbol, contractAddress) {
-
-	let str = '<a href="#" id="addTokenToWallet">Add ' + symbol + ' symbol to wallet</a> - <a href="#" id="copyAddress">Copy addr</a>';
-	document.getElementById('addWalletSpan').innerHTML = str;
-	document.getElementById('addTokenToWallet').onclick = async function (evt) {
-		evt.preventDefault();
-		await addTokenToWallet(contractAddress, symbol);
-	};
-	document.getElementById('copyAddress').onclick = async function (evt) {
-		evt.preventDefault();
-		navigator.clipboard.writeText(contractAddress);
-	};
 	document.getElementById('add-token-info').style.display='none';
 };
 
