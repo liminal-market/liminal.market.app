@@ -52,12 +52,10 @@ const selectToken = async function(button) {
 	setSelectedSymbolAndAddress(symbol, address);
 
 	let selectSymbolBtn = document.getElementById('select-symbol');
-	selectSymbolBtn.innerHTML = name + '(' + symbol + ')';
+	selectSymbolBtn.innerHTML = name + ' (' + symbol + ')';
 
 	updateBuyInfo(symbol, name, logo);
-	var myModal = new bootstrap.Modal(document.getElementById('modal'))
-	myModal.hide();
-
+	$( "#modalClose" ).trigger( "click" );
 }
 
 const findAssets = async function() {

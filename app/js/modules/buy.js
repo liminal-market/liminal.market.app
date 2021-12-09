@@ -1,7 +1,6 @@
 import { ContractAddressesInfo, NetworkInfo }  from '../main.js';
 
 import LiminalMarketInfo from "../abi/LiminalMarket.json" assert {	type: "json"};
-import SecurityTokenInfo from "../abi/SecurityToken.json" assert {	type: "json"};
 import AUSDInfo from "../abi/aUSD.json" assert { type: "json"};
 
 import {
@@ -292,9 +291,6 @@ const getAUSDAmount = async function () {
 	return amount;
 }
 
-
-
-
 const setupAssets = async function () {
 	document.getElementById('select-symbol').addEventListener('click', function(evt) {
 		loadSecuritiesModal(evt);
@@ -303,18 +299,30 @@ const setupAssets = async function () {
 
 	document.getElementById('findSymbol').addEventListener('click', function(evt) {
 		loadSecuritiesModal(evt);
-	})
-}
+	});
+};
 
 const loadSecuritiesModal = async function(evt) {
 	evt.preventDefault();
+	document.getElementById('modalSecurities').style.display='block';
+	document.getElementById('backdrop').style.display='block';
+	document.getElementById('modalSecurities').addEventListener('click', function(){
+		hideModalSecurities();
+	})
 	render('securities', null, loadSecurities, 'modal-body');
+};
+
+const hideModalSecurities = function() {
+	document.getElementById('modalSecurities').style.display='none';
+	document.getElementById('backdrop').style.display='none';
 }
 
 
 
 const getSymbolPrice = async function (evt) {
-	evt.preventDefault();
+	if (evt) {
+		evt.preventDefault();
+	}
 
 	if (Symbol === '') {
 		assetPrice = 0;
@@ -375,7 +383,7 @@ const offHoursInfo = async function() {
 		document.getElementById('offHoursInfo').style.display = 'none';
 		document.getElementById('execute-trade').innerHTML = 'Execute trade';
 	}
-}
+};
 
 const addTokenLink = function(symbol, contractAddress) {
 
@@ -384,13 +392,13 @@ const addTokenLink = function(symbol, contractAddress) {
 	document.getElementById('addTokenToWallet').onclick = async function (evt) {
 		evt.preventDefault();
 		await addTokenToWallet(contractAddress, symbol);
-	}
+	};
 	document.getElementById('copyAddress').onclick = async function (evt) {
 		evt.preventDefault();
 		navigator.clipboard.writeText(contractAddress);
-	}
+	};
 	document.getElementById('add-token-info').style.display='none';
-}
+};
 
 export const addTokenLinkBottom = async function(symbol, contractAddress) {
 	const asset = await getAssetBySymbol(symbol);
@@ -401,9 +409,9 @@ export const addTokenLinkBottom = async function(symbol, contractAddress) {
 	document.getElementById('addNewToken').onclick = async function (evt) {
 		evt.preventDefault();
 		await addTokenToWallet(contractAddress, symbol);
-	}
+	};
 
-}
+};
 
 window.addTokenLinkBottom = addTokenLinkBottom;
 
@@ -422,7 +430,7 @@ export const updateBuyInfo = async function (symbol, name, logo) {
 	document.getElementById('buy-info').innerHTML = str;
 	document.getElementById('buy-info').style.display = 'block';
 	checkTokenValueVsBuyAmount();
-}
+};
 
 export const checkTokenValueVsBuyAmount = async function () {
 	document.getElementById('buy_danger_message').style.display = 'none';
@@ -431,22 +439,21 @@ export const checkTokenValueVsBuyAmount = async function () {
 	var user = Moralis.User.current();
 	if (!user) {
 		document.getElementById('buy_danger_message').style.display = 'block';
-		let str = 'You are not logged in. Login in the menu at top.'
+		let str = 'You are not logged in. Login in the menu at top.';
 		document.getElementById('buy_danger_message').innerHTML = str;
 		return false;
 	}
 
-	document.getElementById('execute-trade').classList.add('disabled')
+	document.getElementById('execute-trade').classList.add('disabled');
 	document.getElementById('execute-trade').classList.remove('enabled');
 
 	if (aUsdAmount < buyAmount) {
 		document.getElementById('buy_danger_message').style.display = 'block';
-		document.getElementById('buy_danger_message').innerHTML = "You don't have enough aUSD tokens in your wallet."
+		document.getElementById('buy_danger_message').innerHTML = "You don't have enough aUSD tokens in your wallet.";
 		return false;
 	}
 	await setupBuyButton();
-
-}
+};
 
 
 const showProgressStep = async function (text, perc, warning) {
@@ -466,12 +473,12 @@ const showProgressStep = async function (text, perc, warning) {
 		element.classList.remove('progress_text_attn');
 	}
 
-}
+};
 
 const hideProcessStep = function() {
 	document.getElementById('buy_progress').style.display = "none";
 	document.getElementById('execute-trade').style.display='block';
-}
+};
 
 
 
@@ -489,7 +496,7 @@ const transfer = async function () {
 	if (SelectedSymbolAddress == AddressZero) {
 
 		showProgressStep('First we need to create token, you need to confirm', 99);
-		setTimeout(function () { checkToShowMetamaskIcon('First we need') }, 10 * 1000);
+		setTimeout(function () { checkToShowMetamaskIcon('First we need') }, (10 * 1000));
 
 		let txResult = await executeCreateToken(Symbol).catch(function(err) {
 			hideProcessStep();
@@ -569,7 +576,7 @@ const blockshainSlowMessage = function() {
 	if (document.getElementById('buy_progress').style.display != "none" && document.getElementById('buying_steps').innerText.indexOf('Hey Ho!') != -1) {
 		showProgressStep('If you have already approved, maybe blockchain is slow. Lets give it a bit. Just double check for <img src="/img/metamask-pending.png"/>', 99, true);
 	}
-}
+};
 
 
 const executeBuy = async function(recipient, buyAmount) {
@@ -589,7 +596,7 @@ const executeBuy = async function(recipient, buyAmount) {
 		console.log(ex);
 		return null;
 	}
-}
+};
 
 const executeCreateToken = async function(symbol) {
 
@@ -604,12 +611,12 @@ const executeCreateToken = async function(symbol) {
 
 	return await Moralis.executeFunction(liminalOptions);
 
-}
+};
 
 export const setSelectedSymbolAndAddress = function(symbol, address) {
 	SelectedSymbolAddress = address;
 	Symbol = symbol;
 
-	loadAssetPrice();
+	getSymbolPrice();
 
-}
+};
