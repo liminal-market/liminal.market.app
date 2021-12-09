@@ -21,12 +21,22 @@ import {
 import {tryGetNetwork} from '../networks/network-info.js';
 import {IsMarketOpen, UserIsOffHours, isMarketOpen} from './market.js';
 import { Network } from '../networks/network.js';
+import {loadSecurities} from './securities.js';
 
 let aUsdAmount;
+let assetPrice = null;
+let lastTraded = null;
+
+export const ExecuteTradeOffHoursTxt = 'Execute trade <div class="small_print">It will take few hours to process, market is closed<br>You can enable "Off hours trading" in the Menu</div>';
+let SelectedSymbolAddress = null;
+let Symbol = '';
+
 
 export const buyPageInit = function () {
-	document.getElementById('buy_amount').onchange = updateBuyInfo;
-
+	document.getElementById('buy_amount').addEventListener('click', function(evt) {
+		updateBuyInfo(Symbol);
+	});
+	document.getElementById('aUsdAddress').innerHTML = ContractAddressesInfo.AUSD_ADDRESS;
 	setupSteps();
 	setupAssets();
 };
@@ -224,7 +234,7 @@ const checkBalanceOfAUsd = async function() {
 		let text = "You currently have <strong>$" + roundNumber(aUsdAmount) + " aUSD.</strong>"
 				+ " You can now buy your own securities.";
 		document.getElementById('buy_text').innerHTML = text;
-		updateBuyInfo();
+		updateBuyInfo(Symbol);
 		showUseWalletForOrders();
 	} else {
 		setTimeout(await checkBalanceOfAUsd, 30 * 1000);
@@ -286,40 +296,36 @@ const getAUSDAmount = async function () {
 
 
 const setupAssets = async function () {
-	document.getElementById('symbols').onchange = getSymbolPrice;
+	document.getElementById('select-symbol').addEventListener('click', function(evt) {
+		loadSecuritiesModal(evt);
+	});
 	document.getElementById('buy_amount').onchange = updateBuyInfo;
 
-	let str = '';
-	const assets = await getAssets();
-	assets.forEach(function (asset) {
-		str += '<option value="' + asset.Symbol + '">' + asset.Symbol + ' - ' + asset.Name + '</option>';
-	});
-
-	$('#symbols').append(str);
-
-
+	document.getElementById('findSymbol').addEventListener('click', function(evt) {
+		loadSecuritiesModal(evt);
+	})
 }
 
-let assetPrice = null;
-let lastTraded = null;
-let selectedSymbolAddress = null;
+const loadSecuritiesModal = async function(evt) {
+	evt.preventDefault();
+	render('securities', null, loadSecurities, 'modal-body');
+}
+
+
 
 const getSymbolPrice = async function (evt) {
 	evt.preventDefault();
 
-	let options = document.getElementById('symbols').options;
-	let symbol = options[options.selectedIndex].value;
-
-	if (symbol === '') {
+	if (Symbol === '') {
 		assetPrice = 0;
 		lastTraded = '';
 		return;
 	}
 
 	offHoursInfo();
-	selectedSymbolAddress = await getSymbolContractAddress(symbol);
-	console.log('contractAddresss:', selectedSymbolAddress);
-	if (selectedSymbolAddress == AddressZero) {
+	SelectedSymbolAddress = await getSymbolContractAddress(Symbol);
+	console.log('contractAddresss:', SelectedSymbolAddress);
+	if (SelectedSymbolAddress == AddressZero) {
 		document.getElementById('addWalletSpan').innerHTML = '';
 		document.getElementById('execute-trade').innerHTML = "Create token & execute trade";
 		//TODO for sandbox lets not show this, but for live we need to show.
@@ -327,24 +333,25 @@ const getSymbolPrice = async function (evt) {
 		//document.getElementById('add-token-info').innerHTML = "<div >We will need to create the token when you buy it. Since you are the first one to buy this symbol, this will incure extra cost. It's a low cost</div>";
 	} else {
 		document.getElementById('execute-trade').innerHTML = "Execute trade";
-		addTokenLink(symbol, selectedSymbolAddress);
+		addTokenLink(Symbol, SelectedSymbolAddress);
 	}
 
-	const params = {
-		symbol: symbol
-	};
-	Moralis.Cloud.run("getSymbolPrice", params).then(function (jsonResult) {
+	await loadAssetPrice();
+	updateBuyInfo(Symbol);
+}
 
+const loadAssetPrice = async function() {
+
+	const params = {
+		symbol: Symbol
+	};
+	return await Moralis.Cloud.run("getSymbolPrice", params).then(function (jsonResult) {
 		assetPrice = jsonResult.trade.p;
 		lastTraded = jsonResult.trade.t;
-
-		updateBuyInfo();
-	}).catch(function (result) {
-		console.log('catch:' + result);
 	});
 }
 
-const getSymbolContractAddress = async function(symbol) {
+export const getSymbolContractAddress = async function(symbol) {
 
 			const securityTokenOptions = {
 			contractAddress: ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
@@ -357,7 +364,6 @@ const getSymbolContractAddress = async function(symbol) {
 		return await Moralis.executeFunction(securityTokenOptions);
 
 }
-export const ExecuteTradeOffHoursTxt = 'Execute trade <div class="small_print">It will take few hours to process, market is closed<br>You can enable "Off hours trading" in the Menu</div>';
 
 const offHoursInfo = async function() {
 	await isMarketOpen();
@@ -401,15 +407,15 @@ export const addTokenLinkBottom = async function(symbol, contractAddress) {
 
 window.addTokenLinkBottom = addTokenLinkBottom;
 
-const updateBuyInfo = async function () {
-	let symbol = document.getElementById('symbols').value;
+export const updateBuyInfo = async function (symbol, name, logo) {
+	if (!symbol) return;
 	let buyAmount = document.getElementById('buy_amount').value;
 	if (buyAmount === '' || assetPrice == null) return;
 
 	document.getElementById('buy_success_message').style.display = 'none';
 	let str = 'Estimated you will buy ' + roundNumber(buyAmount / assetPrice) + ' shares at the price of $' + assetPrice + ' per share. ';
 	str += 'Last trade was ' + (new Date(lastTraded)).toLocaleString();
-	if (selectedSymbolAddress == AddressZero) {
+	if (SelectedSymbolAddress == AddressZero) {
 		str += '<br /><span class="small_print">Since you are the first one to buy ' + symbol + " you will be asked to create the token first, then we'll execute the trade</span>";
 	}
 
@@ -469,25 +475,23 @@ const hideProcessStep = function() {
 
 
 
-
 const transfer = async function () {
 	const buyAmount = document.getElementById('buy_amount').value;
-	const symbol = document.getElementById('symbols').value;
-	if (symbol === '' || buyAmount === '') return;
+	if (Symbol === '' || buyAmount === '') return;
 
 	if (!checkTokenValueVsBuyAmount()) return false;
 	document.getElementById('execute-trade').style.display='none';
 
-	if(selectedSymbolAddress == null) {
-		selectedSymbolAddress = await getSymbolContractAddress(symbol);
+	if(SelectedSymbolAddress == null) {
+		SelectedSymbolAddress = await getSymbolContractAddress(Symbol);
 	}
 
-	if (selectedSymbolAddress == AddressZero) {
+	if (SelectedSymbolAddress == AddressZero) {
 
 		showProgressStep('First we need to create token, you need to confirm', 99);
 		setTimeout(function () { checkToShowMetamaskIcon('First we need') }, 10 * 1000);
 
-		let txResult = await executeCreateToken(symbol).catch(function(err) {
+		let txResult = await executeCreateToken(Symbol).catch(function(err) {
 			hideProcessStep();
 			return null;
 		});
@@ -495,18 +499,18 @@ const transfer = async function () {
 
 		console.log(txResult);
 		if (txResult.events.TokenCreated) {
-			selectedSymbolAddress = txResult.events.TokenCreated.returnValues.tokenAddress;
+			SelectedSymbolAddress = txResult.events.TokenCreated.returnValues.tokenAddress;
 		}
 	}
 
-	console.log('recipent', selectedSymbolAddress);
-	if (selectedSymbolAddress == AddressZero) return;
+	console.log('recipent', SelectedSymbolAddress);
+	if (SelectedSymbolAddress == AddressZero) return;
 	document.getElementById('execute-trade').innerHTML = "Execute trade";
 	let waitingStr = 'Waiting on approval to execute to buy ';
-	showProgressStep(waitingStr + symbol + ' for $' + buyAmount + '.', 99);
+	showProgressStep(waitingStr + Symbol + ' for $' + buyAmount + '.', 99);
 	setTimeout(function () { checkToShowMetamaskIcon(waitingStr) }, 10 * 1000);
 
-	var buyResult = await executeBuy(selectedSymbolAddress, buyAmount);
+	var buyResult = await executeBuy(SelectedSymbolAddress, buyAmount);
 	if (buyResult == null) {
 		hideProcessStep();
 		return;
@@ -528,7 +532,7 @@ const transfer = async function () {
 
 		console.log('status:', object.status);
 		if (object.tokenAddress) {
-			addTokenLinkBottom(symbol, selectedSymbolAddress);
+			addTokenLinkBottom(Symbol, SelectedSymbolAddress);
 		}
 
 		if ((!object.status && object.confirmed) || object.status == 'money_sent') {
@@ -543,7 +547,7 @@ const transfer = async function () {
 		} else if (object.status == 'order_filled') {
 			document.getElementById('buy-info').style.display = 'none';
 			//order has been filled, you got object.filledQty of shares. You will see it soon in your wallet
-			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + ' ' + symbol + ' soon into your wallet.' + ethLink, 100);
+			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + ' ' + Symbol + ' soon into your wallet.' + ethLink, 100);
 		}
 	});
 
@@ -599,5 +603,13 @@ const executeCreateToken = async function(symbol) {
 	};
 
 	return await Moralis.executeFunction(liminalOptions);
+
+}
+
+export const setSelectedSymbolAndAddress = function(symbol, address) {
+	SelectedSymbolAddress = address;
+	Symbol = symbol;
+
+	loadAssetPrice();
 
 }

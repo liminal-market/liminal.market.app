@@ -126,9 +126,9 @@
 
 		<div id="buy_securities" class="mt-3">
 			<h3>Select security to buy <span id="addWalletSpan"></span></h3>
-			<select name="symbol" id="symbols">
-				<option value="MSFT">--- Select symbol to buy ---</option>
-			</select>
+			<button class="btn btn-success w-100" id="select-symbol" name="symbol" value="" id="symbols" data-bs-show="modal" data-bs-target="#modal">
+				Select symbol to buy
+			</button>
 			<div id="add-token-info" class="alert alert-warning mt-3" role="alert"></div>
 		</div>
 	</div>
@@ -150,7 +150,7 @@
 
 	<div class="progress mb-5" id="buy_progress" style="display:none;height:58px;">
 		<div id="buying_steps" style="height:58px;" class="progress-bar progress-bar-striped progress-bar-animated"
-			role="progressbar" style="width: 16%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Approve USDC
+			role="progressbar" style="width: 16%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
 		</div>
 	</div>
 
@@ -164,10 +164,25 @@
 
 	<h2>Or you can just do this in your wallet.</h2>
 	<p>
-		Try it out. Click on List of securites, and click Buy.
-		Make sure to add the token to your Contact list for easy next time buying.
+		<h3>How to buy in wallet</h3>
+		<ul>
+			<li><a href="" id="findSymbol" data-bs-toggle="modal" data-bs-target="#modal">Find symbol</a> you want to buy</li>
+			<li>Add the address to your contact list.</li>
+			<li>Go to aUSD token and click "Send"</li>
+			<li>Select the symbol address you saved in contact list</li>
+			<li>Type in the amount & click Confirm - we will now buy your symbol, don't forget to add it to wallet.</li>
+		</ul>
+		<h3>How to sell in wallet</h3>
+		<ul>
+			<li><strong>Add aUSD</strong> to your contact list in Metamask. Address is <span id="aUsdAddress"></span></li>
+			<li>Open the token you want so sell in your wallet and click "Send"</li>
+			<li>Select aUSD address you stored before</li>
+			<li>Type in the amount & click Confirm - we will now sell your symbol and you will get aUSD to your account.</li>
+		</ul>
+
 		<br /><br />
-		<iframe width="560" height="315" src="https://www.youtube.com/embed/CT6Ibd3YLT4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		<!--<iframe width="560" height="315" src="https://www.youtube.com/embed/CT6Ibd3YLT4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		-->
 	</p>
 
 </div>

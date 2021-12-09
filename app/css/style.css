@@ -136,7 +136,7 @@ header a, header a.nav-link {
 }
 
 #addTokenToWallet, #copyAddress, #maxQty {font-size:12px;}
-#addTokenToWallet, #copyAUSDAddress { color: #fff; }
+#addTokenToWallet, #copyAUSDAddress { color: #000; }
 
 #metamask-only {
 	display: block;
@@ -188,4 +188,20 @@ header a, header a.nav-link {
 
 .right a {
 	color:#32363a
+}
+
+.symbol_logo {width:32px;}
+
+@media (min-width: 576px) {
+	.modal-dialog {
+		min-width:800px;
+	}
+}
+
+#securities_table td {
+	max-width: 350px;
+}
+
+.form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
+	transform: scale(.85) translateY(-0.9rem) translateX(0.15rem) !important;
 }
