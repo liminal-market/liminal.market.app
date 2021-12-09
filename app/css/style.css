@@ -45,7 +45,7 @@ header a, header a.nav-link {
 	margin-right:8px;
 }
 
-#not_kyc_verified, #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
+#network_localhost, #not_kyc_verified, #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
 	display:none;
 }
 

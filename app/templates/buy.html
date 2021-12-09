@@ -27,17 +27,18 @@
 		<h2>Before you start</h2>
 		<h3>Network</h3>
 		<p>We need to put you on the correct network.
-			<br />Choose
-			<ul>
-				<li><a href="" data-chainid="0x13881" class="network_chooser">Mumbai (default)</a>
+			<br />Click the button to go to test network<br /><br />
+				<button data-chainid="0x13881" class="network_chooser btn btn-primary">Mumbai</button>
 					<br />
-					<a class="small_print" href="https://faucet.polygon.technology/" target="_blank">Get MATIC from faucet. You need if you choose Mumbai</a></li>
-				<!--<li><a href="" data="localhost" class="network_chooser">Avalance Test</a></li>-->
+					<a class="small_print" href="https://faucet.polygon.technology/" target="_blank">Get MATIC from faucet. You need if you choose Mumbai</a>
+					<br /><br />
+				<!--<li><a href="" data="localhost" class="network_chooser">Avalance Test</a></li>
 				<li><a href="" data-chainid="0x4" class="network_chooser">Rinkeby</a>
 					<br />
 					<a class="small_print" href="https://faucet.rinkeby.io/" target="_blank">Get ETH from faucet. You need if you choose Rinkeby</a></li>
-				<li><a href="" data-chainid="0x31337" class="network_chooser">Localhost</a></li>
-			</ul>
+				-->
+				<button id="network_localhost" data-chainid="0x31337" class="network_chooser btn btn-primary">Localhost</button>
+
 		</p>
 	</div>
 
@@ -138,6 +139,15 @@
 	</div>
 	<div>
 		<div id="buy-info" class="alert alert-success mt-3"></div>
+	</div>
+	<div id="need_native_token" class="alert alert-danger">
+		You might need some native tokens to execute the trade. So go to the faucet
+		and put in your address to get free tokens.
+		<br /><br />
+		Faucet: <a href="https://faucet.polygon.technology/" target="_blank">https://faucet.polygon.technology/</a>
+		<br />
+		Wallet address: <input id="native_token_address" /> <br />
+
 	</div>
 	<div id="buy_button" class="mt-3">
 		<button id="execute-trade" class="disabled btn btn-primary mb-3 w-100">

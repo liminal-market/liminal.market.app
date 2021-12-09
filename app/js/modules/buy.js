@@ -73,6 +73,9 @@ export const setupSteps = async function(showNetwork) {
 
 	if (networkInfo.ChainId != chainId || showNetwork) {
 		document.getElementById('select_network').style.display = 'block';
+		if (window.location.href.indexOf('127.') != -1) {
+			document.getElementById('network_localhost').style.display = 'block';
+		}
 		const options = document.querySelectorAll('.network_chooser');
 		for (let i=0;i<options.length;i++) {
 			options[i].addEventListener('click', async function(evt) {
@@ -187,7 +190,29 @@ const fundUser = async function() {
 	});
 }
 
+const checkNativeTokenStatus = async function() {
+	const options = { chain: NetworkInfo.Name };
+	const result = await Moralis.Web3API.account.getNativeBalance(options);
+
+	const balance = Moralis.Units.FromWei(result.balance, 18);
+	if (SelectedSymbolAddress == AddressZero && balance < 0.095) {
+		showNeedNativeToken();
+	} else if (balance < 0.007) {
+		showNeedNativeToken();
+	} else {
+		document.getElementById('need_native_token').style.display = 'none';
+	}
+};
+
+const showNeedNativeToken = async function() {
+	const user = await Moralis.User.current();
+
+	document.getElementById('need_native_token').style.display = 'block';
+	document.getElementById('native_token_address').value = await user.get('ethAddress');
+}
+
 const setupBuyButton = function () {
+
 
 	document.getElementById('execute-trade').classList.remove('disabled')
 	document.getElementById('execute-trade').classList.add('enabled');
@@ -227,7 +252,7 @@ const checkBalanceOfAUsd = async function() {
 
 	aUsdAmount = await getAUSDAmount();
 
-	if (aUsdAmount > 0) {
+	if (aUsdAmount >= 1) {
 		document.getElementById('waiting_for_funding').style.display = 'none';
 		document.getElementById('buy_headline').innerHTML = "Let's buy something!";
 		let text = "You currently have <strong>$" + roundNumber(aUsdAmount) + " aUSD.</strong>"
@@ -423,6 +448,7 @@ export const checkTokenValueVsBuyAmount = async function () {
 		document.getElementById('buy_danger_message').innerHTML = "You don't have enough aUSD tokens in your wallet.";
 		return false;
 	}
+	checkNativeTokenStatus();
 	await setupBuyButton();
 };
 
