@@ -193,11 +193,11 @@ const fundUser = async function() {
 const checkNativeTokenStatus = async function() {
 	const options = { chain: NetworkInfo.Name };
 	const result = await Moralis.Web3API.account.getNativeBalance(options);
-
+//0.002998
 	const balance = Moralis.Units.FromWei(result.balance, 18);
-	if (SelectedSymbolAddress == AddressZero && balance < 0.095) {
+	if (SelectedSymbolAddress == AddressZero && balance < 0.005) {
 		showNeedNativeToken();
-	} else if (balance < 0.007) {
+	} else if (balance < 0.0007) {
 		showNeedNativeToken();
 	} else {
 		document.getElementById('need_native_token').style.display = 'none';
@@ -209,6 +209,8 @@ const showNeedNativeToken = async function() {
 
 	document.getElementById('need_native_token').style.display = 'block';
 	document.getElementById('native_token_address').value = await user.get('ethAddress');
+
+	setTimeout(checkNativeTokenStatus, 20*1000);
 }
 
 const setupBuyButton = function () {

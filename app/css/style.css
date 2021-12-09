@@ -180,7 +180,9 @@ header a, header a.nav-link {
 	display:inline-block;
 }
 .right {
-	width:250px;
+	width:350px;
+	text-align:right;
+	margin-right:33px;
 	display:inline-block;
 	margin-left: auto;
 	float:right;
