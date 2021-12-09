@@ -222,3 +222,15 @@ header a, header a.nav-link {
 		border-left-width: 0;
 	}
 }
+
+@media (max-width: 600px) {
+	.modal {
+		width: 95% !important;
+	}
+	.form-floating {
+		white-space: nowrap;
+	}
+	#securities_table td {
+
+	}
+}

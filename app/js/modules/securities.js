@@ -3,7 +3,7 @@ import {
 	addTokenToWallet,
 	roundNumber, getAssets, getAssetBySymbol, AddressZero
 } from './helper.js';
-import {updateBuyInfo, setSelectedSymbolAndAddress, getSymbolContractAddress} from './buy.js';
+import {updateBuyInfo, setSelectedSymbolAndAddress, getSymbolContractAddress, hideModalSecurities} from './buy.js';
 
 export const loadSecurities = async function() {
 	assets = await getAssets();
@@ -30,15 +30,47 @@ const showTop = function() {
 		str += '<td class="asset_name">' + asset.Name + '</td>';
 		str += '<td><button class="w-200 btn btn-success btn-sm select_security" data-name="' + asset.Name + '" data-logo="' + asset.Logo + '" data-symbol="' + asset.Symbol + '">Select</button>';
 		str += '<td><a href="https://finance.yahoo.com/quote/' + asset.Symbol + '" target="_blank">' + asset.Symbol + '</a></td>';
-		str += '<td><a href="">Get address</a></td>';
-		str += '<td><a href="">Add to wallet</a></td></tr>';
+		str += '<td><a href="" class="getAddress" data-symbol="' + asset.Symbol + '">Get address</a></td>';
+		str += '<td><a href="" class="addToWallet" data-symbol="' + asset.Symbol + '">Add to wallet</a></td></tr>';
 	});
 	document.getElementById('list_of_securities').innerHTML = table + head + str + '</table>';
 
 	document.querySelectorAll('.select_security').forEach(box =>
 		box.addEventListener('click', function(evt) {
 			selectToken(evt.target);
-		}))
+		}));
+	document.querySelectorAll('.getAddress').forEach(box =>
+		box.addEventListener('click', function(evt) {
+			evt.preventDefault();
+			getAddress(evt.target);
+		}));
+	document.querySelectorAll('.addToWallet').forEach(box =>
+		box.addEventListener('click', function(evt) {
+			evt.preventDefault();
+			addToWallet(evt.target);
+		}));
+}
+
+const getAddress = async function(button) {
+	let symbol = button.dataset.symbol;
+	let address = await getSymbolContractAddress(symbol);
+	if (address == AddressZero) {
+		button.innerHTML = "Address doesn't exists yet. Buy it first";
+	} else {
+		navigator.clipboard.writeText(address);
+		button.innerHTML = 'Copied';
+	}
+}
+
+
+const addToWallet = async function(button) {
+	let symbol = button.dataset.symbol;
+	let address = await getSymbolContractAddress(symbol);
+	if (address == AddressZero) {
+		button.innerHTML = "Address doesn't exists yet. Buy it first";
+	} else {
+		addTokenToWallet(address, symbol);
+	}
 }
 
 const selectToken = async function(button) {
@@ -55,7 +87,7 @@ const selectToken = async function(button) {
 	selectSymbolBtn.innerHTML = name + ' (' + symbol + ')';
 
 	updateBuyInfo(symbol, name, logo);
-	$( "#modalClose" ).trigger( "click" );
+	hideModalSecurities();
 }
 
 const findAssets = async function() {

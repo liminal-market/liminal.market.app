@@ -244,28 +244,7 @@ const showUseWalletForOrders = function() {
 	document.getElementById('create-order').classList.add('sidebar');
 	document.getElementById('use_wallet_for_orders').style.display = 'inline-block';
 }
-/*
-const hideTransferSteps = function() {
-	document.getElementById('fund_progress').style.display = 'none';
-}
 
-const showTransferSteps = function(text, perc, warning) {
-	document.getElementById('fund_progress').style.display = 'block';
-	var element = document.getElementById('fund_progress_steps');
-	element.innerHTML = '<div class="progress_text">' + text + '</div>';
-	element.style.width = perc + '%';
-
-	element.classList.toggle('progress-bar-striped', (perc != 100));
-	element.classList.toggle('progress-bar-animated', (perc != 100));
-	if (warning) {
-		element.classList.add('bg-warning');
-		element.classList.add('progress_text_attn');
-	} else {
-		element.classList.remove('bg-warning');
-		element.classList.remove('progress_text_attn');
-	}
-}
-*/
 
 const getAUSDAmount = async function () {
 	const user = await Moralis.User.current();
@@ -306,13 +285,17 @@ const loadSecuritiesModal = async function(evt) {
 	evt.preventDefault();
 	document.getElementById('modalSecurities').style.display='block';
 	document.getElementById('backdrop').style.display='block';
-	document.getElementById('modalSecurities').addEventListener('click', function(){
-		hideModalSecurities();
+	document.getElementById('modalSecurities').addEventListener('click', function(evt){
+		console.log(evt.target.id);
+		if (evt.target.id == 'modalSecurities' || evt.target.id == 'closeModal') {
+			hideModalSecurities();
+		}
 	})
+
 	render('securities', null, loadSecurities, 'modal-body');
 };
 
-const hideModalSecurities = function() {
+export const hideModalSecurities = function() {
 	document.getElementById('modalSecurities').style.display='none';
 	document.getElementById('backdrop').style.display='none';
 }
