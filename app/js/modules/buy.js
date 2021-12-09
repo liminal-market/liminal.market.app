@@ -127,7 +127,7 @@ export const setupSteps = async function(showNetwork) {
 
 	aUsdAmount = await getAUSDAmount();
 
-	if (aUsdAmount == 0) {
+	if (aUsdAmount < 1) {
 		//show funding step
 		document.getElementById('fund_account').style.display = 'block';
 		document.getElementById('account_not_ready').style.display = "none";
