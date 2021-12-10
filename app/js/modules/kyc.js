@@ -117,6 +117,7 @@ export const KYCUserToSmartContract = async function (accountId) {
 
 		render('buy', null, buyPageInit);
 	}).catch(function(err) {
+		console.log(err);
 		showWriteToBlockchain();
 	});
 
