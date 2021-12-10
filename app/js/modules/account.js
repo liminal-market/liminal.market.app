@@ -15,7 +15,7 @@ export const login = async function (callback) {
 
     if (!user || user === null) {
        user = await Moralis.authenticate({
-        signingMessage: "You are login into Liminal.market.\n\n"
+        signingMessage: "You are logging into Liminal.market.\n\n"
       }).then(function(user) {
         attachWalletEvents();
         showLogin(user);
@@ -89,6 +89,13 @@ const showLogin = function (user) {
       e.preventDefault();
       setupSteps(true);
     });
+
+    if (Moralis.Web3.isWeb3Enabled()) {
+
+      let stylesheet = document.styleSheets[0];
+      stylesheet.deleteRule(".getAddress { display:none;}", 0);
+      stylesheet.deleteRule(".addToWallet { display:none;}", 0);
+    }
   }
 }
 

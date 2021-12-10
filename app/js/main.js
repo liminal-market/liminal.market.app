@@ -22,7 +22,7 @@ import {attachWalletEvents} from './modules/account.js';
 import {getNetworkInfo} from './networks/network-info.js';
 import {getContractsInfo} from './contracts/contract-addresses.js'
 import {addTokenToWallet} from './modules/helper.js';
-
+import {loadSecurities} from './modules/securities.js';
 
 export const NetworkInfo = await getNetworkInfo();
 export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
@@ -61,9 +61,6 @@ const loadPath = async function () {
   }
 }
 
-const showSetupMetamask = async function() {
-  render('metamask');
-}
 
 const showSell = async function (evt) {
   if (evt) evt.preventDefault();
@@ -73,37 +70,51 @@ const showBuy = async function (evt) {
   if (evt) evt.preventDefault();
   await render('buy', null, buyPageInit);
 }
+
+const showSecurities = async function (evt) {
+  if (evt) evt.preventDefault();
+  await render('securities', null, loadSecurities);
+}
 const showPositions = async function (evt) {
   if (evt) evt.preventDefault();
   await renderWithMoralis('positions', null, 'positions', initPositionsPage);
 }
 
-const attachNavLinks = function () {
+const attachNavLinks = async function () {
   document.getElementById('nav-sell').addEventListener('click', async function (evt) {
     showSell(evt);
-    history.pushState(null, 'Sell securities', '/sell');
   });
 
   document.getElementById('nav-buy').addEventListener('click', async function (evt) {
     showBuy(evt);
-    history.pushState(null, 'Buy securities', '/buy');
   });
 
+  document.getElementById('nav-securities').addEventListener('click', async function (evt) {
+    showSecurities(evt);
+
+  });
   document.getElementById('nav-positions').addEventListener('click', async function (evt) {
     showPositions(evt);
-    history.pushState(null, 'Positions', '/positions');
   });
 
   document.getElementById('add_ausd_to_wallet_menu').addEventListener('click', function(evt) {
     evt.preventDefault();
     addTokenToWallet(ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
   })
+
+  if (!await Moralis.Web3.isWeb3Enabled()) {
+    console.log('not enabled')
+    let stylesheet = document.styleSheets[0];
+    stylesheet.insertRule(".getAddress { display:none;}", 0);
+    stylesheet.insertRule(".addToWallet { display:none;}", 0);
+  }
 }
 
 window.settings = {
   show_sell: showSell,
   show_buy: showBuy,
-  show_positions: showPositions
+  show_positions: showPositions,
+  show_securities : showSecurities
 };
 
 const start = async function () {

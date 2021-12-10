@@ -32,13 +32,28 @@ let Symbol = '';
 
 
 export const buyPageInit = function () {
+	history.pushState(null, 'Buy securities', '/buy');
+
 	document.getElementById('buy_amount').addEventListener('click', function(evt) {
 		updateBuyInfo(Symbol);
 	});
-	document.getElementById('aUsdAddress').innerHTML = ContractAddressesInfo.AUSD_ADDRESS;
+
 	setupSteps();
 	setupAssets();
 };
+
+export const selectSymbol = function(symbol, name, logo, address) {
+	buyPageInit();
+
+	if (!Moralis.Web3.isWeb3Enabled()) return;
+
+	setSelectedSymbolAndAddress(symbol, address);
+
+	let selectSymbolBtn = document.getElementById('select-symbol');
+	selectSymbolBtn.innerHTML = name + ' (' + symbol + ')';
+
+	updateBuyInfo(symbol, name, logo);
+}
 
 export const setupSteps = async function(showNetwork) {
 	document.querySelectorAll('.step').forEach((value, key) => {
@@ -270,6 +285,7 @@ const checkBalanceOfAUsd = async function() {
 const showUseWalletForOrders = function() {
 	document.getElementById('create-order').classList.add('sidebar');
 	document.getElementById('use_wallet_for_orders').style.display = 'inline-block';
+	document.getElementById('buy_securities_wrapper').style.display='inline-block';
 }
 
 
@@ -319,7 +335,7 @@ const loadSecuritiesModal = async function(evt) {
 		}
 	})
 
-	render('securities', null, loadSecurities, 'modal-body');
+	render('securities', null, function() {loadSecurities(true)}, 'modal-body');
 };
 
 export const hideModalSecurities = function() {

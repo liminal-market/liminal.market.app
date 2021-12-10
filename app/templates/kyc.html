@@ -4,6 +4,18 @@
     <h2>Write KYC to blockchain</h2>
     <p>You have registered your info, but we still need to write KYC to blockchain before you can buy</p>
     <button id="btnWriteToBlockchain" class="btn btn-primary">Write to blockchain</button>
+
+    <div id="need_native_token" class="alert alert-danger mt-3">
+      You might need some native tokens to execute the KYC. So go to the faucet
+      and put in your address to get free tokens.
+      <br /><br />
+      Faucet: <a href="https://faucet.polygon.technology/" target="_blank">https://faucet.polygon.technology/</a>
+      <br />
+      Wallet address: <input id="native_token_address" style="width:100%;" /> <br /><br />
+
+      When you have recieved the tokens, you can click "Write to blockchain" button again.
+    </div>
+
   </div>
 
   <div id="kyc_reg">

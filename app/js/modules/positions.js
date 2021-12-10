@@ -7,7 +7,7 @@ import { ContractAddressesInfo }  from '../main.js';
 
 
 export const initPositionsPage = async function() {
-
+    history.pushState(null, 'Positions', '/positions');
     let symbols = new Array();
     const sellLinks = document.getElementsByClassName('sellAsset');
     for (let i = 0; i < sellLinks.length; i++) {

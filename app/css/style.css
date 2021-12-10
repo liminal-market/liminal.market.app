@@ -45,8 +45,11 @@ header a, header a.nav-link {
 	margin-right:8px;
 }
 
-#network_localhost, #not_kyc_verified, #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
+#buy_securities_wrapper, #writeToBlockcahin, #network_localhost, #not_kyc_verified, #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
 	display:none;
+}
+.video_demo {
+	width:333px;
 }
 
 #execute-trade.disabled {
@@ -207,6 +210,10 @@ header a, header a.nav-link {
 .form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
 	transform: scale(.85) translateY(-0.9rem) translateX(0.15rem) !important;
 }
+.form-floating>label {
+	padding-left:1.2rem !important;
+}
+
 #backdrop {
 	display:none;
 	width:100%;

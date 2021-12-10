@@ -112,7 +112,12 @@ const blockshainSlowMessage = function() {
 	}
 }
 
-function showWriteToBlockchain() {
+const showWriteToBlockchain = async function() {
+	const user = await Moralis.User.current();
+
+	document.getElementById('need_native_token').style.display = 'block';
+	document.getElementById('native_token_address').value = await user.get('ethAddress');
+
 	document.getElementById('btnWriteToBlockchain').style.display = "block";
 	document.getElementById('submitKYC').style.display = "block";
 	document.getElementById('kyc_progress').style.display = 'none';

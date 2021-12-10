@@ -1,28 +1,16 @@
 <div class="loaded-content">
 	<h2>Sell your securities</h2>
-	<p>This is a sandbox version so any selling made are not done on the real market.</p>
 
-	<div id="sell_securities" class="mt-3">
-		<h3>Select security to sell</h3>
-		<select name="symbol" id="symbols">
-			<option value="">--- Select security to sell ---</option>
-			{{#each result}}
-			<option value="{{symbol}}" data-qty="{{qty}}">{{symbol}} - {{qty}}</option>
-			{{/each}}
-		</select>
-	</div>
-	<div class="mt-3">
-		<h3>Type in quantity you want sell <span><a href="#" id="maxQty">Max</a></span></h3>
-		<input type="text" id="sell_qty" value="" />
-
-	</div>
-	<div id="sell_button" class="mt-3">
-		<button id="execute-trade" class="btn btn-primary mb-3">Execute sell</button>
-	</div>
-	<div class="alert alert-success" role="alert" id="sell_message"></div>
-	<div class="progress mb-5" id="execution_progress" style="display:none;height:58px;">
-		<div id="execution_steps" style="height:58px;" class="progress-bar progress-bar-striped progress-bar-animated"
-			role="progressbar" style="width: 16%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-		</div>
-	</div>
+	<h3 class="mt-2">You sell the stocks using your wallet</h3>
+	<ul>
+		<li>Find the token you want so sell in you wallet and click Send</li>
+		<li>Put the in the aUSD address<br /><input id="aUsdAddress" style="width:100%;"></li>
+		<li>Remember to save it in your contact list, for easy access next time</li>
+		<li>Type in the amount & click Confirm</li>
+	</ul>
+	<p>We will now sell your symbol and you will get aUSD to your account.</p>
+	<p class="small_print">
+		Note. If you get "V0.1 doesn't support transfer", your aUSD address is wrong.<br />
+		This is a sandbox version so any selling made are not done on the real market.
+	</p>
 </div>
