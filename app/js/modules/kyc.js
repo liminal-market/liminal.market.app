@@ -16,10 +16,37 @@ export const initKYC = async function () {
 		document.getElementById('kyc_reg').style.display='block';
 		document.getElementById('writeToBlockcahin').style.display='none';
 		document.getElementById('submitKYC').onclick = submitKYC;
-		document.getElementById('email_address').value = 'ron.swanson-' + (new Date().getTime()) + '@parks-and-rec-example.com';
+
+		loadName();
+
 	} else {
 		showWriteToBlockchain();
 	}
+}
+
+
+
+const loadName = function() {
+	var characters = [
+		{given_name : 'Leslie', family_name : 'Knope', email_address:'leslie.knope' },
+		{given_name : 'April', family_name : 'Ludgate', email_address:'april.ludgate' },
+		{given_name : 'Jerry', family_name : 'Gergich', email_address:'jerry.gergich' },
+		{given_name : 'Tom', family_name : 'Haverford', email_address:'tom.haverford' },
+		{given_name : 'Donna', family_name : 'Meagle', email_address:'donna.meagle' },
+		{given_name : 'Andy', family_name : 'Dwyer', email_address:'andy.dwyer' },
+		{given_name : 'Ann', family_name : 'Perkins', email_address:'ann.perkins' },
+		{given_name : 'Ben', family_name : 'Wyatt', email_address:'ben.wyatt' },
+		{given_name : 'Chris', family_name : 'Traeger', email_address:'chris.traeger' },
+		{given_name : 'Jean-Ralphio', family_name : 'Saperstein', email_address:'jean-ralphio.saperstein' },
+		{given_name : 'Councilman', family_name : 'Jamm', email_address:'jamm' }
+	]
+
+	let idx = Math.floor(Math.random() * characters.length) % characters.length;
+	var character = characters[idx];
+	document.getElementById('given_name').value = character.given_name;
+	document.getElementById('family_name').value = character.family_name;
+	document.getElementById('email_address').value = character.email_address + '.' + (new Date().getTime()) + '@parks-and-rec-example.com';
+
 }
 
 
