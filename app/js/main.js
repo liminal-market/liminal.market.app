@@ -46,7 +46,7 @@ const initMoralis = async function() {
   }
 
   window.onpopstate = function (event) {
-    alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
+    //alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
   }
 };
 
@@ -102,12 +102,6 @@ const attachNavLinks = async function () {
     addTokenToWallet(ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
   })
 
-  if (!await Moralis.Web3.isWeb3Enabled()) {
-    console.log('not enabled')
-    let stylesheet = document.styleSheets[0];
-    stylesheet.insertRule(".getAddress { display:none;}", 0);
-    stylesheet.insertRule(".addToWallet { display:none;}", 0);
-  }
 }
 
 window.settings = {

@@ -1,3 +1,8 @@
+
+.addToWallet, .getAddress {
+	display:none;
+}
+
 body {
 	background-color:#f6f7fc !important;
 	padding-bottom:200px;
@@ -45,9 +50,12 @@ header a, header a.nav-link {
 	margin-right:8px;
 }
 
-#buy_securities_wrapper, #writeToBlockcahin, #network_localhost, #not_kyc_verified, #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
+#buy_securities_wrapper, #writeToBlockcahin, #network_localhost, #not_kyc_verified,
+ #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
 	display:none;
 }
+
+
 .video_demo {
 	width:333px;
 }
@@ -242,4 +250,13 @@ header a, header a.nav-link {
 	#securities_table td {
 
 	}
+}
+
+#footer {
+	max-width:550px;
+	margin:8rem auto 0 auto;
+}
+
+#footer img {
+	width:32px;
 }

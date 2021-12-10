@@ -93,8 +93,12 @@ const showLogin = function (user) {
     if (Moralis.Web3.isWeb3Enabled()) {
 
       let stylesheet = document.styleSheets[0];
-      stylesheet.deleteRule(".getAddress { display:none;}", 0);
-      stylesheet.deleteRule(".addToWallet { display:none;}", 0);
+      for (let i=0;i<stylesheet.cssRules.length;i++) {
+        if (stylesheet.cssRules[i].selectorText == '.addToWallet, .getAddress') {
+          stylesheet.deleteRule(i);
+          i = stylesheet.cssRules.length;
+        }
+      }
     }
   }
 }
