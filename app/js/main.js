@@ -24,14 +24,19 @@ import {getContractsInfo} from './contracts/contract-addresses.js'
 import {addTokenToWallet} from './modules/helper.js';
 import {loadSecurities} from './modules/securities.js';
 
-export const NetworkInfo = await getNetworkInfo();
-export const ContractAddressesInfo = getContractsInfo(NetworkInfo.Name);
+export const Main = {
+  NetworkInfo : null,
+  ContractAddressesInfo : null
+};
 
 const initMoralis = async function() {
 
+  Main.NetworkInfo = await getNetworkInfo();
+  Main.ContractAddressesInfo = getContractsInfo(Main.NetworkInfo.Name);
+
   await Moralis.start({
-    serverUrl: NetworkInfo.ServerUrl,
-    appId: NetworkInfo.AppId
+    serverUrl: Main.NetworkInfo.ServerUrl,
+    appId: Main.NetworkInfo.AppId
   }).catch(function(err) {
     if (err.message.indexOf('Invalid session token') != -1) {
       Moralis.User.logOut();
@@ -99,7 +104,7 @@ const attachNavLinks = async function () {
 
   document.getElementById('add_ausd_to_wallet_menu').addEventListener('click', function(evt) {
     evt.preventDefault();
-    addTokenToWallet(ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
+    addTokenToWallet(Main.ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
   })
 
 }
@@ -108,17 +113,18 @@ window.settings = {
   show_sell: showSell,
   show_buy: showBuy,
   show_positions: showPositions,
-  show_securities : showSecurities
+  show_securities : showSecurities,
 };
 
 const start = async function () {
   initMoralis().then(function() {
     initAccount();
+    isMarketOpen();
   });
 
   loadPath();
   attachNavLinks();
-  isMarketOpen();
+
 
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

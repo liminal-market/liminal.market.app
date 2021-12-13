@@ -2,7 +2,7 @@ import { render, renderWithMoralis } from "./render.js";
 import { sellPageInit } from "./sell.js";
 import LiminalMarketInfo from "../abi/LiminalMarket.json" assert {	type: "json"};
 import { addTokenToWallet, getAssets} from './helper.js';
-import { ContractAddressesInfo }  from '../main.js';
+import { Main }  from '../main.js';
 
 
 
@@ -33,7 +33,7 @@ export const initPositionsPage = async function() {
             let symbol = addToWalletLinks[i].dataset.symbol;
 
             const securityTokenOptions = {
-                contractAddress: ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
+                contractAddress: Main.ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
                 functionName: "getSecurityToken",
                 abi: LiminalMarketInfo.abi,
                 params: {

@@ -1,4 +1,4 @@
-import { ContractAddressesInfo, NetworkInfo }  from '../main.js';
+import { Main }  from '../main.js';
 
 import LiminalMarketInfo from "../abi/LiminalMarket.json" assert {	type: "json"};
 import AUSDInfo from "../abi/aUSD.json" assert { type: "json"};
@@ -83,7 +83,7 @@ export const setupSteps = async function(showNetwork) {
 	const chainId = await Moralis.getChainId();
 	let networkInfo = tryGetNetwork(chainId);
 	if (networkInfo) {
-		NetworkInfo.setNetwork(networkInfo);
+		Main.NetworkInfo.setNetwork(networkInfo);
 	}
 
 	if (networkInfo.ChainId != chainId || showNetwork) {
@@ -152,7 +152,7 @@ export const setupSteps = async function(showNetwork) {
 		document.getElementById('add_ausd_to_wallet').addEventListener('click', async function(evt) {
 			evt.preventDefault();
 
-			await addTokenToWallet(ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
+			await addTokenToWallet(Main.ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
 		});
 
 		document.getElementById('fundUSDC').addEventListener('click', function(evt) {
@@ -206,7 +206,7 @@ const fundUser = async function() {
 }
 
 const checkNativeTokenStatus = async function() {
-	const options = { chain: NetworkInfo.Name };
+	const options = { chain: Main.NetworkInfo.Name };
 	const result = await Moralis.Web3API.account.getNativeBalance(options);
 //0.002998
 	const balance = Moralis.Units.FromWei(result.balance, 18);
@@ -254,6 +254,7 @@ const setupBuyButton = function () {
 
 const showWaitingForFunding = function() {
 	document.getElementById('waiting_for_funding').style.display = 'block';
+	document.getElementById('buy_securities_wrapper').style.display = 'block';
 	document.getElementById('fund_account').style.display = 'none';
 
 	document.getElementById('buy_headline').innerHTML = "Let's play... 🚀🚀🚀";
@@ -295,7 +296,7 @@ const getAUSDAmount = async function () {
 
 	const ethAddress = await user.get('ethAddress');
 	const ausdcOptions = {
-		contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
+		contractAddress: Main.ContractAddressesInfo.AUSD_ADDRESS,
 		functionName: "balanceOf",
 		abi: AUSDInfo.abi,
 		params: {
@@ -387,7 +388,7 @@ const loadAssetPrice = async function() {
 export const getSymbolContractAddress = async function(symbol) {
 
 			const securityTokenOptions = {
-			contractAddress: ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
+			contractAddress: Main.ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
 			functionName: "getSecurityToken",
 			abi: LiminalMarketInfo.abi,
 			params: {
@@ -597,7 +598,7 @@ const blockshainSlowMessage = function() {
 const executeBuy = async function(recipient, buyAmount) {
 	try {
 		const liminalOptions = {
-			contractAddress: ContractAddressesInfo.AUSD_ADDRESS,
+			contractAddress: Main.ContractAddressesInfo.AUSD_ADDRESS,
 			functionName: "transfer",
 			abi: AUSDInfo.abi,
 			params: {
@@ -616,7 +617,7 @@ const executeBuy = async function(recipient, buyAmount) {
 const executeCreateToken = async function(symbol) {
 
 	const liminalOptions = {
-		contractAddress: ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
+		contractAddress: Main.ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
 		functionName: "createToken",
 		abi: LiminalMarketInfo.abi,
 		params: {

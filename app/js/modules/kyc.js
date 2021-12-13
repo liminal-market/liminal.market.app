@@ -1,5 +1,5 @@
 import KYCInfo from "../abi/KYC.json" assert {	type: "json"};
-import { ContractAddressesInfo }  from '../main.js';
+import { Main }  from '../main.js';
 
 import { errorHandler } from "./error.js";
 import { render } from "./render.js";
@@ -102,7 +102,7 @@ export const KYCUserToSmartContract = async function (accountId) {
 	showProgressStep(str, 66);
 	setTimeout(function () { checkToShowMetamaskIcon(str) }, 10 * 1000)
 	const kycOptions = {
-		contractAddress: ContractAddressesInfo.KYC_ADDRESS,
+		contractAddress: Main.ContractAddressesInfo.KYC_ADDRESS,
 		functionName: "validateAccount",
 		abi: KYCInfo.abi,
 		params: {
@@ -180,7 +180,7 @@ export const KYCUserIsValid = async function () {
 	if (IsValidKYC) return true;
 
 	const kycOptions = {
-		contractAddress: ContractAddressesInfo.KYC_ADDRESS,
+		contractAddress: Main.ContractAddressesInfo.KYC_ADDRESS,
 		functionName: "isValid",
 		abi: KYCInfo.abi,
 		params: {

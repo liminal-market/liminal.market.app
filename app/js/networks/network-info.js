@@ -8,7 +8,7 @@ const networkInfos = [ localhostNetwork, rinkebyNetwork, mumbaiNetwork ];
 export const getNetworkInfo = function(networkName) {
 
 	if (!networkName) networkName = getCookieValue('network');
-	if (!networkName) networkName = 'rinkeby';
+	if (!networkName) networkName = 'mumbai';
 
 	let networkInfo = null;
 	networkInfos.forEach(networkInfoType => {
@@ -17,7 +17,7 @@ export const getNetworkInfo = function(networkName) {
 			networkInfo = tmp;
 		}
 	});
-	return (networkInfo != null) ? networkInfo : getNetworkInfo('rinkeby');
+	return (networkInfo != null) ? networkInfo : getNetworkInfo('mumbai');
 }
 
 export const tryGetNetwork = function(chainId) {

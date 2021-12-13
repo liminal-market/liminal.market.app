@@ -5,7 +5,7 @@ import {
   KYCUserIsValid
 } from './kyc.js';
 import {
-  NetworkInfo
+  Main
 } from '../main.js'
 import {setupSteps} from './buy.js';
 
@@ -46,7 +46,7 @@ export const attachWalletEvents = async function () {
 
       const userChainId = await Moralis.getChainId();
 
-      if (NetworkInfo.ChainId != userChainId) {
+      if (Main.NetworkInfo.ChainId != userChainId) {
         return;
       }
 
@@ -80,7 +80,7 @@ const showLogin = function (user) {
       await login();
     });
   } else {
-    document.getElementById('loginInfo').innerHTML = 'You are logged as ' + shortEth(user.get('ethAddress')) + ' on <a href="" id="changeNetwork">' + NetworkInfo.Name + '</a> | <a href="" id="logoutLink">Click to logout</a>';
+    document.getElementById('loginInfo').innerHTML = 'You are logged as ' + shortEth(user.get('ethAddress')) + ' on <a href="" id="changeNetwork">' + Main.NetworkInfo.Name + '</a> | <a href="" id="logoutLink">Click to logout</a>';
     document.getElementById("logoutLink").addEventListener('click', async function (e) { //say this is an anchor
       e.preventDefault();
       await logOut();
