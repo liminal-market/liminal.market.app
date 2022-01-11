@@ -132,7 +132,4 @@ const start = async function () {
   })
 }
 
-
-
-
-await start();
+start();
