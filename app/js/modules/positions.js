@@ -71,10 +71,11 @@ const renderSymbolLogos = async function(symbols) {
 export const initDocuments = async function() {
 
     const links = document.getElementsByClassName('downloadDoc');
-    const alpacaId = Moralis.User.current().get('alpacaId');
+    const user = Moralis.User.current();
+    if (!user) return;
 
+    const alpacaId = user.get('alpacaId');
 
-    console.log('alpacaId', alpacaId);
     for (let i = 0; i < links.length; i++) {
         links[i].addEventListener('click', async function (evt) {
             evt.preventDefault();
