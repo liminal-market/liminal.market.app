@@ -94,7 +94,7 @@ const isValidAccountId = function(str) {
 
 export const KYCUserToSmartContract = async function (accountId) {
 	if (!isValidAccountId(accountId)) {
-		showProgressStep('Your account id was invalid. This should not happen, <a href="https://discord.gg/dBUdUzmV" target="_blank">ping us on Discord</a>', 100, true);
+		showProgressStep('Your account id was invalid. This should not happen, <a href="https://discord.gg/ePs5cRceNB" target="_blank">ping us on Discord</a>', 100, true);
 		return;
 	}
 
