@@ -1,9 +1,10 @@
 import {localhostNetwork} from './localhost-network.js';
 import { rinkebyNetwork } from './rinkeby-network.js';
 import {mumbaiNetwork} from './mumbai-network.js';
+import {fujiNetwork} from './fuji-network.js';
 
 
-const networkInfos = [ localhostNetwork, rinkebyNetwork, mumbaiNetwork ];
+const networkInfos = [ localhostNetwork, rinkebyNetwork, mumbaiNetwork, fujiNetwork ];
 
 export const getNetworkInfo = function(networkName) {
 

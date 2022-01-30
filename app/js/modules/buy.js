@@ -85,6 +85,7 @@ export const setupSteps = async function(showNetwork) {
 	if (networkInfo) {
 		Main.NetworkInfo.setNetwork(networkInfo);
 	}
+	console.log('chains:', chainId, networkInfo.ChainId);
 
 	if (networkInfo.ChainId != chainId || showNetwork) {
 		document.getElementById('select_network').style.display = 'block';
@@ -96,14 +97,18 @@ export const setupSteps = async function(showNetwork) {
 			options[i].addEventListener('click', async function(evt) {
 				evt.preventDefault();
 				console.log('chain id:', evt.target.dataset.chainid);
-				const chainIdHex = await Moralis.switchNetwork(evt.target.dataset.chainid)
-				.then(async function() {
-					await Moralis.User.logOut();
-					window.location.reload();
-				}).catch(function(err) {
-					addNetworkToWallet(evt.target.dataset.chainid);
-					console.log(err);
-				});
+				try {
+					const chainIdHex = await Moralis.switchNetwork(evt.target.dataset.chainid)
+					.then(async function() {
+						await Moralis.User.logOut();
+						window.location.reload();
+					}).catch(function(err) {
+						addNetworkToWallet(evt.target.dataset.chainid);
+						console.log(err);
+					});
+				}catch (e) {
+					console.log(e);
+				}
 			})
 		}
 
@@ -195,8 +200,11 @@ const addNetworkToWallet = async function(chainId) {
 }
 
 const fundUser = async function() {
+	const params = {
+		chainId: Main.NetworkInfo.ChainId
+	};
 	document.getElementById('account_not_ready').style.display = "none";
-	Moralis.Cloud.run('fundUser').then(function(response) {
+	Moralis.Cloud.run('fundUser', params).then(function(response) {
 		showWaitingForFunding();
 		return;
 
@@ -533,6 +541,9 @@ const transfer = async function () {
 	showProgressStep(waitingStr + Symbol + ' for $' + buyAmount + '.', 99);
 	setTimeout(function () { checkToShowMetamaskIcon(waitingStr) }, 10 * 1000);
 
+
+	await subscribeToTable();
+
 	var buyResult = await executeBuy(SelectedSymbolAddress, buyAmount);
 	if (buyResult == null) {
 		hideProcessStep();
@@ -541,11 +552,15 @@ const transfer = async function () {
 
 	console.log('buyResult', buyResult);
 
-	showProgressStep('Waiting for blockchain to confirm transaction.', 99);
 
 	document.getElementById('add-token-info').style.display = 'none';
 
-	let query = new Moralis.Query('OrderBuy');
+
+};
+const subscribeToTable = async function() {
+	console.log('subscribe to table:' + getOrderBuyTablePrefix() + 'OrderBuy');
+
+	let query = new Moralis.Query(getOrderBuyTablePrefix() + 'OrderBuy');
 	let subscription = await query.subscribe();
 
 	subscription.on('update', (response) => {
@@ -571,12 +586,17 @@ const transfer = async function () {
 			document.getElementById('buy-info').style.display = 'none';
 			//order has been filled, you got object.filledQty of shares. You will see it soon in your wallet
 			showProgressStep('Order has been filled, you will recieve ' + object.filledQty + ' ' + Symbol + ' soon into your wallet.' + ethLink, 100);
+		} else {
+			showProgressStep('Waiting for blockchain to confirm transaction.', 99);
 		}
 	});
-
 };
 
 
+const getOrderBuyTablePrefix = function() {
+	if (Main.NetworkInfo.ChainId == 43113) return "Fuji";
+	return "";
+};
 
 const checkToShowMetamaskIcon = function(txt) {
 	//Waiting on approval to execute
