@@ -65,8 +65,10 @@ export const attachWalletEvents = async function () {
 
     },
     function (e) {
-      if (e.toString().indexOf('Non ethereum enabled browser') != -1) {
-        showSetupMetamask();
+      if (e.message.toString().indexOf('Non ethereum enabled browser') != -1) {
+        document.getElementById('install_metamask').style.display = 'block';
+      } else if (e.message.toString().indexOf('Already processing eth_requestAccounts') != -1) {
+        document.getElementById('waiting_for_metamask').style.display = 'block';
       }
       console.log('error', e);
     });
