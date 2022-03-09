@@ -1,0 +1,30 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdateliminal_app"]("main",{
+
+/***/ "./src/networks/network.ts":
+/*!*********************************!*\
+  !*** ./src/networks/network.ts ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"Network\": () => (/* binding */ Network)\n/* harmony export */ });\n/* harmony import */ var _network_info__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./network-info */ \"./src/networks/network-info.ts\");\n\r\nclass Network {\r\n    constructor() {\r\n        this.ServerUrl = \"https://5bgiedfv59dd.usemoralis.com:2053/server\";\r\n        this.AppId = \"bhvFURhCqNvKGfVggu50fkcbm9ijMJqK3HRnfM79\";\r\n        this.ChainId = 80001;\r\n        this.Name = \"mumbai\";\r\n        this.ChainName = 'Polygon Mumbai';\r\n        this.NativeCurrencyName = \"Matic\";\r\n        this.NativeSymbol = \"MATIC\";\r\n        this.NativeDecimal = 18;\r\n        this.RpcUrl = 'https://matic-mumbai.chainstacklabs.com/';\r\n        this.BlockExplorer = 'https://mumbai.polygonscan.com/';\r\n        this.setNetwork = function (networkInfo) {\r\n            this.ServerUrl = networkInfo.ServerUrl;\r\n            this.AppId = networkInfo.AppId;\r\n            this.ChainId = networkInfo.ChainId;\r\n            this.Name = networkInfo.Name;\r\n            this.ChainName = networkInfo.ChainName;\r\n            this.NativeCurrencyName = networkInfo.NativeCurrencyName;\r\n            this.NativeSymbol = networkInfo.NativeSymbol;\r\n            this.NativeDecimal = networkInfo.NativeDecimal;\r\n            this.RpcUrl = networkInfo.RpcUrl;\r\n            this.BlockExplorer = networkInfo.BlockExplorer;\r\n            (0,_network_info__WEBPACK_IMPORTED_MODULE_0__.setCookieNetwork)(this.Name);\r\n        };\r\n    }\r\n}\r\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvbmV0d29ya3MvbmV0d29yay50cy5qcyIsIm1hcHBpbmdzIjoiOzs7OztBQUErQztBQUV4QyxNQUFNLE9BQU87SUFZbkI7UUFYQSxjQUFTLEdBQUcsaURBQWlELENBQUM7UUFDOUQsVUFBSyxHQUFHLDBDQUEwQyxDQUFDO1FBQ25ELFlBQU8sR0FBRyxLQUFLLENBQUM7UUFDaEIsU0FBSSxHQUFHLFFBQVEsQ0FBQztRQUNoQixjQUFTLEdBQUcsZ0JBQWdCLENBQUM7UUFDN0IsdUJBQWtCLEdBQUcsT0FBTyxDQUFDO1FBQzdCLGlCQUFZLEdBQUcsT0FBTyxDQUFDO1FBQ3ZCLGtCQUFhLEdBQUcsRUFBRSxDQUFDO1FBQ25CLFdBQU0sR0FBRywwQ0FBMEMsQ0FBQztRQUNwRCxrQkFBYSxHQUFHLGlDQUFpQyxDQUFDO1FBS2xELGVBQVUsR0FBRyxVQUFTLFdBQXFCO1lBRTFDLElBQUksQ0FBQyxTQUFTLEdBQUcsV0FBVyxDQUFDLFNBQVMsQ0FBQztZQUN2QyxJQUFJLENBQUMsS0FBSyxHQUFHLFdBQVcsQ0FBQyxLQUFLLENBQUM7WUFDL0IsSUFBSSxDQUFDLE9BQU8sR0FBRyxXQUFXLENBQUMsT0FBTyxDQUFDO1lBQ25DLElBQUksQ0FBQyxJQUFJLEdBQUcsV0FBVyxDQUFDLElBQUksQ0FBQztZQUU3QixJQUFJLENBQUMsU0FBUyxHQUFHLFdBQVcsQ0FBQyxTQUFTLENBQUM7WUFDdkMsSUFBSSxDQUFDLGtCQUFrQixHQUFHLFdBQVcsQ0FBQyxrQkFBa0IsQ0FBQztZQUN6RCxJQUFJLENBQUMsWUFBWSxHQUFHLFdBQVcsQ0FBQyxZQUFZLENBQUM7WUFDN0MsSUFBSSxDQUFDLGFBQWEsR0FBRyxXQUFXLENBQUMsYUFBYSxDQUFDO1lBQy9DLElBQUksQ0FBQyxNQUFNLEdBQUcsV0FBVyxDQUFDLE1BQU0sQ0FBQztZQUNqQyxJQUFJLENBQUMsYUFBYSxHQUFHLFdBQVcsQ0FBQyxhQUFhLENBQUM7WUFFL0MsK0RBQWdCLENBQUMsSUFBSSxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQzdCLENBQUM7SUFqQkQsQ0FBQztDQWtCRCIsInNvdXJjZXMiOlsid2VicGFjazovL2xpbWluYWwtYXBwLy4vc3JjL25ldHdvcmtzL25ldHdvcmsudHM/YzFhOSJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQge3NldENvb2tpZU5ldHdvcmt9IGZyb20gJy4vbmV0d29yay1pbmZvJ1xyXG5cclxuZXhwb3J0IGNsYXNzIE5ldHdvcmsge1xyXG5cdFNlcnZlclVybCA9IFwiaHR0cHM6Ly81YmdpZWRmdjU5ZGQudXNlbW9yYWxpcy5jb206MjA1My9zZXJ2ZXJcIjtcclxuXHRBcHBJZCA9IFwiYmh2RlVSaENxTnZLR2ZWZ2d1NTBma2NibTlpak1KcUszSFJuZk03OVwiO1xyXG5cdENoYWluSWQgPSA4MDAwMTtcclxuXHROYW1lID0gXCJtdW1iYWlcIjtcclxuXHRDaGFpbk5hbWUgPSAnUG9seWdvbiBNdW1iYWknO1xyXG5cdE5hdGl2ZUN1cnJlbmN5TmFtZSA9IFwiTWF0aWNcIjtcclxuXHROYXRpdmVTeW1ib2wgPSBcIk1BVElDXCI7XHJcblx0TmF0aXZlRGVjaW1hbCA9IDE4O1xyXG5cdFJwY1VybCA9ICdodHRwczovL21hdGljLW11bWJhaS5jaGFpbnN0YWNrbGFicy5jb20vJztcclxuXHRCbG9ja0V4cGxvcmVyID0gJ2h0dHBzOi8vbXVtYmFpLnBvbHlnb25zY2FuLmNvbS8nO1xyXG5cclxuXHRjb25zdHJ1Y3RvcigpIHtcclxuXHR9XHJcblxyXG5cdHNldE5ldHdvcmsgPSBmdW5jdGlvbihuZXR3b3JrSW5mbyA6IE5ldHdvcmspIDogdm9pZCB7XHJcblxyXG5cdFx0dGhpcy5TZXJ2ZXJVcmwgPSBuZXR3b3JrSW5mby5TZXJ2ZXJVcmw7XHJcblx0XHR0aGlzLkFwcElkID0gbmV0d29ya0luZm8uQXBwSWQ7XHJcblx0XHR0aGlzLkNoYWluSWQgPSBuZXR3b3JrSW5mby5DaGFpbklkO1xyXG5cdFx0dGhpcy5OYW1lID0gbmV0d29ya0luZm8uTmFtZTtcclxuXHJcblx0XHR0aGlzLkNoYWluTmFtZSA9IG5ldHdvcmtJbmZvLkNoYWluTmFtZTtcclxuXHRcdHRoaXMuTmF0aXZlQ3VycmVuY3lOYW1lID0gbmV0d29ya0luZm8uTmF0aXZlQ3VycmVuY3lOYW1lO1xyXG5cdFx0dGhpcy5OYXRpdmVTeW1ib2wgPSBuZXR3b3JrSW5mby5OYXRpdmVTeW1ib2w7XHJcblx0XHR0aGlzLk5hdGl2ZURlY2ltYWwgPSBuZXR3b3JrSW5mby5OYXRpdmVEZWNpbWFsO1xyXG5cdFx0dGhpcy5ScGNVcmwgPSBuZXR3b3JrSW5mby5ScGNVcmw7XHJcblx0XHR0aGlzLkJsb2NrRXhwbG9yZXIgPSBuZXR3b3JrSW5mby5CbG9ja0V4cGxvcmVyO1xyXG5cclxuXHRcdHNldENvb2tpZU5ldHdvcmsodGhpcy5OYW1lKTtcclxuXHR9XHJcbn1cclxuXHJcbiJdLCJuYW1lcyI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./src/networks/network.ts\n");
+
+/***/ })
+
+},
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ /* webpack/runtime/getFullHash */
+/******/ (() => {
+/******/ 	__webpack_require__.h = () => ("d9678c76aa12a8517b0e")
+/******/ })();
+/******/ 
+/******/ }
+);

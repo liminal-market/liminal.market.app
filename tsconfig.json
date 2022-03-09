@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"target": "ES6",
+		"sourceMap": true,
+		"module": "ES2020",
+		"moduleResolution": "node",
+		"esModuleInterop" : true,
+		"baseUrl": "./",
+		"outDir": "./app/js/",
+		"paths" : {
+			"Moralis" : ["./app/node_modules/moralis/"],
+			"Handlebars" : ["./app/node_modules/handlebars"]
+		},
+		"types": [
+
+		]
+	},
+	"files": [
+		"./src/main.ts"
+	]
+}

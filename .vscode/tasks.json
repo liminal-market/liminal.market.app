@@ -7,6 +7,11 @@
 			"label": "start node.js",
 			"type": "shell",
 			"command": "node node.js"
+		},
+		{
+			"label": "TSC",
+			"type": "shell",
+			"command": "tsc"
 		}
 	]
 }
