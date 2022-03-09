@@ -119,12 +119,13 @@ let settings = {
 
 const start = async function () {
 
-  initMoralis().then(function() {
-    initAccount();
+  initMoralis().then(async function() {
+    await loadPath();
+    await initAccount();
     isMarketOpen();
   });
 
-  loadPath();
+
   attachNavLinks();
 
   /*
@@ -135,3 +136,5 @@ const start = async function () {
 }
 
 start();
+
+

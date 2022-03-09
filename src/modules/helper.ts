@@ -18,19 +18,6 @@ export const roundNumber = function(number : number) {
 	return Math.round(number * 100) / 100;
 }
 
-Handlebars.registerHelper('perc', function (number : string) {
-    return Math.round(parseFloat(number) * 10000) / 100 + '%';
-});
-Handlebars.registerHelper('round', function (number : string) {
-    return Math.round(parseFloat(number) * 100) / 100;
-});
-
-Handlebars.registerHelper('round2', function (number : string) {
-    return Math.round(parseFloat(number) * 10000) / 10000;
-});
-Handlebars.registerHelper('classColor', function (number : number) {
-    return (number > 0) ? "green" : "red";
-});
 
 const getAUsdAsset = function() {
 	let asset = {
@@ -46,10 +33,10 @@ export const addTokenToWallet = async function(address : string, symbol : string
 	// wasAdded is a boolean. Like any RPC method, an error may be thrown.
 	const web3 = await Moralis.enableWeb3();
 	console.log('web3', web3, web3.provider);
-	/*
+
 	const wasAdded = await web3.provider.request({
 	  method: 'wallet_watchAsset',
-	  params: [{
+	  params: {
 		type: 'ERC20', // Initially only supports ERC20, but eventually more!
 		options: {
 		  address: address, // The address that the token is at.
@@ -57,30 +44,10 @@ export const addTokenToWallet = async function(address : string, symbol : string
 		  decimals: 18, // The number of decimals in the token
 		  image: 'https://app.liminal.market/img/logos/' + asset.Logo, // A string url of the token logo
 		},
-	  }],
+	  },
 	});
-	*/
-	web3.provider.request({
-		method: 'wallet_watchAsset',
-		params: {
-		  type: 'ERC20',
-		  options: {
-			address: address,
-			symbol: symbol,
-			decimals: 18,
-			image: 'https://app.liminal.market/img/logos/' + asset.Logo
-		  },
-		},
-	  })
-	  .then((success) => {
-		if (success) {
-		  console.log('FOO successfully added to wallet!');
-		} else {
-		  throw new Error('Something went wrong.');
-		}
-	  })
-	  .catch(console.error);
-	//console.log('wasAdded:', wasAdded);
+
+	console.log('wasAdded:', wasAdded);
 };
 
 export const isJSON = function(str : string) {

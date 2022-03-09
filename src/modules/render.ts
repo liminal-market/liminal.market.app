@@ -16,6 +16,8 @@ export const render = async function(templateName : string, moralisResponse : st
 	try {
 		if (!containerId) containerId = 'main_container';
 
+		registerHelpers();
+
 		await fetch('/templates/' + templateName + '.html')
 			.then(response => response.text())
 			.then(text => {
@@ -28,4 +30,20 @@ export const render = async function(templateName : string, moralisResponse : st
 	} catch (e) {
 		errorHandler(e);
 	}
+}
+
+export const registerHelpers = function() {
+	Handlebars.registerHelper('perc', function (number : string) {
+		return Math.round(parseFloat(number) * 10000) / 100 + '%';
+	});
+	Handlebars.registerHelper('round', function (number : string) {
+		return Math.round(parseFloat(number) * 100) / 100;
+	});
+
+	Handlebars.registerHelper('round2', function (number : string) {
+		return Math.round(parseFloat(number) * 10000) / 10000;
+	});
+	Handlebars.registerHelper('classColor', function (number : number) {
+		return (number > 0) ? "green" : "red";
+	});
 }
