@@ -158,7 +158,7 @@ console.log('user', user);
 		return;
 	}
 
-	checkBalanceOfAUsd();
+	await checkBalanceOfAUsd();
 
 	if (aUsdAmount < 1) {
 		//show funding step
@@ -195,7 +195,7 @@ const addNetworkToWallet = async function(chainId : number) {
 	const web3 = await Moralis.enableWeb3();
 	web3.provider.request({
 		method: 'wallet_addEthereumChain',
-		params: [{
+		params: {
 			chainId: chainId,
 			chainName: networkInfo.ChainName,
 			nativeCurrency: {
@@ -205,7 +205,7 @@ const addNetworkToWallet = async function(chainId : number) {
 			},
 			rpcUrls: [networkInfo.RpcUrl],
 			blockExplorerUrls: [networkInfo.BlockExplorer]
-		}]
+		}
 	}).catch((error) => {
 		console.log(error)
 	})
