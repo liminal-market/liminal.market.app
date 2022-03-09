@@ -1,2 +1,0 @@
-/** Connect to Moralis server */
-
