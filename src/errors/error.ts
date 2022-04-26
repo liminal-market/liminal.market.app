@@ -8,6 +8,6 @@ export const errorHandler = async function(message : Event | string, source? : s
 
 }
 
-window.onerror =  function(message : Event | string, source : string, lineno : number, colno : number, error : Error) {
-	errorHandler(message, source, lineno, colno, error);
+window.onerror =  function(message : Event | string, source? : string, lineno? : number, colno? : number, error? : Error) {
+	errorHandler(message, source, lineno, colno, error).then();
 };

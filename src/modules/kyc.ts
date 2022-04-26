@@ -1,168 +1,55 @@
-import { Main }  from '../main';
+import KYCService from "../services/blockchain/KYCService";
+import NetworkInfo from "../networks/NetworkInfo";
+import Progress from "../ui/elements/Progress";
 
-import { render } from "./render";
-import {buyPageInit} from './buy';
-import Moralis from 'moralis';
-
-export let AlpacaId;
-let KYCInfo : any;
 
 export const initKYC = async function () {
-	AlpacaId = (await Moralis.User.current().fetch()).get('alpacaId');
-	AlpacaId = undefined;
-	console.log('alpacaId:', AlpacaId);
-	KYCInfo = await getKYCInfo();
+	let user = Moralis.User.current();
+	if (!user) return;
 
-	if (!AlpacaId) {
-		document.getElementById('kyc_reg').style.display='block';
-		document.getElementById('writeToBlockcahin').style.display='none';
-		document.getElementById('submitKYC').onclick = submitKYC;
+	let alpacaId = (await user.fetch()).get('alpacaId');
 
+	let kycService = new KYCService(Moralis);
+	if (kycService.isValidAccountId(alpacaId)) {
+		kycIsDone();
+		return;
+	}
+
+	let ethAddress = user.get('ethAddress');
+	let hasValidKyc = await kycService.hasValidKYC(ethAddress);
+	if (hasValidKyc) {
+		kycIsDone();
+		return;
+	}
+	document.getElementById('kyc_reg')!.style.display='block';
+	document.getElementById('submitKYC')!.onclick = submitKYC;
+
+	let networkInfo = NetworkInfo.getInstance();
+	if (networkInfo.TestNetwork) {
 		loadName();
-
-	} else {
-		showWriteToBlockchain();
 	}
 }
 
-
-
-const loadName = function() {
-	var characters = [
-		{given_name : 'Leslie', family_name : 'Knope', email_address:'leslie.knope' },
-		{given_name : 'April', family_name : 'Ludgate', email_address:'april.ludgate' },
-		{given_name : 'Jerry', family_name : 'Gergich', email_address:'jerry.gergich' },
-		{given_name : 'Tom', family_name : 'Haverford', email_address:'tom.haverford' },
-		{given_name : 'Donna', family_name : 'Meagle', email_address:'donna.meagle' },
-		{given_name : 'Andy', family_name : 'Dwyer', email_address:'andy.dwyer' },
-		{given_name : 'Ann', family_name : 'Perkins', email_address:'ann.perkins' },
-		{given_name : 'Ben', family_name : 'Wyatt', email_address:'ben.wyatt' },
-		{given_name : 'Chris', family_name : 'Traeger', email_address:'chris.traeger' },
-		{given_name : 'Jean-Ralphio', family_name : 'Saperstein', email_address:'jean-ralphio.saperstein' },
-		{given_name : 'Councilman', family_name : 'Jamm', email_address:'jamm' }
-	]
-
-	let idx = Math.floor(Math.random() * characters.length) % characters.length;
-	var character = characters[idx];
-	(document.getElementById('given_name') as HTMLInputElement).value = character.given_name;
-	(document.getElementById('family_name') as HTMLInputElement).value = character.family_name;
-	(document.getElementById('email_address') as HTMLInputElement).value = character.email_address + '.' + (new Date().getTime()) + '@parks-and-rec-example.com';
-
+const kycIsDone= function() {
+	//kycIsDone
 }
 
 
 const submitKYC = async function () {
-	showProgressStep('Register KYC with broker', 33);
+	let progress = new Progress();
+	progress.show('Register KYC with broker', 33, false, ['submitKYC']);
+
 	const form = document.getElementById('kyc_wizard_form') as HTMLFormElement;
 	let data = new FormData(form);
-
 	let params = serialize(data);
 
-	AlpacaId = await Moralis.Cloud.run("kycRegistration", params);
+	let kycService = new KYCService(Moralis);
+	await kycService.saveKYCInfo(params);
 
-	let user = Moralis.User.current();
-	user.set('alpacaId', AlpacaId);
-	user.save();
-
-	KYCUserToSmartContract(AlpacaId);
 	return false;
 }
-const showProgressStep = async function (text : string, perc : number, warning? : boolean) {
-	document.getElementById('btnWriteToBlockchain').style.display = "none";
-	document.getElementById('submitKYC').style.display = "none";
-	document.getElementById('kyc_progress').style.display = "block";
-	var element = document.getElementById('kyc_steps');
-	element.innerHTML = '<div class="progress_text">' + text + '</div>';
-	element.style.width = perc + '%';
 
-	element.classList.toggle('progress-bar-striped', (perc != 100));
-	element.classList.toggle('progress-bar-animated', (perc != 100));
-	if (warning) {
-		element.classList.add('bg-warning');
-		element.classList.add('progress_text_attn');
-	} else {
-		element.classList.remove('bg-warning');
-		element.classList.remove('progress_text_attn');
-	}
-
-}
-
-const isValidAccountId = function(str : string) {
-	const regex = new RegExp('^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$');
-	return regex.test(str);
-}
-
-
-export const KYCUserToSmartContract = async function (accountId : string) {
-	if (!isValidAccountId(accountId)) {
-		showProgressStep('Your account id was invalid. This should not happen, <a href="https://discord.gg/ePs5cRceNB" target="_blank">ping us on Discord</a>', 100, true);
-		return;
-	}
-
-	const str = 'Writing to blockchain, you must confirm transaction in your wallet';
-
-	KYCInfo = await getKYCInfo();
-
-	showProgressStep(str, 66);
-	setTimeout(function () { checkToShowMetamaskIcon(str) }, 10 * 1000)
-	const kycOptions = {
-		contractAddress: Main.ContractAddressesInfo.KYC_ADDRESS,
-		functionName: "validateAccount",
-		abi: KYCInfo.abi,
-		params: {
-			accountId: accountId
-		},
-	};
-
-	await Moralis.executeFunction(kycOptions).then(async (result) => {
-		console.log('KYCUserToSmartContract result', result);
-		IsValidKYC = true;
-		showProgressStep('Done, loading buy page...', 100);
-
-		render('buy', null, buyPageInit);
-	}).catch(function(err) {
-		console.log(err);
-		showWriteToBlockchain();
-	});
-
-	console.log('writing to blockcahin', kycOptions);
-}
-
-
-const checkToShowMetamaskIcon = function(txt) {
-	//Waiting on approval to execute
-	if (document.getElementById('kyc_progress') && document.getElementById('kyc_progress').style.display != "none" && document.getElementById('kyc_steps').innerText.indexOf(txt) != -1) {
-		showProgressStep('Hey Ho! Is Metamask be waiting for you?<br />Check top right corner of your browser <img src="/img/metamask-pending.png"/>', 99, true);
-		setTimeout(function () { blockshainSlowMessage(); }, 8 * 1000);
-	}
-};
-
-const blockshainSlowMessage = function() {
-
-	if (document.getElementById('kyc_progress') && document.getElementById('kyc_progress').style.display != "none" && document.getElementById('kyc_steps').innerText.indexOf('Hey Ho!') != -1) {
-		showProgressStep('If you have already approved, maybe blockchain is slow. Lets give it a bit. Just double check for <img src="/img/metamask-pending.png"/>', 99, true);
-	}
-}
-
-const showWriteToBlockchain = async function() {
-	const user = await Moralis.User.current();
-
-	document.getElementById('need_native_token').style.display = 'block';
-	(document.getElementById('native_token_address') as HTMLInputElement).value = await user.get('ethAddress');
-
-	document.getElementById('btnWriteToBlockchain').style.display = "block";
-	document.getElementById('submitKYC').style.display = "block";
-	document.getElementById('kyc_progress').style.display = 'none';
-	document.getElementById('kyc_reg').style.display='none';
-	document.getElementById('writeToBlockcahin').style.display='block';
-	document.getElementById('btnWriteToBlockchain').addEventListener('click', function(evt) {
-		evt.preventDefault();
-
-		KYCUserToSmartContract(AlpacaId);
-	});
-}
-
-function serialize(data) {
+function serialize(data : any) {
 	let obj = {};
 	for (let [key, value] of data) {
 		if (obj[key] !== undefined) {
@@ -178,43 +65,25 @@ function serialize(data) {
 }
 
 
-export let IsValidKYC = false;
+const loadName = function() {
+	let characters = [
+		{given_name : 'Leslie', family_name : 'Knope', email_address:'leslie.knope' },
+		{given_name : 'April', family_name : 'Ludgate', email_address:'april.ludgate' },
+		{given_name : 'Jerry', family_name : 'Gergich', email_address:'jerry.gergich' },
+		{given_name : 'Tom', family_name : 'Haverford', email_address:'tom.haverford' },
+		{given_name : 'Donna', family_name : 'Meagle', email_address:'donna.meagle' },
+		{given_name : 'Andy', family_name : 'Dwyer', email_address:'andy.dwyer' },
+		{given_name : 'Ann', family_name : 'Perkins', email_address:'ann.perkins' },
+		{given_name : 'Ben', family_name : 'Wyatt', email_address:'ben.wyatt' },
+		{given_name : 'Chris', family_name : 'Traeger', email_address:'chris.traeger' },
+		{given_name : 'Jean-Ralphio', family_name : 'Saperstein', email_address:'jean-ralphio.saperstein' },
+		{given_name : 'Councilman', family_name : 'Jamm', email_address:'jamm' }
+	]
 
-export const KYCUserIsValid = async function () {
-	if (IsValidKYC) return true;
-	KYCInfo = await getKYCInfo();
-	const kycOptions = {
-		contractAddress: Main.ContractAddressesInfo.KYC_ADDRESS,
-		functionName: "isValid",
-		abi: KYCInfo.abi,
-		params: {
-			userAddress: Moralis.User.current().get('ethAddress')
-		}
-	};
+	let idx = Math.floor(Math.random() * characters.length) % characters.length;
+	let character = characters[idx];
+	(document.getElementById('given_name') as HTMLInputElement).value = character.given_name;
+	(document.getElementById('family_name') as HTMLInputElement).value = character.family_name;
+	(document.getElementById('email_address') as HTMLInputElement).value = character.email_address + '.' + (new Date().getTime()) + '@parks-and-rec-example.com';
 
-	await Moralis.executeFunction(kycOptions).then(async (result) => {
-		if (isValidAccountId(result.toString())) {
-			IsValidKYC = true;
-
-			var user = Moralis.User.current();
-			if (!user.get('alpacaId')) {
-				user.save({alpacaId : result.toString()});
-				await Moralis.User.current().fetch();
-			}
-
-			return;
-		}
-	}).catch(function(err) {
-		console.log('Not KYC valid', err);
-	});
-
-}
-
-
-async function getKYCInfo(): Promise<any> {
-	if (KYCInfo != null) return KYCInfo;
-
-	const response = await fetch("../abi/KYC.json");
-	KYCInfo = await response.json();
-	return KYCInfo;
 }

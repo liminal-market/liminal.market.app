@@ -1,6 +1,6 @@
-import {Network} from './network';
+import Network from './Network';
 
-export class fujiNetwork extends Network {
+export default class fujiNetwork extends Network {
 	constructor() {
 		super();
 

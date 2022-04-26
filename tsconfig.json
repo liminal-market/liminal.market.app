@@ -1,22 +1,30 @@
 {
-	"compilerOptions": {
-		"allowJs": true,
-		"target": "ES6",
-		"sourceMap": true,
-		"module": "ES2020",
-		"moduleResolution": "node",
-		"esModuleInterop" : true,
-		"baseUrl": "./",
-		"outDir": "./app/js/",
-		"paths" : {
-			"Moralis" : ["./app/node_modules/moralis/"],
-			"Handlebars" : ["./app/node_modules/handlebars"]
-		},
-		"types": [
-
-		]
-	},
-	"files": [
-		"./src/main.ts"
-	]
+  "compilerOptions": {
+    "module": "ES2015",
+    "target": "ES2015",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "app/js",
+    "baseUrl": "./",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "typeRoots": ["node_modules/@types", "types"],
+    "paths": {
+      "Handlebars": [
+        "./app/node_modules/handlebars"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "./src/main.ts",
+    "./src/.d.ts",
+    "./node_modules/moralis/types/index.d.ts",
+    "src/ui/TradeType.ts"
+  ],
+  "compileOnSave": true
 }

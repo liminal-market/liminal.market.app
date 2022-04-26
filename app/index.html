@@ -8,9 +8,9 @@
   <title>Liminal Market</title>
   <link href="css/style.css" rel="stylesheet" />
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
+  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+<!--
     <script src="/js/external/sendtry.bundle.min.js" crossorigin="anonymous"></script>
     <script>
 
@@ -22,16 +22,12 @@
         tracesSampleRate: 1.0,
       });
     }</script>
-
+-->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
-    integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
 </head>
@@ -61,6 +57,8 @@
             </li>
           </ul>
           <div class="" style="width:350px;">
+            <div id="connect_wallet_header"></div>
+            <div id="user_info"></div>
             <div id="offHours" class="form-check form-switch">
                    <input class="form-check-input" type="checkbox" role="switch" id="enableOffHours">
                 <label class="form-check-label" for="enableOffHours" data-bs-html="true" data-bs-toggle="tooltip"
@@ -90,9 +88,9 @@
   <div class="alert alert-danger" id="ethereumNotInBrowser" role="alert">You need to <a
       href="https://metamask.io/download.html" target="_blank">install Metamask</a> to use this website.</div>
 
-  <div class="alert alert-danger" id="weSentSigninRequest" role="alert">You already have sign in request. Click the
+  <div class="alert alert-danger" id="weSentSigningRequest" role="alert">You already have sign in request. Click the
     Metamask icon in your browser
-    <img src="/img/metamask-pending.png" />
+    <img src="img/metamask-pending.png" alt="Transaction pending" />
   </div>
   <div class="alert alert-warning" id="closedMarket" role="alert">Market is closed so not trades will go through, but
     we can fake it for you if you like. Click the Off hours trading in the top right corner.
@@ -101,7 +99,7 @@
   </div>
 
 
-  <div class="container pt-4" id="main_container"></div>
+  <div class="container pt-4" id="main_container"><div class="loading">Loading...</div></div>
 
   <div id="backdrop"></div>
   <div class="modal" id="modalSecurities" tabindex="-1">
@@ -127,10 +125,15 @@
   </div>
 
 
+  <script src="./js/external/moralis.min.js" type="module"></script>
+  <script src="./js/external/web3-provider.min.js" type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
+          integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <script type="module" src="/js/bundle.js"></script>
+  <script type="module" src="./js/bundle.js"></script>
 
-
+<!--
   <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
     data-cf-beacon='{"token": "89aeea2757bf4ee1974d575bf253ecb3"}'></script>
   <script>
@@ -149,7 +152,7 @@
       a.appendChild(r);
     })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
   </script>
-
+-->
 </body>
 
 </html>

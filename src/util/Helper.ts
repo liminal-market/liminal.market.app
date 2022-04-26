@@ -1,8 +1,7 @@
-import Handlebars from "handlebars/runtime";
-import Moralis from "moralis";
+import SecuritiesService from "../services/broker/SecuritiesService";
 
 export const showContainer = function(id : string) {
-    var containers = document.querySelectorAll('.container');
+    let containers = document.querySelectorAll('.container');
     for (let i=0;i<containers.length;i++) {
 		let element = containers[i] as HTMLElement;
         if (element.id == id) {
@@ -20,23 +19,27 @@ export const roundNumber = function(number : number) {
 
 
 const getAUsdAsset = function() {
-	let asset = {
-		Logo : '../ausd.png'
-	}
-	return asset;
+	return {
+		Logo: '../ausd.png'
+	};
 }
 
 export const AddressZero = "0x0000000000000000000000000000000000000000";
 
 export const addTokenToWallet = async function(address : string, symbol : string) {
-	const asset = (symbol == 'aUSD') ? getAUsdAsset() : await getAssetBySymbol(symbol);
+	let assetService = await SecuritiesService.getInstance();
+
+	const asset = (symbol == 'aUSD') ? getAUsdAsset() : await assetService.getSecurityBySymbol(symbol);
 	// wasAdded is a boolean. Like any RPC method, an error may be thrown.
 	const web3 = await Moralis.enableWeb3();
+	if (!web3) return;
+
 	console.log('web3', web3, web3.provider);
+	if (!web3.provider.request) return;
 
 	const wasAdded = await web3.provider.request({
 	  method: 'wallet_watchAsset',
-	  params: {
+	  params: [{
 		type: 'ERC20', // Initially only supports ERC20, but eventually more!
 		options: {
 		  address: address, // The address that the token is at.
@@ -44,7 +47,7 @@ export const addTokenToWallet = async function(address : string, symbol : string
 		  decimals: 18, // The number of decimals in the token
 		  image: 'https://app.liminal.market/img/logos/' + asset.Logo, // A string url of the token logo
 		},
-	  },
+	  }],
 	});
 
 	console.log('wasAdded:', wasAdded);
@@ -60,19 +63,6 @@ export const isJSON = function(str : string) {
 }
 
 
-export let Assets = new Map();
-export const getAssets = async function() {
-    if (Assets.size != 0) return Assets;
-
-    const response = await fetch('/assets/assets.json');
-    const results = await response.json();
-    for (let i=0;i<results.length;i++) {
-        Assets.set(results[i].Symbol, results[i]);
-    }
-    return Assets;
-}
-
-export const getAssetBySymbol = async function(symbol : string) {
-	let assets = await getAssets();
-	return assets.get(symbol);
-}
+export const shortEth = function(ethAddress : string) {
+	return ethAddress.substring(0, 6) + "..." + ethAddress.substring(ethAddress.length - 4);
+};

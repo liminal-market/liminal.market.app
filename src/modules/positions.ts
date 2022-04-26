@@ -1,14 +1,13 @@
-import { render, renderWithMoralis } from "./render";
+import { renderWithMoralis } from "../ui/Render";
 import { sellPageInit } from "./sell";
-import { addTokenToWallet, getAssets} from './helper';
+import { addTokenToWallet, getAssets} from '../util/Helper';
 import { Main }  from '../main';
-import Moralis from 'moralis';
 
 let LiminalMarketInfo : any;
 
 export const initPositionsPage = async function() {
-    history.pushState(null, 'Positions', '/positions');
-    let symbols = new Array();
+    history.pushState(null, 'Positions', 'positions');
+    let symbols = [];
     const sellLinks = document.getElementsByClassName('sellAsset');
     for (let i = 0; i < sellLinks.length; i++) {
         let element = sellLinks[i] as HTMLElement;
@@ -55,8 +54,8 @@ export const initPositionsPage = async function() {
         });
     }
 
-    renderSymbolLogos(symbols);
-    renderWithMoralis('documents', null, 'documents', initDocuments, 'documents')
+    await renderSymbolLogos(symbols);
+    await renderWithMoralis('documents', null, 'documents', initDocuments, 'documents')
 
 
 }

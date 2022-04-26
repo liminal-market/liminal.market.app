@@ -1,6 +1,6 @@
-import {Network} from './network';
+import Network from './Network';
 //localhost
-export class localhostNetwork extends Network {
+export default class localhostNetwork extends Network {
 	constructor() {
 		super();
 

@@ -1,6 +1,6 @@
-import {Network} from './network';
+import Network from './Network';
 
-export class rinkebyNetwork extends Network {
+export default class rinkebyNetwork extends Network {
 	constructor() {
 super();
 		this.ServerUrl = "https://rucsd2xip9xc.usemoralis.com:2053/server";

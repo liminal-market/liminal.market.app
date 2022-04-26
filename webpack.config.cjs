@@ -4,9 +4,9 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
   entry: './src/main.ts',
   devtool: 'eval-source-map',
-  mode:'production',
+  mode:'development',
   plugins: [
-    new BundleAnalyzerPlugin()
+    //new BundleAnalyzerPlugin()
   ],
   optimization: {
     chunkIds: 'named',
@@ -19,6 +19,10 @@ module.exports = {
         use: 'ts-loader',
         include : [path.resolve(__dirname, 'src')],
         exclude: /node_modules/,
+      },
+      {
+        test: /\.html$/i,
+        loader: "html-loader",
       },
     ],
   },

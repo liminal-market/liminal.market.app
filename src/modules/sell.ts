@@ -1,8 +1,10 @@
 
-import { Main }  from '../main';
+import ContractInfo from "../contracts/ContractInfo";
 
-export const sellPageInit = async function(symbol, qty) {
+export const sellPageInit = async function() {
 
     history.pushState(null, 'Sell securities', '/sell');
-	(document.getElementById('aUsdAddress') as HTMLInputElement).value = Main.ContractAddressesInfo.AUSD_ADDRESS;
+    let contractAddress = ContractInfo.getContractInfo();
+
+	(document.getElementById('aUsdAddress') as HTMLInputElement).value = contractAddress.AUSD_ADDRESS;
 }

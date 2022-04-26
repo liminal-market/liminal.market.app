@@ -50,7 +50,7 @@ header a, header a.nav-link {
 	margin-right:8px;
 }
 
-#buy_securities_wrapper, #writeToBlockcahin, #network_localhost, #not_kyc_verified,
+#buy_securities_wrapper, #writeToBlockchain, #network_localhost, #not_kyc_verified,
  #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
 	display:none;
 }
@@ -259,4 +259,23 @@ header a, header a.nav-link {
 
 #footer img {
 	width:32px;
+}
+
+#liminal_market_modal_div {
+	max-width: 95%;
+	padding:8px;
+	width:10rem;
+	position: fixed;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 101;
+}
+
+#liminal_market_backdrop {
+	background-color: #000;
+	opacity: 80%;
+	position: fixed;
+	width: 1vw;
+	height: 1vh;
+
 }
