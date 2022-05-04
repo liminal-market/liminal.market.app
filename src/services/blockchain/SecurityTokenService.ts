@@ -1,5 +1,8 @@
 import ContractInfo from "../../contracts/ContractInfo";
 import LiminalMarketService from "./LiminalMarketService";
+import ErrorInfo from "../../errors/ErrorInfo";
+import {AddressZero} from "../../util/Helper";
+import BigNumber from "bignumber.js";
 
 export default class SecurityTokenService {
     moralis: typeof Moralis;
@@ -11,39 +14,51 @@ export default class SecurityTokenService {
     }
 
 
-    public async getQuantityByAddress(symbol : string, ethAddress : string) : Promise<number>{
-        let contractInfo = ContractInfo.getContractInfo();
-
+    public async getQuantityByAddress(symbol: string, ethAddress: string): Promise<BigNumber> {
         let liminalMarketService = new LiminalMarketService(this.moralis);
-        let liminalMarketAbi = await liminalMarketService.getLiminalMarketAbi();
+        let symbolAddress = await liminalMarketService.getSymbolContractAddress(symbol);
+        if (symbolAddress === AddressZero) return new BigNumber(0);
 
-        const liminalMarketOptions = {
-            contractAddress: contractInfo.LIMINAL_MARKET_ADDRESS,
-            functionName: "getSecurityToken",
-            abi: liminalMarketAbi,
-            params: {
-                symbol: symbol
-            }
-        };
-        let symbolAddress = (await this.moralis.executeFunction(liminalMarketOptions)).toString();
-        let securitySymbolAbi = this.getSecurityTokenAbi();
-
-        const symbolTokenOptions = {
-            contractAddress: symbolAddress,
-            functionName: "balanceOf",
-            abi: securitySymbolAbi,
-            params: {
-                account: ethAddress
-            }
-        };
-
-        return await this.moralis.executeFunction(symbolTokenOptions).then(balanceOf => {
-            let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
-            return parseFloat(amount);
-        }).catch(function (err) {
-            console.error(err);
-            return 0;
+        let options = await this.getOptions('balanceOf', symbolAddress, {
+            account: ethAddress
         });
+
+        return await this.moralis.executeFunction(options)
+            .then(balanceOf => {
+                let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
+                return new BigNumber(amount);
+            }).catch(reason => {
+                ErrorInfo.report(reason);
+                return new BigNumber(0);
+            });
+    }
+
+    public async transfer(symbolAddress: string, qty: BigNumber) {
+        let contractInfo = ContractInfo.getContractInfo();
+        let options = await this.getOptions('transfer', symbolAddress, {
+            recipient: contractInfo.AUSD_ADDRESS,
+            amount: Moralis.Units.Token(qty.toString(), 18)
+        });
+
+        let result = await this.moralis.executeFunction(options)
+            .then(result => {
+                return result
+            })
+            .catch(reason => {
+                throw ErrorInfo.report(reason);
+            });
+        return result;
+    }
+
+    private async getOptions(functionName: string, symbolAddress: string, params: any) {
+        let securitySymbolAbi = await this.getSecurityTokenAbi();
+        const options = {
+            contractAddress: symbolAddress,
+            functionName: functionName,
+            abi: securitySymbolAbi,
+            params: params
+        };
+        return options;
     }
 
     public async getSecurityTokenAbi() {
@@ -53,22 +68,4 @@ export default class SecurityTokenService {
         SecurityTokenService.SecurityTokenInfo = await response.json();
         return SecurityTokenService.SecurityTokenInfo.abi;
     }
-
-    public async transfer(symbolAddress : string, qty : number) {
-
-        let contractInfo = ContractInfo.getContractInfo();
-        let abi = await this.getSecurityTokenAbi();
-        const liminalOptions = {
-            contractAddress: symbolAddress,
-            functionName: "transfer",
-            abi: abi,
-            params: {
-                recipient: contractInfo.AUSD_ADDRESS,
-                amount: Moralis.Units.Token(qty, 18)
-            },
-        };
-
-        return await Moralis.executeFunction(liminalOptions);
-    }
-
 }

@@ -1,5 +1,6 @@
 import NetworkInfo from "../../networks/NetworkInfo";
 import Progress from "../../ui/elements/Progress";
+import {TradeType} from "../../enums/TradeType";
 
 export default class Subscription {
     moralis : typeof Moralis;
@@ -14,8 +15,8 @@ export default class Subscription {
         return "";
     };
 
-    public async subscribeToTable(tradeType : TradeType) {
-        let tableName = this.getOrderBuyTablePrefix() + (tradeType == TradeType.aUSD) ? 'OrderBuy' : 'OrderSell';
+    public async subscribeToTable(tradeType : TradeType, onUpdateCallback : (object : any) => void) {
+        let tableName = this.getOrderBuyTablePrefix() + 'Order' + tradeType;
 
         console.log('subscribe to table:' + tableName);
 
@@ -27,10 +28,9 @@ export default class Subscription {
             console.log('object updated', JSON.stringify(object), object);
             let ethLink = ' <a class="white-link" target="_blank" href="https://mumbai.polygonscan.com/tx/' + object.transaction_hash + '">View transaction</a>';
 
+            onUpdateCallback(object);
             console.log('status:', object.status);
-            if (object.tokenAddress) {
-                addTokenLinkBottom(Symbol, SelectedSymbolAddress);
-            }
+
             let progress = new Progress();
             if ((!object.status && object.confirmed) || object.status == 'money_sent') {
                 progress.show('Blockchain has confirmed, money has been sent to broker.' + ethLink, 56)
@@ -42,7 +42,6 @@ export default class Subscription {
                 //order has been executed, we are waiting on response from the stock exchange
                 progress.show('Buy order has been executed. We will update you when it has been filled.' + ethLink, 84)
             } else if (object.status == 'order_filled') {
-                document.getElementById('buy-info').style.display = 'none';
                 //order has been filled, you got object.filledQty of shares. You will see it soon in your wallet
                 progress.show('Order has been filled, you will receive ' + object.filledQty + ' ' + Symbol + ' soon into your wallet.' + ethLink, 100);
             } else {

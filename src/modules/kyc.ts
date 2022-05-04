@@ -1,13 +1,15 @@
 import KYCService from "../services/blockchain/KYCService";
 import NetworkInfo from "../networks/NetworkInfo";
 import Progress from "../ui/elements/Progress";
+import UserService from "../services/backend/UserService";
 
 
 export const initKYC = async function () {
-	let user = Moralis.User.current();
+	let userService = new UserService(Moralis);
+	let user = userService.getUser();
 	if (!user) return;
 
-	let alpacaId = (await user.fetch()).get('alpacaId');
+	let alpacaId = await userService.getAlpacaId();
 
 	let kycService = new KYCService(Moralis);
 	if (kycService.isValidAccountId(alpacaId)) {
@@ -50,7 +52,7 @@ const submitKYC = async function () {
 }
 
 function serialize(data : any) {
-	let obj = {};
+	let obj : any = {};
 	for (let [key, value] of data) {
 		if (obj[key] !== undefined) {
 			if (!Array.isArray(obj[key])) {

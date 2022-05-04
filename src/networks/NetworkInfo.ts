@@ -4,11 +4,8 @@ import mumbaiNetwork from './mumbai-network';
 import fujiNetwork from './fuji-network';
 import Network from "./Network";
 import CookieHelper from "../util/CookieHelper";
-import {Main} from "../main";
-import {AddressZero} from "../util/Helper";
 
-
-const networkInfos = [localhostNetwork, rinkebyNetwork, mumbaiNetwork, fujiNetwork];
+const networkInfos = [localhostNetwork, mumbaiNetwork];
 
 
 export default class NetworkInfo {
@@ -27,6 +24,37 @@ export default class NetworkInfo {
 
     public static loadNetwork(networkName : string) : void {
         NetworkInfo.instance = this.getNetworkInfo(networkName);
+    }
+    public static setNetworkByChainId(chainId : number) : void {
+        let network = this.getNetworkInfoByChainId(chainId);
+        if (network) {
+            let cookieHelper = new CookieHelper(document);
+            cookieHelper.setCookieNetwork((network as Network).Name);
+
+            NetworkInfo.instance = network;
+        }
+    }
+
+    public static getNetworks() : Array<Network> {
+        let networks = new Array<Network>();
+        networkInfos.forEach(networkInfoType => {
+            let tmp = new networkInfoType();
+            networks.push(tmp);
+        });
+        return networks;
+    }
+
+    public static getNetworkInfoByChainId(chainId : number) : Network | null {
+
+        let networkInfo : Network | null = null;
+        networkInfos.forEach(networkInfoType => {
+            let tmp = new networkInfoType();
+            if (tmp.ChainId == chainId) {
+                networkInfo = tmp;
+            }
+        });
+        return networkInfo;
+
     }
 
     private static getNetworkInfo(networkName?: string): Network {

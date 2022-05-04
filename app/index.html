@@ -1,137 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Liminal Market</title>
-  <link href="css/style.css" rel="stylesheet" />
+    <title>Liminal Market</title>
+    <link rel="shortcut icon" href="https://app.liminal.market/img/logos/default_logo.png"/>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <link href="css/style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/font/Inter-VariableFont_slnt,wght.ttf"/>
 
-  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
-<!--
-    <script src="/js/external/sendtry.bundle.min.js" crossorigin="anonymous"></script>
-    <script>
+    <!--
+        <script src="/js/external/sendtry.bundle.min.js" crossorigin="anonymous"></script>
+        <script>
 
-      console.log('sentry:', typeof(Sentry), typeof(Sentry) !== 'undefined');
-    if (typeof(Sentry) !== 'undefined') {
-      Sentry.init({
-        dsn: "https://1237a6f4596f43f1889ad827ead1a46f@o1074405.ingest.sentry.io/6074136",
-       // integrations: [new Integrations.BrowserTracing()],
-        tracesSampleRate: 1.0,
-      });
-    }</script>
--->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
-  </script>
-
-
-
-
+          console.log('sentry:', typeof(Sentry), typeof(Sentry) !== 'undefined');
+        if (typeof(Sentry) !== 'undefined') {
+          Sentry.init({
+            dsn: "https://1237a6f4596f43f1889ad827ead1a46f@o1074405.ingest.sentry.io/6074136",
+           // integrations: [new Integrations.BrowserTracing()],
+            tracesSampleRate: 1.0,
+          });
+        }</script>
+    -->
 </head>
-
 <body>
-  <header>
-    <nav class="navbar navbar-expand-lg">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Liminal.market</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon">Menu</span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" id="nav-securities" aria-current="page" href="/securities">Securities</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="nav-buy" href="/buy">Buy</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="nav-sell" href="/sell">Sell</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="nav-positions" aria-current="page" href="/positions">Positions</a>
-            </li>
-          </ul>
-          <div class="" style="width:350px;">
-            <div id="connect_wallet_header"></div>
-            <div id="user_info"></div>
-            <div id="offHours" class="form-check form-switch">
-                   <input class="form-check-input" type="checkbox" role="switch" id="enableOffHours">
-                <label class="form-check-label" for="enableOffHours" data-bs-html="true" data-bs-toggle="tooltip"
-                  title="Off hours trading will give you a little wrong token quantity, as we estimate the quantity of shares you will get. When trade will execute you'll see the real quantity on Positions page.<br><br> Markets are only open between 09:30 and 17:00 ET. Any trade exeucted outsite that time will happen when market opens next.">
-                  Off hours trading
-                </label>
+
+<nav>
+    <ul class="mobileNavigation">
+        <li>
+            <details role="list">
+                <summary aria-haspopup="listbox" role="link">
+                    <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 24 24" height="16px" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </summary>
+                <ul role="listbox">
+                    <li><a class="investNavLink" id="nav-securities2" aria-current="page" href="/invest">Invest</a></li>
+                    <li><a class="tradeNavLink" id="nav-buy2" href="/trade">Trade</a></li>
+                    <li><a class="positionNavLink" id="nav-positions2" aria-current="page" href="/positions">Positions</a>
+                </ul>
+            </details>
+
+        </li>
+    </ul>
+    <ul class="desktopNavigation">
+        <li class="liminal_market">
+            <div>
+                Liminal.market
+                <div class="tag_line">Liberate your stock</div>
             </div>
-
-            <div class="small_print" id="loginInfo"></div>
-          </div>
-        </div>
-      </div>
-    </nav>
-    <div class="alert alert-info" id="metamask-only" style="display: block;" role="alert">
-      <div class="left">
-        ATTN: You can only run liminal.market using Metamask in your browser. This is alpha version, it will be
-        improved.
-      </div>
-      <div class="right">
-        <a href="" id="add_ausd_to_wallet_menu">Add aUSD to your wallet</a>
-      </div>
+        </li>
+        <li><a id="nav-securities" class="investNavLink" aria-current="page" href="/invest">Invest</a></li>
+        <li><a id="nav-buy" class="tradeNavLink" href="/trade">Trade</a></li>
+        <li><a id="nav-positions" aria-current="page" href="/positions">Positions</a>
+        </li>
+    </ul>
+    <ul id="ul_user_info">
+        <li id="user_header_info"></li>
+    </ul>
+</nav>
+<header>
+    <div>
+        My aUSD balance
+        <h2 id="front_page_aUSD_balance"></h2>
+        <button class="d-none fund_account" id="frontpage_fund_account"></button>
     </div>
-  </header>
-
-  <div class="alert alert-danger" id="wrongChainId" role="alert">You are on the wrong chain. Only Rinkeby is
-    available. <a href="" id="switchNetwork">Click to switch</a></div>
-  <div class="alert alert-danger" id="ethereumNotInBrowser" role="alert">You need to <a
-      href="https://metamask.io/download.html" target="_blank">install Metamask</a> to use this website.</div>
-
-  <div class="alert alert-danger" id="weSentSigningRequest" role="alert">You already have sign in request. Click the
-    Metamask icon in your browser
-    <img src="img/metamask-pending.png" alt="Transaction pending" />
-  </div>
-  <div class="alert alert-warning" id="closedMarket" role="alert">Market is closed so not trades will go through, but
-    we can fake it for you if you like. Click the Off hours trading in the top right corner.
-    <p class="small_print">You wont see any positions until market opens and token quantity will be wrong as we
-      estimate the quantity on off hours times</p>
-  </div>
-
-
-  <div class="container pt-4" id="main_container"><div class="loading">Loading...</div></div>
-
-  <div id="backdrop"></div>
-  <div class="modal" id="modalSecurities" tabindex="-1">
-    <div class="modal-dialog modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Select security</h5>
-          <button type="button" class="btn-close" id="closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="modal-body">
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-  <div id="footer">
-    <hr />
+</header>
+<main class="container" id="main_container">
+    <div class="loading">Loading...</div>
+</main>
+<footer id="footer">
+    <hr/>
     Liminal.market is under constant development. There might be issues that haven't been discovered.
-    Find us on our <a href="https://discord.gg/ePs5cRceNB" target="_blank">Discord channel</a> if there are any issues, you have question or just to say hi.
-  </div>
+    Find us on our <a href="https://discord.gg/ePs5cRceNB" target="_blank">Discord channel</a> if there are any issues,
+    you have question or just to say hi.
+</footer>
 
+<div id="error_info" class="d-none"></div>
+<script src="./js/external/moralis.min.js" type="module"></script>
+<script src="./js/external/web3-provider.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
+        integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <script src="./js/external/moralis.min.js" type="module"></script>
-  <script src="./js/external/web3-provider.min.js" type="module"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"
-          integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <script type="module" src="./js/bundle.js"></script>
+<script type="module" src="./js/bundle.js"></script>
 
 <!--
   <script defer src='https://static.cloudflareinsights.com/beacon.min.js'

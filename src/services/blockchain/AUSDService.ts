@@ -1,5 +1,7 @@
 import ContractInfo from "../../contracts/ContractInfo";
 import NetworkInfo from "../../networks/NetworkInfo";
+import ErrorInfo from "../../errors/ErrorInfo";
+import BigNumber from "bignumber.js";
 
 export default class AUSDService {
     private static AUSDInfo : any;
@@ -9,25 +11,17 @@ export default class AUSDService {
         this.moralis = moralis;
     }
 
-    public async getAUSDBalanceOf(ethAddress : string) : Promise<number> {
-        let contractInfo = ContractInfo.getContractInfo();
-        let abi = this.getAUsdAbi();
+    public async getAUSDBalanceOf(ethAddress : string) : Promise<BigNumber> {
+        let options = await this.getOptions("balanceOf", {
+            account: ethAddress
+        });
 
-        const ausdOptions = {
-            contractAddress: contractInfo.AUSD_ADDRESS,
-            functionName: "balanceOf",
-            abi: abi,
-            params: {
-                account: ethAddress
-            }
-        };
-
-        return await this.moralis.executeFunction(ausdOptions).then(balanceOf => {
+        return await this.moralis.executeFunction(options).then(balanceOf => {
             let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
-            return parseFloat(amount);
-        }).catch(function (err) {
-            console.error(err);
-            return 0;
+            return new BigNumber(amount);
+        }).catch((reason) => {
+            ErrorInfo.report(reason);
+            return new BigNumber(0);
         });
     }
 
@@ -39,35 +33,30 @@ export default class AUSDService {
         return AUSDService.AUSDInfo.abi;
     }
 
-    public async fundUser() : Promise<boolean> {
-        let networkInfo = NetworkInfo.getInstance();
-        const params = {
-            chainId: networkInfo.ChainId
-        };
-
-        this.moralis.Cloud.run('fundUser', params).then(function() {
-            return true;
-
-        }).catch(function(error) {
-            console.error(error);
+    public async transfer(symbolAddress : string, qty : BigNumber) {
+        const options = await this.getOptions('transfer', {
+            recipient: symbolAddress,
+            amount: Moralis.Units.Token(qty.toString(), 18)
         });
-        return false;
+
+        let result = await Moralis.executeFunction(options)
+            .then(result => {return result;})
+            .catch(reason => {
+                throw ErrorInfo.report(reason);
+            });
+        return result;
     }
 
-
-    public async transfer(symbolAddress : string, qty : number) {
+    public async getOptions(functionName : string, params : any) {
         let contractInfo = ContractInfo.getContractInfo();
         let abi = await this.getAUsdAbi();
-            const liminalOptions = {
-            contractAddress: contractInfo.AUSD_ADDRESS,
-            functionName: "transfer",
-            abi: abi,
-            params: {
-                recipient: symbolAddress,
-                amount: Moralis.Units.Token(qty, 18)
-            },
-        };
 
-        return await Moralis.executeFunction(liminalOptions);
+        const options = {
+            contractAddress: contractInfo.AUSD_ADDRESS,
+            functionName: functionName,
+            abi: abi,
+            params: params,
+        };
+        return options;
     }
 }

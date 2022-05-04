@@ -17,20 +17,18 @@ import NetworkInfo from "../networks/NetworkInfo";
 export default class ContractInfo {
 
 
+    public static getContractInfo(networkName?: string): ContractAddresses {
+        let contractInfos: any = {
+            localhostContractAddresses, rinkebyContractAddresses,
+            mumbaiContractAddresses, fujiContractAddresses
+        };
 
-	public static getContractInfo(networkName? : string) : ContractAddresses {
-		let contractInfos = {
-			localhostContractAddresses, rinkebyContractAddresses,
-			mumbaiContractAddresses, fujiContractAddresses };
-
-		if (!networkName) {
-			networkName = NetworkInfo.getInstance().Name;
-		}
-		const contractInfoType = contractInfos[networkName + 'ContractAddresses'];
-		return new contractInfoType();
-	}
-
-
+        if (!networkName) {
+            networkName = NetworkInfo.getInstance().Name;
+        }
+        const contractInfoType = contractInfos[networkName + 'ContractAddresses'];
+        return new contractInfoType();
+    }
 
 
 }

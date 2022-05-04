@@ -1,6 +1,3 @@
-import {IsMarketOpen} from "../modules/market";
-import UserService from "../backend/UserService";
-import NetworkInfo from "../../networks/NetworkInfo";
 
 export default class MarketService {
     moralis : typeof Moralis;

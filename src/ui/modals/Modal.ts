@@ -1,41 +1,49 @@
+import ModalHtml from '../../html/modal/Modal.html';
+import HtmlCache from "./HtmlCache";
+
 export default class Modal {
+    modalId = 'liminal_market_modal_div';
+    static cache : Map<string, HtmlCache> = new Map<string, HtmlCache>();
 
-    public showModal(content : string, callback? : () => void, loadMore? : () => void) {
-        let divId = 'liminal_market_modal_div';
-        let backdropId = 'liminal_market_backdrop';
-        let modalDiv = document.getElementById(divId);
-        let backdropDiv = document.getElementById(backdropId);
+    public hideModal() {
+        let modalDiv = document.getElementById(this.modalId)!;
+        //modalDiv.style.display = 'none';
+        modalDiv.removeAttribute('open');
+    }
 
-        if (!modalDiv) {
-            document.body.append('<div id="' + backdropId + '"></div>');
-            document.body.append('<div id="' + divId + '"></div>');
-
-            modalDiv = document.getElementById(divId);
-            backdropDiv = document.getElementById(backdropId);
-
-            backdropDiv.addEventListener('click', (evt) => {
-                modalDiv.style.display = 'none';
-                backdropDiv.style.display = 'none';
-            })
+    public showModal(title : string, content: string, cacheKey? : string, callback?: () => void, loadMore?: () => void) : boolean {
+        let modalDiv = document.getElementById(this.modalId);
+        if (modalDiv) {
+            let modalTitle = modalDiv.dataset.title;
+            if (modalTitle && modalTitle === title) {
+                //modalDiv.style.display = 'block';
+                modalDiv.setAttribute('open', '');
+                return false;
+            }
         }
-        modalDiv.style.display = 'block';
-        backdropDiv.style.display = 'block';
-        modalDiv.innerHTML = content;
 
-        if (!loadMore) {
-            modalDiv.innerHTML += '<span id="liminal_market_load_more"></span>';
-            const el = document.querySelector('#liminal_market_load_more')
-            const observer = new window.IntersectionObserver(([entry]) => {
-                if (entry.isIntersecting) {
-                    loadMore();
-                    return;
-                }
-            }, {
-                root: null,
-                threshold: 0.1, // set offset 0.1 means trigger if atleast 10% of element in viewport
-            });
-            observer.observe(el);
+        let template = Handlebars.compile(ModalHtml);
+
+        let obj: any = {
+            title: title, content: content
         }
+        let html = template(obj);
+
+        if (modalDiv) {
+            document.body.removeChild(modalDiv);
+        }
+        document.body.insertAdjacentHTML( 'beforeend',html);
+
+        modalDiv = document.getElementById(this.modalId)!;
+        modalDiv.addEventListener('click', (evt) => {
+            console.log(evt);
+            if (evt.target  && (evt.target as HTMLElement).id === 'liminal_market_modal_div') {
+                this.hideModal();
+            }
+        });
+        modalDiv.setAttribute('open', '');
+
+        return true;
 
 
     }

@@ -43,7 +43,7 @@ export default class Network {
 		web3.provider.request({
 			method: 'wallet_addEthereumChain',
 			params: [{
-				chainId: this.ChainId,
+				chainId: '0x' + this.ChainId.toString(16),
 				chainName: this.ChainName,
 				nativeCurrency: {
 					name: this.NativeCurrencyName,

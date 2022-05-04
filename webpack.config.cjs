@@ -21,13 +21,17 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.html$/i,
+        test: /src.*\.html$/,
         loader: "html-loader",
+        include : [path.resolve(__dirname, 'src/html')],
+        options: {
+          sources: false,
+        },
       },
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.html'],
     fallback: { "stream":false, "assert":false, "http": false, "https":false, "os":false, "url":false, "crypto":false },
   },
   output: {
@@ -39,6 +43,13 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'app')
     },
+    allowedHosts: [
+      '192.168.5.11.sslip.io',
+      '192.168.5.15.sslip.io',
+      '192.168.5.10.sslip.io'
+    ],
+    liveReload:false,
+    hot:false,
     devMiddleware : {
       writeToDisk: true,
     }

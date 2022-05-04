@@ -32,6 +32,7 @@
 	},
 	"dependencies": {
 		"bignumber": "^1.1.0",
+		"bignumber.js": "^9.0.2",
 		"handlebars": "^4.7.7",
 		"handlebars-fs": "^1.0.0",
 		"moralis": "^1.5.9"

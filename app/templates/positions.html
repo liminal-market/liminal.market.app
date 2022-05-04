@@ -1,4 +1,4 @@
-<div class="loaded-content2">
+<article class="loaded-content2">
 	<h3>Positions</h3>
 	<p>These are your positions registered with the broker. These would be registered to you on the stock exchange if we weren't running on
 		a sandbox at the broker. Want to know when we open for live trading? <a href="https://liminal.market" target="_blank">Register your email with us</a>
@@ -22,7 +22,7 @@
 			{{#each result}}
 			<tr>
 				<td><img class="symbol_logo" id="symbol_logo_{{symbol}}" src="/img/logos/default_logo.png" /></td>
-				<td><a href="https://finance.yahoo.com/quote/{{symbol}}" target="_blank">{{symbol}}</a></td>
+				<td><a href="https://strike.market/stocks/{{symbol}}" target="_blank">{{symbol}}</a></td>
 				<td>{{current_price}}</td>
 				<td>{{round2 avg_entry_price}}</td>
 				<td>{{round2 qty}}</td>
@@ -38,4 +38,4 @@
 
 	<div id="documents" class="mt-3"></div>
 
-</div>
+</article>

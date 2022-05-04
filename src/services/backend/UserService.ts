@@ -1,5 +1,10 @@
 import NetworkInfo from "../../networks/NetworkInfo";
 import MarketService from "../broker/MarketService";
+import CookieHelper from "../../util/CookieHelper";
+import AuthenticateService from "./AuthenticateService";
+import ProviderInfo from "../../wallet/ProviderInfo";
+import WalletHelper from "../../util/WalletHelper";
+
 
 export default class UserService {
     moralis: typeof Moralis;
@@ -28,11 +33,45 @@ export default class UserService {
         return this.moralis.User.logOut();
     }
 
-    public isLoggedIn(): typeof Moralis.User | undefined {
-        if (!this.moralis.isWeb3Enabled()) return undefined;
+    public async isLoggedIn(loadingMessage : HTMLElement) {
         let user = this.moralis.User.current();
-        if (!user) return undefined;
-        return user;
+        if (user) {
+            let cookieHelper = new CookieHelper(document);
+            let providerName = cookieHelper.getCookieValue('provider');
+
+            let walletHelper = new WalletHelper();
+            if (walletHelper.isWebview(window.navigator.userAgent)) providerName = ' ';
+
+            if (!providerName) {
+                return undefined;
+            }
+
+            if (!this.moralis.isWeb3Enabled()) {
+                loadingMessage.innerHTML = 'We are sending login request to your wallet. If you cancel we will simply log you out. You can always log again in.';
+
+                let result = await this.moralis.enableWeb3({provider:providerName as any})
+                    .catch(async reason => {
+                        if (reason.message && reason.message.toLowerCase().indexOf('user rejected the request') != -1) {
+                            await this.moralis.User.logOut();
+                            //window.location.reload();
+                            return false;
+                        }
+                        console.log('not login', providerName, reason);
+                    });
+                if (!result) return;
+            }
+
+            let providerInfo : ProviderInfo = new ProviderInfo(null);
+            let authenticationService = new AuthenticateService(this.moralis);
+            await authenticationService.authenticateUser(providerName, (walletConnectionInfo) => {
+                providerInfo = new ProviderInfo(walletConnectionInfo);
+            } );
+            (user as any).providerInfo = providerInfo;
+
+            return user;
+        }
+
+        return undefined;
     }
 
     public setOffHours(isOffHours: boolean): void {
@@ -62,5 +101,18 @@ export default class UserService {
         if (isOffHours) return true;
 
         return false;
+    }
+    public getUser() {
+        return this.moralis.User.current();
+    }
+    public async getAlpacaId() : Promise<string> {
+        let user = this.getUser();
+        if (!user) return '';
+
+        return (await user.fetch()).get('alpacaId').toString();
+    }
+
+    getEthAddress() {
+        return this.getUser()?.get('ethAddress');
     }
 }

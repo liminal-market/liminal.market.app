@@ -2,7 +2,7 @@ import ErrorInfo from "./ErrorInfo";
 
 export default class WalletConnectError extends ErrorInfo {
     description : string;
-    constructor(reason) {
+    constructor(reason : string) {
         super(reason);
         //"Request of type 'wallet_requestPermissions' already pending")
 

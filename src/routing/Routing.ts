@@ -1,68 +1,80 @@
-import {render, renderWithMoralis} from "../ui/Render";
+import Render from "../ui/Render";
 import {sellPageInit} from "../modules/sell";
-import {buyPageInit} from "../modules/buy";
-import {loadSecurities} from "../modules/securities";
+import {tradePageInit} from "../modules/trade";
+import {loadInvest} from "../modules/invest";
 import {initPositionsPage} from "../modules/positions";
+import {initKYC} from "../modules/kyc";
+import doc = Mocha.reporters.doc;
+
 
 export default class Routing {
 
-    settings = {
-        show_sell: this.showSell,
-        show_buy: this.showBuy,
+    settings : any = {
+        show_trade: this.showTrade,
         show_positions: this.showPositions,
-        show_securities: this.showSecurities,
+        show_invest: this.showInvest,
     };
+    render : Render;
+
+    constructor(moralis : typeof Moralis) {
+        this.render = new Render(moralis);
+    }
 
     public async loadRoutes() {
         let path = window.location.pathname.replace('/', '');
-        if (path === '') path = 'buy';
+        if (path === '') path = 'invest';
 
         this.attachNavLinks();
 
         const fn = this.settings['show_' + path];
         if (typeof fn === 'function') {
-            await fn();
+            await fn(this);
         }
     }
 
-
-    public async showSell(evt : MouseEvent) {
+    public async showTrade(routing : Routing, evt : MouseEvent) {
         if (evt) evt.preventDefault();
-        await renderWithMoralis('positions', null, 'sell', sellPageInit);
+        await routing.render.render('trade', '', tradePageInit);
     }
 
-    public async showBuy(evt : MouseEvent) {
+    public async showInvest(routing : Routing,evt : MouseEvent) {
         if (evt) evt.preventDefault();
-        await render('buy', null, buyPageInit);
+        await routing.render.render('invest', '', loadInvest);
+    }
+    public async showPositions(routing : Routing,evt : MouseEvent) {
+        if (evt) evt.preventDefault();
+        await routing.render.renderWithMoralis('positions', '', 'positions', initPositionsPage);
     }
 
-    public async showSecurities(evt : MouseEvent) {
-        if (evt) evt.preventDefault();
-        await render('securities', null, loadSecurities);
+    public init() {
+        this.render.render('buy', '', initKYC);
     }
-    public async showPositions(evt : MouseEvent) {
-        if (evt) evt.preventDefault();
-        await renderWithMoralis('positions', null, 'positions', initPositionsPage);
-    }
-
 
     public attachNavLinks() {
         let router = this;
 
-        document.getElementById('nav-sell')!.addEventListener('click', async function (evt) {
-            await router.showSell(evt);
+
+        let tradeNavLinks = document.querySelectorAll('.tradeNavLink');
+        tradeNavLinks.forEach(link => {
+            (link as HTMLElement).addEventListener('click', async function (evt : MouseEvent) {
+                await router.showTrade(router, evt);
+                link.parentElement!.parentElement!.parentElement!.removeAttribute('open');
+            });
+        });
+        let investLinks = document.querySelectorAll('.investNavLink');
+        investLinks.forEach(link => {
+            (link as HTMLElement).addEventListener('click', async function (evt) {
+                await router.showInvest(router, evt);
+                link.parentElement!.parentElement!.parentElement!.removeAttribute('open');
+            });
         });
 
-        document.getElementById('nav-buy')!.addEventListener('click', async function (evt) {
-            await router.showBuy(evt);
-        });
-
-        document.getElementById('nav-securities')!.addEventListener('click', async function (evt) {
-            await router.showSecurities(evt);
-
-        });
-        document.getElementById('nav-positions')!.addEventListener('click', async function (evt) {
-            await router.showPositions(evt);
+        let positionLinks = document.querySelectorAll('.positionNavLink');
+        positionLinks.forEach(link => {
+            (link as HTMLElement).addEventListener('click', async function (evt) {
+                await router.showPositions(router, evt);
+                link.parentElement!.parentElement!.parentElement!.removeAttribute('open');
+            });
         });
     }
 

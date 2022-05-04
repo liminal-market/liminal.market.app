@@ -1,0 +1,25 @@
+{{#each securities}}
+<tr data-symbol="{{{Symbol}}}" data-logo="{{LogoPath}}{{Logo}}" data-name="{{Name}}">
+    <td class="symbol_logo"><img src="{{LogoPath}}{{Logo}}"/></td>
+    <td class="security_information">
+        <strong>{{Name}}</strong><br/>
+        <nav class="security_extra">
+            <ul>
+                <li>
+                    <a href="https://strike.market/stocks/{{Symbol}}" target="_blank">{{Symbol}}</a>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <a href="" class="getAddress" data-symbol="{{Symbol}}">Get address</a>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <a href="" class="addToWallet" data-symbol="{{Symbol}}">Add to wallet</a>
+                </li>
+            </ul>
+        </nav>
+    </td>
+</tr>
+{{/each}}

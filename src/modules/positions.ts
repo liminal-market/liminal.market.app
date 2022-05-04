@@ -1,31 +1,34 @@
-import { renderWithMoralis } from "../ui/Render";
+import  Render from "../ui/Render";
 import { sellPageInit } from "./sell";
-import { addTokenToWallet, getAssets} from '../util/Helper';
-import { Main }  from '../main';
+import {AddressZero } from '../util/Helper';
+import LiminalMarketService from "../services/blockchain/LiminalMarketService";
+import SecuritiesService from "../services/broker/SecuritiesService";
+import WalletHelper from "../util/WalletHelper";
 
-let LiminalMarketInfo : any;
 
 export const initPositionsPage = async function() {
     history.pushState(null, 'Positions', 'positions');
-    let symbols = [];
+
+    let symbols = new Array<string>();
+    let render = new Render(Moralis);
+
     const sellLinks = document.getElementsByClassName('sellAsset');
     for (let i = 0; i < sellLinks.length; i++) {
         let element = sellLinks[i] as HTMLElement;
+        let symbol = element.dataset.symbol;
+        if (!symbol) continue;
 
-        symbols.push( element.dataset.symbol);
+        symbols.push(symbol);
 
         sellLinks[i].addEventListener('click', async function (evt) {
             evt.preventDefault();
 
-            let symbol = element.dataset.symbol;
             let qty = element.dataset.qty;
 
-            await renderWithMoralis('positions', null, 'sell', () => sellPageInit(symbol, qty));
+
+            await render.renderWithMoralis('positions', '', 'sell', () => sellPageInit());
         });
     }
-
-    const response = await fetch("../abi/LiminalMarket.json");
-    LiminalMarketInfo = await response.json();
 
     const addToWalletLinks = document.getElementsByClassName('addToWallet');
     for (let i=0;i<addToWalletLinks.length;i++) {
@@ -33,40 +36,33 @@ export const initPositionsPage = async function() {
             evt.preventDefault();
             console.log(evt.target);
             let element  = addToWalletLinks[i] as HTMLElement;
-            let symbol = element.dataset.symbol;
+            let symbol = element.dataset.symbol!;
 
-            const securityTokenOptions = {
-                contractAddress: Main.ContractAddressesInfo.LIMINAL_MARKET_ADDRESS,
-                functionName: "getSecurityToken",
-                abi: LiminalMarketInfo.abi,
-                params: {
-                    symbol: symbol
-                }
-            };
+            let liminalMarketService = new LiminalMarketService(Moralis);
+            let contractAddress = await liminalMarketService.getSymbolContractAddress(symbol);
+            if (contractAddress.toString() != AddressZero) {
+                let walletHelper = new WalletHelper();
+                await walletHelper.addTokenToWallet(Moralis, contractAddress.toString(), symbol, () => {
 
-            Moralis.executeFunction(securityTokenOptions).then((contractAddress) => {
-                //todo: validate that .value is correct here??
-                if (contractAddress.toString() != "0x0000000000000000000000000000000000000000") {
-                    addTokenToWallet(contractAddress.toString(), symbol);
-                }
-
-            });
+                });
+            }
         });
     }
 
     await renderSymbolLogos(symbols);
-    await renderWithMoralis('documents', null, 'documents', initDocuments, 'documents')
+    await render.renderWithMoralis('documents', '', 'documents', initDocuments, 'documents')
 
 
 }
 
 const renderSymbolLogos = async function(symbols : Array<string>) {
-    const assets = await getAssets();
+    let securitiesService = await SecuritiesService.getInstance();
+    const assets = await securitiesService.getSecurities();
     let asset;
     for (let i =0 ;i<symbols.length;i++) {
         asset = assets.get(symbols[i]);
         if (asset) {
-            document.getElementById('symbol_logo_' + symbols[i]).setAttribute('src', '/img/logos/' + asset.Logo);
+            document.getElementById('symbol_logo_' + symbols[i])!.setAttribute('src', '/img/logos/' + asset.Logo);
         }
     }
 

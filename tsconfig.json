@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "ES2015",
-    "target": "ES2015",
+    "module": "ES6",
+    "target": "ES6",
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "sourceMap": true,
@@ -20,11 +20,12 @@
   "exclude": [
     "node_modules"
   ],
+  "include": ["./src/html/*.html"],
   "files": [
     "./src/main.ts",
     "./src/.d.ts",
+    "./src/html.d.ts",
     "./node_modules/moralis/types/index.d.ts",
-    "src/ui/TradeType.ts"
   ],
   "compileOnSave": true
 }

@@ -5,7 +5,7 @@ export default class Progress {
         let progress = document.getElementById('progress');
         if (!progress) return;
 
-        if (!hideElements) {
+        if (hideElements) {
             hideElements.forEach((el: string) => {
                 let element = document.getElementById(el);
                 if (!element) return;

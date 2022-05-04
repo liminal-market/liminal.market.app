@@ -1,4 +1,5 @@
 import ContractInfo from "../../contracts/ContractInfo";
+import ErrorInfo from "../../errors/ErrorInfo";
 
 export default class KYCService {
     moralis : typeof  Moralis;
@@ -21,8 +22,8 @@ export default class KYCService {
     public async hasValidKYC(ethAddress : string) : Promise<boolean> {
         if (KYCService.IsValidKYC) return KYCService.IsValidKYC;
 
-        let kycOptions = this.getKYCIsValidOptions(ethAddress);
-        await this.moralis.executeFunction(kycOptions).then(async (result) => {
+        let kycOptions = await this.getKYCIsValidOptions(ethAddress);
+        let isValid = await this.moralis.executeFunction(kycOptions).then(async (result) => {
             if (!this.isValidAccountId(result.toString())) return false;
             KYCService.IsValidKYC = true;
 
@@ -35,11 +36,11 @@ export default class KYCService {
             }
             return true;
 
-        }).catch(function(err) {
-            console.log('Not KYC valid', err);
+        }).catch(reason => {
+            ErrorInfo.report(reason)
             return false;
         });
-        return false;
+        return isValid;
     }
 
     public async saveKYCInfo(data : any) {
@@ -51,9 +52,9 @@ export default class KYCService {
         user.save();
     }
 
-    public getKYCIsValidOptions(ethAddress : string) : any {
+    public async getKYCIsValidOptions(ethAddress : string) : Promise<any> {
         let contractInfo = ContractInfo.getContractInfo();
-        let abi = this.getKYCAbi();
+        let abi = await this.getKYCAbi();
 
         return {
             contractAddress: contractInfo.KYC_ADDRESS,

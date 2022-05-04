@@ -1,5 +1,6 @@
-import ErrorInfo from "../../errors/ErrorInfo";
-import WalletConnectError from "../../errors/WalletConnectError";
+import Moralis from "moralis";
+import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
+import NetworkInfo from "../../networks/NetworkInfo";
 
 export default class AuthenticateService {
     moralis : typeof Moralis
@@ -8,25 +9,38 @@ export default class AuthenticateService {
         this.moralis = moralis;
     }
 
-    public async authenticateUser(provider : Moralis.Web3ProviderType) : Promise<Moralis.User | ErrorInfo> {
+    public async authenticateUser(provider : any,
+                                  enableWeb3Callback? : (walletConnectionInfo : MoralisWeb3Provider) => void,
+                                  authenticatedCallback? : (user : Moralis.Attributes) => void
+        ) {
         let moralis = this.moralis;
-        await moralis.enableWeb3({provider:provider}).then(async function(provider) {
+        let chainId = NetworkInfo.getInstance().ChainId;
 
-            await moralis.authenticate({
-                signingMessage: "You are logging into Liminal.market.\n\n"
-            }).then(function(user) {
-                return user;
-            }).catch(function(reason) {
-                return new WalletConnectError(reason);
+        let web3Result = await moralis.enableWeb3({provider:provider,
+            chainId:chainId, appLogo : 'https://app.liminal.market/img/logos/default_logo.png' })
+            .catch(async (reason) => {
+                if (!reason && reason.indexOf('but is not finished yet') != -1) {
+                    alert('adfads');
+
+                }
+                throw new Error(reason);
             });
+        if (enableWeb3Callback) enableWeb3Callback(web3Result);
 
-        }).catch(function(reason) {
+        let user = this.moralis.User.current();
+        if (user) {
+            if (authenticatedCallback) return authenticatedCallback(user);
+            return;
+        }
 
 
-            return new WalletConnectError(reason);
-        })
-        return new ErrorInfo("hello");
+        let result = await moralis.authenticate({
+            signingMessage: "You are logging into Liminal.market.\n\n",
+            provider: provider,
+            chainId: chainId
+        });
 
+        if (authenticatedCallback) authenticatedCallback(result);
     }
 
     public getUser() {
@@ -49,8 +63,10 @@ export default class AuthenticateService {
         return (this.moralis.User.current() !== null);
     }
 
-    public getChainId() {
-        return this.moralis.chainId;
+    public getChainId() : number {
+        if (!this.moralis.chainId) return 0;
+
+        return parseInt(this.moralis.chainId, 16);
     }
 
 }

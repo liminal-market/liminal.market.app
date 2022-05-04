@@ -1,281 +1,329 @@
+/* Blue-grey Light scheme (Default) */
+/* Can be forced with data-theme="light" */
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+	--primary: #546e7a;
+	--primary-hover: #455a64;
+	--primary-focus: rgba(84, 110, 122, 0.125);
+	--primary-inverse: #FFF;
+}
 
-.addToWallet, .getAddress {
+/* Blue-grey Dark scheme (Auto) */
+/* Automatically enabled if user has Dark mode enabled */
+@media only screen and (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--primary: #546e7a;
+		--primary-hover: #607d8b;
+		--primary-focus: rgba(84, 110, 122, 0.25);
+		--primary-inverse: #FFF;
+	}
+}
+
+/* Blue-grey Dark scheme (Forced) */
+/* Enabled if forced with data-theme="dark" */
+[data-theme="dark"] {
+	--primary: #546e7a;
+	--primary-hover: #607d8b;
+	--primary-focus: rgba(84, 110, 122, 0.25);
+	--primary-inverse: #FFF;
+}
+
+/* Blue-grey (Common styles) */
+:root {
+	--form-element-active-border-color: var(--primary);
+	--form-element-focus-color: var(--primary-focus);
+	--switch-color: var(--primary-inverse);
+	--switch-checked-background-color: var(--primary);
+	--spacing:0.4rem;
+	--form-element-spacing-vertical:0.3rem;
+	--form-element-spacing-horizontal:0.5rem;
+	--typography-spacing-vertical:0.25rem;
+	--alert-background:#f4511e;
+	--alert-color:#fff;
+}
+h3 {--typography-spacing-vertical:0.25rem;}
+@font-face {
+	font-family:"Inter";
+	src: url('../font/Inter-VariableFont_slnt,wght.ttf') format("truetype");
+}
+.justify-between {
+	justify-content: space-between;
+}
+.d-none {
 	display:none;
 }
+
 
 body {
-	background-color:#f6f7fc !important;
-	padding-bottom:200px;
+	font-family: 'Inter';
+	-webkit-font-smoothing: antialiased;
 }
-header {
-	background-color: #104060;
-	color:#fff;
+body > header {
+	padding-top: 0;
+	overflow: hidden;
+	height: 10rem;
+	position: relative;
+	background-image: url("/img/header.jpg");
+	background-size: cover;
+	background-position: 50%;
 }
-header a, header a.nav-link {
-	color:#fff;
+body > header img {
+	max-width: 100%;
+	height: auto;
+	border-style: none;
+	position: absolute;
+	top: -15rem;
 }
-.navbar-toggler-icon {
-	color:#fff;
-	margin-right: 15px;
+body header > div {
+	z-index: 10;
+	position: relative;
+	margin: auto;
+	width: 14rem;
+	text-align: center;
+	color: #fff;
+	font-weight: 800;
+	top: 1.5rem;
+	text-shadow: 0rem 0rem 12px #7c7c7c;
 }
-.form-floating label, .form-floating input.form-control, .form-floating textarea.form-control {
-	font-size:1rem !important;
+
+body header h2 {color:#fff;margin-bottom: 0;}
+body header .fund_account {
+	font-size:1rem;
 }
-.small_print {
-	font-size:12px;
+a {
+	text-decoration: underline;
+}
+body>footer {
+	padding:3rem;
+}
+
+.tag_line {
+	font-size:0.6rem;
+}
+#ul_user_info { margin-right: 0;}
+
+/* user menu */
+#userMenuPanel {
+	position: relative;
+}
+#userInfoAction {
+	text-decoration: none;
+}
+#userInfoDropdown {
+	position: absolute;
+	right: 1rem;
+	z-index: 12;
+	width: 15rem;
+	padding: 0rem;
+	background-color: var(--primary-inverse);
+	box-shadow: 3px 8px 34px 0px var(--primary);
+	border-radius: 0.3rem;
+	font-size: 16px;
+}
+
+#connect_wallet_walletConnect, #connect_wallet_coinbaseWallet, #connect_wallet_metamask {
+	background-image: url("../img/walletconnect.svg");
+	background-size: 3rem;
+	background-position-x: 1rem;
+	background-position-y: center;
+	background-repeat: no-repeat;
+	padding-left: 5.5rem;
+}
+#connect_wallet_coinbaseWallet {
+	background-image: url("../img/coinbase.svg");
+}
+#connect_wallet_metamask{
+	background-image: url("../img/metamask.svg");
+}
+
+
+#userInfoDropdown .grid {
+	grid-template-columns: 1fr 2fr;
+	padding: 10px 5px;
+	margin: 10px 15px;
+}
+#userInfoDropdown .grid img {
+	width:3rem;
+}
+#userInfoDropdown h6 {
 	margin-bottom:0;
 }
-#offHours {
-	margin-right:10px;
+#userInfoDropdown .account_info a {
+	text-align: right;
 }
-.symbol_logo { height:32px;}
-.progress_text {
-	padding:4px;
-	white-space: normal;
-	text-align: left;
-}
-
-.progress_text_attn .progress_text {
-	color: #000;
-    font-weight: bold;
-    text-align: center;
-}
-.progress_text_attn .progress_text img {
-	margin-left:9px;
-}
-
-.loaded-content input[type=checkbox] {
-	height:18px;
-	width:19px;
-	margin-right:8px;
-}
-
-#buy_securities_wrapper, #writeToBlockchain, #network_localhost, #not_kyc_verified,
- #addNewTokenToWallet, .alert, #btn-login, #btn-logout, #kycError, #buy_success_message {
-	display:none;
-}
-
-
-.video_demo {
-	width:333px;
-}
-
-#execute-trade.disabled {
-	display: none;
-}
-#execute-trade.enabled {
-	display:block;
-}
-
-.white-link {
-	color:#fff;
-}
-.loaded-content h2 {
-	font-size: 1.7rem;
-}
-.loaded-content h3 {
-	font-size:1.2rem;
-}
-.loaded-content, .loaded-content2 {
-	margin:0 auto;
-	width:450px;
-	max-width: 100%;
-	padding:8px;
-}
-.loaded-content2 {
-	width:850px;
-	max-width: 100%;
-}
-.loaded-content input, .loaded-content select {
-	padding:8px;
-	border: none;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 35%);
-    border-radius: 2px;
-    height: 54px;
-    background: #fff;
-	font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #32363a;
-	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-	width:100%
-}
-
-.loaded-content2 th {
-		font-size: 12px;
-		padding-right: 40px;
-		text-align: left;
-
-}
-.loaded-content2 td {
-	padding-right: 17px;
-    padding-top: 6px;
-}
-
-.loaded-content.sidebar, #use_wallet_for_orders {
-    padding: 8px;
-    display: inline-block;
-    text-align: left;
-	margin:0 20px;
-}
-
-
-#main_container {
-	display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: row;
-}
-
-.loaded-content.sidebar, #use_wallet_for_orders {
-	flex: 1 0 61%;  /* flex-grow, flex-shrink, flex-basis */
-	margin: 2px;
-  }
-
-  .loaded-content.sidebar {
-	  max-width: 350px;
-	  transition: width 2s;
-  }
-  #use_wallet_for_orders {
-	  display:none;
-	max-width:500px;
-	transition: width 2s;
-	border-left:1px solid #c3c3c3;
-	margin-left:20px;
-	padding-left:20px;
-}
-
-#addTokenToWallet, #copyAddress, #maxQty {font-size:12px;}
-#addTokenToWallet, #copyAUSDAddress { color: #000; }
-
-#metamask-only {
-	display: block;
-    font-size: 0.8rem;
-    padding: 0.3rem;
-    border-radius: 0;
-	min-height:30px;
-}
-
-#tokenLogo {
-	width:32px;
-	margin:0.3rem;
-}
-
-#fund_account_amount {
-	height:auto;
-	width:8rem;
-	padding-bottom: 13px;
-}
-#fundUSDC {
-	height: 45px;
-}
-.litle_print {
-	font-size:14px;
-	font-style: italic;
-}
-
-#offHoursInfo {
+#userInfoDropdown button {
 	font-size:12px;
-	margin-top:13px;
-	padding-top:5px;
-	border-top: 1px solid #c3c3c3;
-	display:none;
 }
-#metamask-only {
-	display: flex;
-    justify-content: space-between;
+.liminal_market {
+	background-image: url("/img/logo.png");
+	background-repeat: no-repeat;
+	padding-left: 2.2rem;
+	margin-left: calc(var(--spacing) + 1rem);
+	background-position: left;
+	background-size: 2rem;
 }
-.left {
-	width:60%;
-	display:inline-block;
+.symbol_logo {
+	width:1.5rem;
 }
-.right {
-	width:350px;
-	text-align:right;
-	margin-right:33px;
-	display:inline-block;
-	margin-left: auto;
-	float:right;
+#liminal_market_modal_div > article {
+	margin:auto;
 }
 
-.right a {
-	color:#32363a
+
+#liminal_market_securities_table tr {
+	cursor: pointer;
+}
+#liminal_market_securities_table img {
+	width:3rem;
+}
+#liminal_market_securities_table .symbol_logo {
+	width:3rem;
 }
 
-.symbol_logo {width:32px;}
-
-@media (min-width: 576px) {
-	.modal-dialog {
-		min-width:800px;
-	}
+.security_information {
+	max-width:20rem;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 1rem 0 1rem 0rem;
+}
+.security_extra {
+	max-width: 20rem;
+}
+.security_extra li {
+	padding: 0 1rem 0 0.5rem;
 }
 
-#securities_table td {
-	max-width: 350px;
+.liminal_market_connect_wallet {
+	background-image: url('../img/wallet-svgrepo-com.svg');
+	background-repeat: no-repeat;
+	background-size: 1.8rem;
+	padding-left: 2.3rem;
+	background-position-x: 0.3rem;
+	background-position-y: center;
 }
 
-.form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label {
-	transform: scale(.85) translateY(-0.9rem) translateX(0.15rem) !important;
-}
-.form-floating>label {
-	padding-left:1.2rem !important;
+#wallet_connector_panel .provider {
+	cursor: pointer;
 }
 
-#backdrop {
-	display:none;
-	width:100%;
-	height:100%;
-	background-color:#000;
-	opacity:0.3;
-	position:fixed;
+#error_info {
+	background-color: var(--alert-background);
+	color:var(--alert-color);
+	position: fixed;
 	top:0;
 	left:0;
+	padding: 0.5rem 1rem;
+	width: 100%;
 }
 
-@media (max-width: 990px) {
-	#use_wallet_for_orders {
-		border-top: 1px solid #c3c3c3;
-		border-left-width: 0;
+.mobileNavigation {
+	display:flex;
+	margin-left:0.5rem !important;
+}
+.desktopNavigation {display:none;}
+
+
+
+#liminal_market_trade_panel {
+
+}
+.tradeInputArticle {
+	margin:0;
+	overflow: hidden;
+	padding:calc(var(--spacing)*2);
+}
+.tradeInput {
+	grid-template-columns: 11rem 1fr;
+	grid-template-rows: 50px 20px;
+	grid-column-gap: 20px;
+	grid-row-gap: 15px;
+	justify-items: stretch;
+	align-items: stretch;
+	font-size:0.7rem;
+}
+
+.tradeInput .trade_input, .tradeInput .total_usd_value {
+	text-align: right;
+}
+.tradeInput .trade_input input {
+	text-align: right;
+	border:0;
+}
+
+progress.invalid {
+
+}
+
+.tradeInput img {
+	max-width:2rem;
+	max-height: 2rem;
+}
+
+.tradeInput .price_per_share {
+	text-align: right;
+}
+.exceeds_wallet_balance {
+	background-image:var(--icon-invalid);
+	padding-left:1.5rem;
+	background-position-y: center;
+	color:var(--form-element-invalid-border-color);
+}
+
+.tradeSwitch {
+	grid-template-columns: 12rem 1fr;
+	grid-template-rows: 42px;
+	grid-column-gap: 20px;
+	grid-row-gap: 15px;
+	justify-items: stretch;
+	align-items: stretch;
+}
+.tradeSwitch .exchange_ratio {
+	text-align: right;
+}
+
+.swithBtn {
+	background-image: var(--icon-chevron);
+	padding-left:1.5rem;
+	background-position-y: center;
+}
+
+.trade_executed img {
+	width:5rem;
+}
+.trade_executed  {
+	text-align: center;
+}
+
+@media (min-width: 768px) {
+	.mobileNavigation {display:none;}
+	.desktopNavigation {display:flex;}
+
+	.tradeInput {
+		font-size:0.8rem;
+	}
+
+}
+
+@media (min-width: 1200px) {
+	.container {
+		max-width: 1130px;
+	}
+}
+@media (min-width: 992px) {
+	.container {
+		max-width: 920px;
+	}
+}
+@media (min-width: 768px) {
+	.container {
+		max-width: 700px;
 	}
 }
 
-@media (max-width: 600px) {
-	.modal {
-		width: 95% !important;
+@media (min-width: 576px) {
+	.container {
+		max-width: 510px;
+		padding-right: 0;
+		padding-left: 0;
 	}
-	.form-floating {
-		white-space: nowrap;
-	}
-	#securities_table td {
-
-	}
-}
-
-#footer {
-	max-width:750px;
-	margin:8rem auto 0 auto;
-}
-
-#footer img {
-	width:32px;
-}
-
-#liminal_market_modal_div {
-	max-width: 95%;
-	padding:8px;
-	width:10rem;
-	position: fixed;
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: 101;
-}
-
-#liminal_market_backdrop {
-	background-color: #000;
-	opacity: 80%;
-	position: fixed;
-	width: 1vw;
-	height: 1vh;
-
 }
