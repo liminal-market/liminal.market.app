@@ -1,14 +1,7 @@
-export default class CloudError {
-    code : number;
-    message : string;
-    headers : any;
-    error : any;
-    stack : string;
+import GeneralError from "./GeneralError";
+
+export default class CloudError extends GeneralError{
     constructor(e : any) {
-        this.code = e.message.data.code;
-        this.message = e.message.data.message;
-        this.error = e;
-        this.headers = e.message.headers;
-        this.stack = e.stack;
+        super(e);
     }
 }

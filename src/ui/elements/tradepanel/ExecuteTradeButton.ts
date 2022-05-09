@@ -18,15 +18,16 @@ import ProviderInfo from "../../../wallet/ProviderInfo";
 import TradeExecutedHtml from '../../../html/elements/tradepanel/TradeExecuted.html'
 import Modal from "../../modals/Modal";
 import WalletHelper from "../../../util/WalletHelper";
+import BlockchainError from "../../../errors/BlockchainError";
 
 export default class ExecuteTradeButton {
-    moralis : typeof Moralis;
-    authenticateService : AuthenticateService;
-    sellTradeInput : TradePanelInput;
-    buyTradeInput : TradePanelInput;
-    template : any;
+    moralis: typeof Moralis;
+    authenticateService: AuthenticateService;
+    sellTradeInput: TradePanelInput;
+    buyTradeInput: TradePanelInput;
+    template: any;
 
-    constructor(moralis : typeof Moralis, sellTradeInput : TradePanelInput, buyTradeInput : TradePanelInput) {
+    constructor(moralis: typeof Moralis, sellTradeInput: TradePanelInput, buyTradeInput: TradePanelInput) {
         this.moralis = moralis;
         this.sellTradeInput = sellTradeInput;
         this.buyTradeInput = buyTradeInput;
@@ -104,19 +105,16 @@ export default class ExecuteTradeButton {
                 let symbolAddress = await liminalMarketService.getSymbolContractAddress(this.buyTradeInput.symbol);
 
                 if (symbolAddress === AddressZero) {
-                    symbolAddress = await liminalMarketService.createToken(this.buyTradeInput.symbol)
-                        .catch(reason => {
-                            console.log('CATCH - createToken', reason);
-                            return AddressZero;
-                        }).then(value => {
-                            console.log('THEN - createToken', value);
-                            return value;
-                        }).finally(() => {
+                    let result = await liminalMarketService.createToken(this.buyTradeInput.symbol, () => {
+                        button.innerHTML = 'Creating token. Give it few seconds';
+                    })
+                        .finally(() => {
                             this.stopLoadingButton(button);
                             button.innerHTML = 'Execute trade';
                         });
+                    if (result instanceof BlockchainError) return;
+                    symbolAddress = result as string;
                 }
-                if (symbolAddress == AddressZero) return;
 
                 let aUsdService = new AUSDService(this.moralis);
                 await aUsdService.transfer(symbolAddress, this.sellTradeInput.quantity)
@@ -153,21 +151,21 @@ export default class ExecuteTradeButton {
         })
     }
 
-    public async showTradeExecuted(object : any) {
+    public async showTradeExecuted(object: any) {
         let proverInfo = ProviderInfo.Instance;
         let networkInfo = NetworkInfo.getInstance();
-        let obj : any = {
-            sellingLogo : '/img/logos/' + this.sellTradeInput.symbol + '.png',
-            sellingSymbol : this.sellTradeInput.symbol,
-            sellingAmount : this.sellTradeInput.quantityFormatted(),
-            buyingLogo : '/img/logos/' + this.buyTradeInput.symbol + '.png',
-            buyingSymbol : this.buyTradeInput.symbol,
-            buyingQuantity : object.filledQty,
-            buyingRoundQuantity : roundNumberDecimal(object.filledQty, 6),
-            walletName : proverInfo.WalletName,
-            shortEthAddress : shortEth(object.userAddress),
-            blockExplorerLink : networkInfo.BlockExplorer + '/tx/' + object.transaction_hash,
-            tokenAddress : object.tokenAddress
+        let obj: any = {
+            sellingLogo: '/img/logos/' + this.sellTradeInput.symbol + '.png',
+            sellingSymbol: this.sellTradeInput.symbol,
+            sellingAmount: this.sellTradeInput.quantityFormatted(),
+            buyingLogo: '/img/logos/' + this.buyTradeInput.symbol + '.png',
+            buyingSymbol: this.buyTradeInput.symbol,
+            buyingQuantity: object.filledQty,
+            buyingRoundQuantity: roundNumberDecimal(object.filledQty, 6),
+            walletName: proverInfo.WalletName,
+            shortEthAddress: shortEth(object.userAddress),
+            blockExplorerLink: networkInfo.BlockExplorer + '/tx/' + object.transaction_hash,
+            tokenAddress: object.tokenAddress
         }
         let template = Handlebars.compile(TradeExecutedHtml);
         let content = template(obj);
@@ -177,7 +175,7 @@ export default class ExecuteTradeButton {
         let addTokenToWallet = document.getElementById('addTokenToWallet');
         if (!addTokenToWallet) return;
 
-        addTokenToWallet.addEventListener('click', (evt)  => {
+        addTokenToWallet.addEventListener('click', (evt) => {
 
             let address = (evt.target as HTMLElement).dataset.address as string;
             let walletHelper = new WalletHelper();
@@ -190,9 +188,9 @@ export default class ExecuteTradeButton {
         })
     }
 
-    public async monitorExecuteTrade(transaction : Moralis.ExecuteFunctionResult, tradeType : TradeType) {
-       let subscription = new Subscription(this.moralis);
-        await subscription.subscribeToTable(tradeType, (object)  => {
+    public async monitorExecuteTrade(transaction: Moralis.ExecuteFunctionResult, tradeType: TradeType) {
+        let subscription = new Subscription(this.moralis);
+        await subscription.subscribeToTable(tradeType, (object) => {
             console.log(object);
 
             if (object.status == 'order_filled') {
@@ -211,14 +209,15 @@ export default class ExecuteTradeButton {
         executingTrade.classList.remove('d-none');
     }
 
-    private loadingButton(button : HTMLElement) {
+    private loadingButton(button: HTMLElement) {
         button.setAttribute('aria-busy', 'true');
     }
-    private stopLoadingButton(button : HTMLElement) {
+
+    private stopLoadingButton(button: HTMLElement) {
         button.removeAttribute('aria-busy');
     }
 
-    private walletIsConnected(button : HTMLElement) {
+    private walletIsConnected(button: HTMLElement) {
         let walletConnected = this.authenticateService.isWalletConnected();
         if (walletConnected) return true;
         this.removeClickEvent(button);
@@ -231,9 +230,9 @@ export default class ExecuteTradeButton {
         return false;
     }
 
-    private userIsLoggedIn(button : HTMLElement) {
-         let userLoggedIn = this.authenticateService.isUserLoggedIn();
-         if (userLoggedIn) return true;
+    private userIsLoggedIn(button: HTMLElement) {
+        let userLoggedIn = this.authenticateService.isUserLoggedIn();
+        if (userLoggedIn) return true;
 
         button.innerHTML = 'Login';
         button.addEventListener('click', async () => {
@@ -243,7 +242,7 @@ export default class ExecuteTradeButton {
         return false;
     }
 
-    private chainIdIsCorrect(button : HTMLElement) {
+    private chainIdIsCorrect(button: HTMLElement) {
         let chainId = this.authenticateService.getChainId();
         let networkInfo = NetworkInfo.getInstance();
         if (chainId === networkInfo.ChainId) return true;
@@ -256,7 +255,8 @@ export default class ExecuteTradeButton {
         return false;
 
     }
-    private async userHasNativeToken(button : HTMLElement) : Promise<boolean> {
+
+    private async userHasNativeToken(button: HTMLElement): Promise<boolean> {
         let networkInfo = NetworkInfo.getInstance();
         let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens(this.moralis);
         if (hasEnoughNativeTokens) return true;
@@ -277,7 +277,8 @@ export default class ExecuteTradeButton {
         return false;
 
     }
-    private async kycIsDone(button : HTMLElement) {
+
+    private async kycIsDone(button: HTMLElement) {
         let kycService = new KYCService(this.moralis);
         let ethAddress = this.authenticateService.getEthAddress();
         if (ethAddress === '') {
@@ -299,7 +300,8 @@ export default class ExecuteTradeButton {
         this.stopLoadingButton(button);
         return false;
     }
-    private async userHasAUSD(button : HTMLElement) : Promise<boolean> {
+
+    private async userHasAUSD(button: HTMLElement): Promise<boolean> {
         let ausdService = new AUSDService(this.moralis);
         let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
         if (balance.isGreaterThan(0)) return true;
@@ -364,7 +366,7 @@ export default class ExecuteTradeButton {
         return false;
     }
 
-    private async isMarketOpen(button: HTMLElement) : Promise<boolean> {
+    private async isMarketOpen(button: HTMLElement): Promise<boolean> {
         let userService = new UserService(this.moralis);
         let isMarketOpen = await userService.isMarketOpenOrUserOffHours();
         if (isMarketOpen) return true;
@@ -378,10 +380,10 @@ export default class ExecuteTradeButton {
     }
 
     private removeClickEvent(button: HTMLElement) {
-        let f = (event : any) => button.onclick?(event) : undefined;
+        let f = (event: any) => button.onclick ? (event) : undefined;
 
         if (f) {
-            button.removeEventListener('click',f );
+            button.removeEventListener('click', f);
         }
     }
 }

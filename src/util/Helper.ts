@@ -48,3 +48,19 @@ export const shortEth = function(ethAddress : string) {
 
 	return ethAddress.substring(0, 6) + "..." + ethAddress.substring(ethAddress.length - 4);
 };
+
+
+export const serialize = function(data : any) {
+	let obj : any = {};
+	for (let [key, value] of data) {
+		if (obj[key] !== undefined) {
+			if (!Array.isArray(obj[key])) {
+				obj[key] = [obj[key]];
+			}
+			obj[key].push(value);
+		} else {
+			obj[key] = value;
+		}
+	}
+	return obj;
+}

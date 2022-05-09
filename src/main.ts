@@ -5,6 +5,7 @@ import ConnectWallet from "./ui/modals/ConnectWallet";
 import UserInfo from "./ui/elements/UserInfo";
 import ErrorInfo from "./errors/ErrorInfo";
 import WalletHelper from "./util/WalletHelper";
+import GeneralError from "./errors/GeneralError";
 
 
 
@@ -35,7 +36,7 @@ const start = async function () {
         }
 
     }).catch((reason) => {
-        ErrorInfo.report("Server is down. Please try again later.<br /><br />" + reason);
+        ErrorInfo.report(new GeneralError("Server is down. Please try again later.<br /><br />" + reason));
     });
 
     document.body.addEventListener('click', (evt) => {

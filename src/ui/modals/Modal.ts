@@ -1,9 +1,7 @@
 import ModalHtml from '../../html/modal/Modal.html';
-import HtmlCache from "./HtmlCache";
 
 export default class Modal {
     modalId = 'liminal_market_modal_div';
-    static cache : Map<string, HtmlCache> = new Map<string, HtmlCache>();
 
     public hideModal() {
         let modalDiv = document.getElementById(this.modalId)!;
@@ -11,11 +9,11 @@ export default class Modal {
         modalDiv.removeAttribute('open');
     }
 
-    public showModal(title : string, content: string, cacheKey? : string, callback?: () => void, loadMore?: () => void) : boolean {
+    public showModal(title : string, content: string, reuseModalIfSameTitle : boolean = false) : boolean {
         let modalDiv = document.getElementById(this.modalId);
         if (modalDiv) {
             let modalTitle = modalDiv.dataset.title;
-            if (modalTitle && modalTitle === title) {
+            if (!reuseModalIfSameTitle && modalTitle && modalTitle === title) {
                 //modalDiv.style.display = 'block';
                 modalDiv.setAttribute('open', '');
                 return false;
@@ -36,7 +34,6 @@ export default class Modal {
 
         modalDiv = document.getElementById(this.modalId)!;
         modalDiv.addEventListener('click', (evt) => {
-            console.log(evt);
             if (evt.target  && (evt.target as HTMLElement).id === 'liminal_market_modal_div') {
                 this.hideModal();
             }
@@ -44,8 +41,6 @@ export default class Modal {
         modalDiv.setAttribute('open', '');
 
         return true;
-
-
     }
 
 }

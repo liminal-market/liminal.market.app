@@ -4,7 +4,6 @@ import {TradeType} from "../../enums/TradeType";
 import TradePanelInput from "./tradepanel/TradePanelInput";
 import ContractInfo from "../../contracts/ContractInfo";
 import TradeSwitch from "./tradepanel/TradeSwitch";
-import BigNumber from "bignumber.js";
 
 export default class TradePanel {
     moralis : typeof Moralis;

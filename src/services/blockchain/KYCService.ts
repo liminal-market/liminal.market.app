@@ -1,5 +1,6 @@
 import ContractInfo from "../../contracts/ContractInfo";
 import ErrorInfo from "../../errors/ErrorInfo";
+import BlockchainError from "../../errors/BlockchainError";
 
 export default class KYCService {
     moralis : typeof  Moralis;
@@ -37,7 +38,11 @@ export default class KYCService {
             return true;
 
         }).catch(reason => {
-            ErrorInfo.report(reason)
+            let blockchainError = new BlockchainError(reason);
+            if (blockchainError.addressIsNotValidKYC()) {
+                return false;
+            }
+            ErrorInfo.report(blockchainError)
             return false;
         });
         return isValid;

@@ -22,7 +22,7 @@ export default class SecuritiesListModal {
         let content = await securitiesList.render();
 
         let newInstance = this.modal.showModal('Select stock to buy', content,
-            'stocklist', () => { }, () => securitiesList.loadMore());
+            true);
         if (newInstance) {
             await securitiesList.bindEvents(onSelectSymbol);
         }

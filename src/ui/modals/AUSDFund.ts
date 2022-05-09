@@ -28,8 +28,7 @@ export default class AUSDFund {
         let content = template(null);
 
         let modal = new Modal();
-        let newInstance = modal.showModal('Fund my account (Fake money)', content);
-        if (!newInstance) return;
+        modal.showModal('Fund my account (Fake money)', content);
 
         let addToWallet = document.getElementById('addTokenToWallet');
         if (!addToWallet) return;

@@ -11,9 +11,9 @@ export default class UserInfo {
     moralis: typeof Moralis;
     user?: Moralis.Attributes;
     userService: UserService;
-    providerInfo : ProviderInfo;
+    providerInfo: ProviderInfo;
 
-    public constructor(moralis: typeof Moralis, providerInfo : ProviderInfo, user?: Moralis.Attributes) {
+    public constructor(moralis: typeof Moralis, providerInfo: ProviderInfo, user?: Moralis.Attributes) {
         this.moralis = moralis;
         this.user = user;
         this.userService = new UserService(this.moralis);
@@ -21,21 +21,13 @@ export default class UserInfo {
     }
 
 
-
-    public async renderUserInfo(elementId : string) {
+    public async renderUserInfo(elementId: string) {
         if (!this.user) return;
 
         this.listenForWalletChanges();
 
         this.loadUserMenuUI(elementId);
-        this.loadAUSDBalanceUI();
-
-        let isOffHours = this.userService.isOffHours();
-        let offHoursBtn = document.getElementById('off_hours');
-        if (offHoursBtn) {
-            offHoursBtn.addEventListener('click', this.toggleOffHours);
-        }
-
+        await this.loadAUSDBalanceUI();
     }
 
     private listenForWalletChanges() {
@@ -55,7 +47,7 @@ export default class UserInfo {
 
     private toggleOffHours(e: MouseEvent) {
         let input = e.target as HTMLInputElement;
-        let isOffHours =  input.checked;
+        let isOffHours = input.checked;
 
         this.userService.setOffHours(isOffHours);
 
@@ -69,52 +61,48 @@ export default class UserInfo {
         }
     }
 
-    private loadAUSDBalanceUI() {
+    public async loadAUSDBalanceUI() {
         if (!this.user) return;
 
 
-            let aUSDService = new AUSDService(this.moralis);
-            aUSDService.getAUSDBalanceOf(this.user.get('ethAddress')).then((aUsdvalue) => {
-                aUsdvalue = roundBigNumber(aUsdvalue);
-                let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
-                if (frontpageAUSDBalance) frontpageAUSDBalance.innerHTML = '$' + aUsdvalue;
+        let aUSDService = new AUSDService(this.moralis);
+        let aUsdValue = await aUSDService.getAUSDBalanceOf(this.user.get('ethAddress'));
+        aUsdValue = roundBigNumber(aUsdValue);
 
-                let userInfoAUSDBalance = document.getElementById('user_info_ausd_balance')
-                if (userInfoAUSDBalance) userInfoAUSDBalance.innerHTML = '$' + aUsdvalue;
+        let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
+        if (frontpageAUSDBalance) frontpageAUSDBalance.innerHTML = '$' + aUsdValue;
 
-                let networkInfo = NetworkInfo.getInstance();
-                let fund_accountBtns = document.querySelectorAll('.fund_account');
-                fund_accountBtns.forEach(element => {
-                    let aUSDFundingModal = new AUSDFund(this.moralis);
-                    if (networkInfo.TestNetwork) {
-                        element.innerHTML = 'Click for some aUSD';
-                        element.addEventListener('click', (evt) => {
-                            evt.preventDefault();
-                            aUSDFundingModal.showAUSDFakeFund(() => {
+        let userInfoAUSDBalance = document.getElementById('user_info_ausd_balance')
+        if (userInfoAUSDBalance) userInfoAUSDBalance.innerHTML = '$' + aUsdValue;
+
+        let networkInfo = NetworkInfo.getInstance();
+        let fund_accountBtns = document.querySelectorAll('.fund_account');
+        fund_accountBtns.forEach(element => {
+            let aUSDFundingModal = new AUSDFund(this.moralis);
+            if (networkInfo.TestNetwork) {
+                element.innerHTML = 'Click for some aUSD';
+                element.addEventListener('click', (evt) => {
+                    evt.preventDefault();
+                    aUSDFundingModal.showAUSDFakeFund(() => {
 
 
-                            });
-                        });
+                    });
+                });
 
-                    } else {
-                        element.innerHTML ='Fund your account';
-                        element.addEventListener('click', (evt) => {
-                            evt.preventDefault();
-                            aUSDFundingModal.showAUSDFund(() => {
-                            });
-                        })
-                    }
+            } else {
+                element.innerHTML = 'Fund your account';
+                element.addEventListener('click', (evt) => {
+                    evt.preventDefault();
+                    aUSDFundingModal.showAUSDFund(() => {
+                    });
                 })
-                if (aUsdvalue.isLessThan(51)) {
-                    let frontpage_fund_account = document.getElementById('frontpage_fund_account');
-                    if (!frontpage_fund_account) return;
-                    frontpage_fund_account.classList.remove('d-none');
-                }
-
-
-            })
-
-
+            }
+        })
+        if (aUsdValue.isLessThan(51)) {
+            let frontpage_fund_account = document.getElementById('frontpage_fund_account');
+            if (!frontpage_fund_account) return;
+            frontpage_fund_account.classList.remove('d-none');
+        }
     }
 
     private loadUserMenuUI(elementId : string) {
@@ -124,15 +112,15 @@ export default class UserInfo {
         if (!userInfoDiv) return;
 
         let networkInfo = NetworkInfo.getInstance();
-        let obj : any = {
-            ethAddress : this.user.get('ethAddress'),
-            shortEthAddress : shortEth(this.user.get('ethAddress')),
-            walletName : this.providerInfo.WalletName,
-            networkName : networkInfo.ChainName + ((networkInfo.TestNetwork) ? ' - (Test network)' : ''),
-            blockchainExplorer : networkInfo.BlockExplorer + '/address/',
-            provider : ''
+        let obj: any = {
+            ethAddress: this.user.get('ethAddress'),
+            shortEthAddress: shortEth(this.user.get('ethAddress')),
+            walletName: this.providerInfo.WalletName,
+            networkName: networkInfo.ChainName + ((networkInfo.TestNetwork) ? ' - (Test network)' : ''),
+            blockchainExplorer: networkInfo.BlockExplorer + '/address/',
+            provider: ''
         }
-        console.log(this.moralis.provider);
+
         let template = Handlebars.compile(UserInfoElement);
         let html = template(obj);
 

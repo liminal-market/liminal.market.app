@@ -2,6 +2,7 @@ import ContractInfo from "../../contracts/ContractInfo";
 import NetworkInfo from "../../networks/NetworkInfo";
 import ErrorInfo from "../../errors/ErrorInfo";
 import BigNumber from "bignumber.js";
+import BlockchainError from "../../errors/BlockchainError";
 
 export default class AUSDService {
     private static AUSDInfo : any;
@@ -20,7 +21,8 @@ export default class AUSDService {
             let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
             return new BigNumber(amount);
         }).catch((reason) => {
-            ErrorInfo.report(reason);
+            let blockchainError = new BlockchainError(reason);
+            ErrorInfo.report(blockchainError);
             return new BigNumber(0);
         });
     }
@@ -42,7 +44,8 @@ export default class AUSDService {
         let result = await Moralis.executeFunction(options)
             .then(result => {return result;})
             .catch(reason => {
-                throw ErrorInfo.report(reason);
+                let blockchainError = new BlockchainError(reason);
+                throw ErrorInfo.report(blockchainError);
             });
         return result;
     }

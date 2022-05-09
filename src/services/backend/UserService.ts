@@ -47,7 +47,9 @@ export default class UserService {
             }
 
             if (!this.moralis.isWeb3Enabled()) {
-                loadingMessage.innerHTML = 'We are sending login request to your wallet. If you cancel we will simply log you out. You can always log again in.';
+                let str = 'We are sending login request to your wallet. If you cancel we will simply log you out. You can always log again in.';
+                str += '<button onclick="Moralis.User.logout();">Logout</button>'
+                loadingMessage.innerHTML = str;
 
                 let result = await this.moralis.enableWeb3({provider:providerName as any})
                     .catch(async reason => {

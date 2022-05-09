@@ -59,6 +59,7 @@ export default class NetworkInfo {
 
     private static getNetworkInfo(networkName?: string): Network {
         let cookieHelper = new CookieHelper(document);
+        //if (window.location.host.indexOf('localhost')) networkName = 'localhost'
         if (!networkName) networkName = cookieHelper.getCookieValue('network');
         if (!networkName) networkName = 'mumbai';
 

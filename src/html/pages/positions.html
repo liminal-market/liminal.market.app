@@ -3,7 +3,8 @@
 	<p>These are your positions registered with the broker. These would be registered to you on the stock exchange if we weren't running on
 		a sandbox at the broker. Want to know when we open for live trading? <a href="https://liminal.market" target="_blank">Register your email with us</a>
 	</p>
-	<table class="table table-hover">
+	<figure>
+	<table>
 		<thead>
 			<tr>
 				<th></th>
@@ -13,7 +14,7 @@
 				<th>Quantity</th>
 				<th>Market value</th>
 				<th>Unrealize PL</th>
-				<th>Sell</th>
+				<th>Trade</th>
 				<th>Add to wallet</th>
 			</tr>
 		</thead>
@@ -21,21 +22,21 @@
 			{{#if result}}
 			{{#each result}}
 			<tr>
-				<td><img class="symbol_logo" id="symbol_logo_{{symbol}}" src="/img/logos/default_logo.png" /></td>
+				<td class="symbol_logo"><img id="symbol_logo_{{symbol}}" src="/img/logos/default_logo.png" /></td>
 				<td><a href="https://strike.market/stocks/{{symbol}}" target="_blank">{{symbol}}</a></td>
 				<td>{{current_price}}</td>
 				<td>{{round2 avg_entry_price}}</td>
 				<td>{{round2 qty}}</td>
 				<td>${{round market_value}}</td>
 				<td class="{{classColor unrealized_pl}}">${{round unrealized_pl}} ({{perc unrealized_plpc}})</td>
-				<td><a href="#" class="sellAsset" data-symbol="{{symbol}}" data-qty={{qty}}>Sell</a></td>
+				<td><a href="#" class="tradeSecurity" data-symbol="{{symbol}}" data-qty={{qty}}>Trade</a></td>
 				<td><a href="" class="addToWallet" data-symbol="{{symbol}}">Add</a></td>
 			</tr>
 			{{/each}}
 			{{/if}}
 		</tbody>
 	</table>
-
-	<div id="documents" class="mt-3"></div>
+	</figure>
+	<div id="documents"></div>
 
 </article>

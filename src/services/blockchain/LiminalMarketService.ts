@@ -2,6 +2,7 @@ import ContractInfo from "../../contracts/ContractInfo";
 import {AddressZero} from "../../util/Helper";
 import LoadingHelper from "../../util/LoadingHelper";
 import ErrorInfo from "../../errors/ErrorInfo";
+import BlockchainError from "../../errors/BlockchainError";
 
 export default class LiminalMarketService {
     moralis: typeof Moralis;
@@ -20,13 +21,14 @@ export default class LiminalMarketService {
             .then((value) => {
                 return value.toString();
             }).catch((reason) => {
-                throw ErrorInfo.report(reason);
+                let blockchainError = new BlockchainError(reason);
+                throw ErrorInfo.report(blockchainError);
             });
         return result;
     }
 
 
-    private async getOptions(functionName : string, params : any) {
+    private async getOptions(functionName: string, params: any) {
         let contractInfo = ContractInfo.getContractInfo();
         let abi = await this.getLiminalMarketAbi();
 
@@ -47,22 +49,29 @@ export default class LiminalMarketService {
         return LiminalMarketService.LiminalMarketInfo.abi;
     }
 
-    public async createToken(symbol: string): Promise<string> {
-        const liminalOptions = await this.getOptions("createToken",{
-                symbol: symbol
-            });
+    public async createToken(symbol: string, creatingToken : () => void): Promise<string | BlockchainError> {
+        const liminalOptions = await this.getOptions("createToken", {
+            symbol: symbol
+        });
 
-        let txResult = await this.moralis.executeFunction(liminalOptions)
+        let result = await this.moralis.executeFunction(liminalOptions)
             .then(result => {
                 return result as typeof ExecuteFunctionCallResult;
             }).catch(reason => {
-                throw ErrorInfo.report(reason);
+                let blockchainError = new BlockchainError(reason);
+                if (blockchainError.userDeniedTransactionSignature()) {
+                    return blockchainError;
+                }
+                throw ErrorInfo.report(blockchainError);
+
             });
 
-        if (txResult.events.TokenCreated) {
-            return txResult.events.TokenCreated.returnValues.tokenAddress;
-        }
-        return AddressZero;
+        if (result instanceof BlockchainError) return result;
+
+        creatingToken();
+        await (result as typeof ExecuteFunctionCallResult).wait();
+
+        return await this.getSymbolContractAddress(symbol);
     }
 
 

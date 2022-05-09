@@ -1,10 +1,6 @@
-import Render from "../ui/Render";
-import {sellPageInit} from "../modules/sell";
-import {tradePageInit} from "../modules/trade";
-import {loadInvest} from "../modules/invest";
-import {initPositionsPage} from "../modules/positions";
-import {initKYC} from "../modules/kyc";
-import doc = Mocha.reporters.doc;
+import StocksPage from "../ui/pages/StocksPage";
+import TradePage from "../ui/pages/TradePage";
+import PositionsPage from "../ui/pages/PositionsPage";
 
 
 export default class Routing {
@@ -12,17 +8,18 @@ export default class Routing {
     settings : any = {
         show_trade: this.showTrade,
         show_positions: this.showPositions,
-        show_invest: this.showInvest,
+        show_stocks: this.showStocks,
     };
-    render : Render;
+    moralis : typeof Moralis;
 
     constructor(moralis : typeof Moralis) {
-        this.render = new Render(moralis);
+        this.moralis = moralis;
     }
 
     public async loadRoutes() {
         let path = window.location.pathname.replace('/', '');
-        if (path === '') path = 'invest';
+        if (window.location.search !== '') path = window.location.search.replace('?', '');
+        if (path === '') path = 'stocks';
 
         this.attachNavLinks();
 
@@ -34,20 +31,22 @@ export default class Routing {
 
     public async showTrade(routing : Routing, evt : MouseEvent) {
         if (evt) evt.preventDefault();
-        await routing.render.render('trade', '', tradePageInit);
+
+        let page = new TradePage(routing.moralis);
+        await page.load();
     }
 
-    public async showInvest(routing : Routing,evt : MouseEvent) {
+    public async showStocks(routing : Routing,evt : MouseEvent) {
         if (evt) evt.preventDefault();
-        await routing.render.render('invest', '', loadInvest);
+
+        let page = new StocksPage(routing.moralis);
+        await page.load();
     }
     public async showPositions(routing : Routing,evt : MouseEvent) {
         if (evt) evt.preventDefault();
-        await routing.render.renderWithMoralis('positions', '', 'positions', initPositionsPage);
-    }
 
-    public init() {
-        this.render.render('buy', '', initKYC);
+        let page = new PositionsPage(routing.moralis);
+        await page.load();
     }
 
     public attachNavLinks() {
@@ -64,7 +63,7 @@ export default class Routing {
         let investLinks = document.querySelectorAll('.investNavLink');
         investLinks.forEach(link => {
             (link as HTMLElement).addEventListener('click', async function (evt) {
-                await router.showInvest(router, evt);
+                await router.showStocks(router, evt);
                 link.parentElement!.parentElement!.parentElement!.removeAttribute('open');
             });
         });

@@ -6,6 +6,9 @@
 	--primary-hover: #455a64;
 	--primary-focus: rgba(84, 110, 122, 0.125);
 	--primary-inverse: #FFF;
+	--nav-background-color:#040633;
+	--nav-color:#fff;
+	/*--background-color:#f9f6fe;*/
 }
 
 /* Blue-grey Dark scheme (Auto) */
@@ -26,6 +29,7 @@
 	--primary-hover: #607d8b;
 	--primary-focus: rgba(84, 110, 122, 0.25);
 	--primary-inverse: #FFF;
+	--nav-background-color:#040633;
 }
 
 /* Blue-grey (Common styles) */
@@ -63,7 +67,7 @@ body > header {
 	overflow: hidden;
 	height: 10rem;
 	position: relative;
-	background-image: url("/img/header.jpg");
+	background-image: url("../img/header.jpg");
 	background-size: cover;
 	background-position: 50%;
 }
@@ -85,7 +89,12 @@ body header > div {
 	top: 1.5rem;
 	text-shadow: 0rem 0rem 12px #7c7c7c;
 }
-
+body > nav {
+	background-color: var(--nav-background-color);
+}
+body > nav li, body > nav li a {
+	color:var(--nav-color);
+}
 body header h2 {color:#fff;margin-bottom: 0;}
 body header .fund_account {
 	font-size:1rem;
@@ -105,6 +114,13 @@ body>footer {
 /* user menu */
 #userMenuPanel {
 	position: relative;
+	color:var(--primary)
+}
+#userMenuPanel a {
+	color:var(--primary);
+}
+#user_info_ethAddress {
+	color:var(--primary-inverse);
 }
 #userInfoAction {
 	text-decoration: none;
@@ -155,16 +171,14 @@ body>footer {
 	font-size:12px;
 }
 .liminal_market {
-	background-image: url("/img/logo.png");
+	background-image: url("../img/logo2.png");
 	background-repeat: no-repeat;
-	padding-left: 2.2rem;
+	padding-left:4.4rem;
 	margin-left: calc(var(--spacing) + 1rem);
 	background-position: left;
-	background-size: 2rem;
+	background-size: 4rem;
 }
-.symbol_logo {
-	width:1.5rem;
-}
+
 #liminal_market_modal_div > article {
 	margin:auto;
 }
@@ -176,7 +190,7 @@ body>footer {
 #liminal_market_securities_table img {
 	width:3rem;
 }
-#liminal_market_securities_table .symbol_logo {
+.symbol_logo {
 	width:3rem;
 }
 
@@ -293,20 +307,37 @@ progress.invalid {
 .trade_executed  {
 	text-align: center;
 }
+#tradingPanel {
+	max-width:510px;
+	margin:0 auto;
+}
+#use_wallet_for_orders ul {
+	margin-left:1rem;
+}
 
+#stockList {
+	max-width: 700px;
+	margin:0 auto;
+}
+
+
+@media (min-width: 576px) {
+	.container {
+		max-width: 510px;
+		padding-right: 0;
+		padding-left: 0;
+	}
+
+}
 @media (min-width: 768px) {
+	.container {
+		max-width: 700px;
+	}
 	.mobileNavigation {display:none;}
 	.desktopNavigation {display:flex;}
 
 	.tradeInput {
 		font-size:0.8rem;
-	}
-
-}
-
-@media (min-width: 1200px) {
-	.container {
-		max-width: 1130px;
 	}
 }
 @media (min-width: 992px) {
@@ -314,16 +345,10 @@ progress.invalid {
 		max-width: 920px;
 	}
 }
-@media (min-width: 768px) {
-	.container {
-		max-width: 700px;
-	}
-}
 
-@media (min-width: 576px) {
+
+@media (min-width: 1200px) {
 	.container {
-		max-width: 510px;
-		padding-right: 0;
-		padding-left: 0;
+		max-width: 1130px;
 	}
 }

@@ -1,5 +1,5 @@
 import LoadingHelper from "../util/LoadingHelper";
-import Moralis from "Moralis";
+import GeneralError from "./GeneralError";
 
 export default class ErrorInfo {
 
@@ -12,11 +12,10 @@ export default class ErrorInfo {
         return this.errorInfo;
     }
 
-    public static report(reason : any) {
-        console.info('ErrorInfo', reason);
+    public static report(error : GeneralError) {
         LoadingHelper.removeLoading();
-        let errorMessage = (reason.message) ? reason.message : reason.toString();
-        if (errorMessage.toLocaleLowerCase().indexOf('web3 instance')) {
+
+        if (error.message.toLocaleLowerCase().indexOf('web3 instance')) {
             let elements = document.querySelectorAll(".liminal_market_connect_wallet");
             if (elements.length > 0) {
                 elements[0].dispatchEvent(new MouseEvent('click'))
@@ -27,7 +26,7 @@ export default class ErrorInfo {
         let errorInfo = document.getElementById('error_info');
         if (!errorInfo) return;
 
-        errorInfo.innerHTML = reason;
+        errorInfo.innerHTML = error.message;
         errorInfo.classList.remove('d-none');
         setTimeout(() => {
             errorInfo?.classList.add('d-none');
@@ -35,18 +34,13 @@ export default class ErrorInfo {
     }
 
     public static log(obj : any) {
-        try {
-            ErrorInfo.report(JSON.stringify(obj));
-        } catch (e : any) {
-            ErrorInfo.report('Cant serialize:' + obj);
-        }
+       ErrorInfo.report(new GeneralError(obj));
+    }
+    public static info(obj : any) {
+        ErrorInfo.report(new GeneralError(obj));
     }
 
     public static error(obj : any) {
-        try {
-            ErrorInfo.report(JSON.stringify(obj));
-        } catch (e : any) {
-            ErrorInfo.report('Cant serialize:' + obj);
-        }
+        ErrorInfo.report(new GeneralError(obj));
     }
 }

@@ -29,7 +29,7 @@ export default class WalletHelper {
         setTimeout(() => {
             if (WalletHelper.addTokenFallbackLoaded !== false) {
                 WalletHelper.addTokenFallbackLoaded = true;
-                fallbackTimeout();
+                if (fallbackTimeout) fallbackTimeout();
             }
 
         }, timeout);

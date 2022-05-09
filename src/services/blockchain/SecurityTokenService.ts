@@ -3,6 +3,7 @@ import LiminalMarketService from "./LiminalMarketService";
 import ErrorInfo from "../../errors/ErrorInfo";
 import {AddressZero} from "../../util/Helper";
 import BigNumber from "bignumber.js";
+import BlockchainError from "../../errors/BlockchainError";
 
 export default class SecurityTokenService {
     moralis: typeof Moralis;
@@ -28,7 +29,8 @@ export default class SecurityTokenService {
                 let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
                 return new BigNumber(amount);
             }).catch(reason => {
-                ErrorInfo.report(reason);
+                let blockchainError = new BlockchainError(reason);
+                ErrorInfo.report(blockchainError);
                 return new BigNumber(0);
             });
     }
@@ -45,7 +47,8 @@ export default class SecurityTokenService {
                 return result
             })
             .catch(reason => {
-                throw ErrorInfo.report(reason);
+                let blockchainError = new BlockchainError(reason);
+                throw ErrorInfo.report(blockchainError);
             });
         return result;
     }

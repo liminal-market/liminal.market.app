@@ -118,6 +118,13 @@ export default class TradePanelInput {
     private bindMaxLink() {
         let maxBalanceDom = document.querySelector('.' + this.tradeType + 'Inputs .balance_max') as HTMLElement;
         if (!maxBalanceDom) return;
+
+        if (this.balance.eq(0)) {
+            maxBalanceDom.classList.add('d-none');
+        } else {
+            maxBalanceDom.classList.remove('d-none');
+        }
+
         maxBalanceDom.dataset.balance = this.balance.toString();
         maxBalanceDom.addEventListener('click', (evt) => {
             evt.preventDefault();
