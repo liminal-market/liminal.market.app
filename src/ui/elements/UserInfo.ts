@@ -45,25 +45,8 @@ export default class UserInfo {
         });
     }
 
-    private toggleOffHours(e: MouseEvent) {
-        let input = e.target as HTMLInputElement;
-        let isOffHours = input.checked;
-
-        this.userService.setOffHours(isOffHours);
-
-        let executeTradeBtn = document.getElementById('execute-trade');
-        if (!executeTradeBtn) return;
-
-        if (input.checked) {
-            executeTradeBtn.innerHTML = "Execute trade";
-        } else {
-            executeTradeBtn.innerHTML = 'TODO: Off hours text';
-        }
-    }
-
     public async loadAUSDBalanceUI() {
         if (!this.user) return;
-
 
         let aUSDService = new AUSDService(this.moralis);
         let aUsdValue = await aUSDService.getAUSDBalanceOf(this.user.get('ethAddress'));

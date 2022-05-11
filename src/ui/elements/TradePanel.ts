@@ -4,6 +4,7 @@ import {TradeType} from "../../enums/TradeType";
 import TradePanelInput from "./tradepanel/TradePanelInput";
 import ContractInfo from "../../contracts/ContractInfo";
 import TradeSwitch from "./tradepanel/TradeSwitch";
+import SecuritiesListModal from "../modals/SecuritiesListModal";
 
 export default class TradePanel {
     moralis : typeof Moralis;
@@ -58,6 +59,8 @@ export default class TradePanel {
         buyTradeInput.onUpdate = () => {
             executeTradeButton.renderButton();
         }
+
+
     }
     public formatBuyPanel(symbol : string, name : string, logo : string, tradeType : TradeType, contractAddress : string) {
         document.getElementById('liminal_market_select_symbol')!.innerHTML = symbol;

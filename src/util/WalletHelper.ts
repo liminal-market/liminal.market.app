@@ -46,7 +46,6 @@ export default class WalletHelper {
                 },
             },
         }).then((result: any) => {
-            console.log('addTokenToWallet result', result);
             return true;
         }).catch((error: any) => {
             LoadingHelper.removeLoading();
@@ -55,7 +54,6 @@ export default class WalletHelper {
             WalletHelper.addTokenFallbackLoaded = false;
         });
 
-        console.log('addTokenToWallet wasAdded:', wasAdded);
         return wasAdded;
     };
 

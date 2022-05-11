@@ -143,15 +143,7 @@ export default class ConnectWallet {
                 this.modal.hideModal();
             })
             .catch((reason) => {
-                let walletHelper = new WalletHelper();
-                if (walletHelper.isWebview(window.navigator.userAgent)) {
-                    ErrorInfo.report(reason);
-                } else {
-                    let connectionInfo = document.getElementById(providerName + 'ConnectionInfo');
-                    if (!connectionInfo) return;
-                    connectionInfo.classList.replace('alert-info', 'alert-warning');
-                    connectionInfo.innerHTML = reason;
-                }
+                ErrorInfo.report(reason);
             });
     }
 

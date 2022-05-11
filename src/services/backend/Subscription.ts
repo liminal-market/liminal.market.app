@@ -1,6 +1,7 @@
 import NetworkInfo from "../../networks/NetworkInfo";
 import Progress from "../../ui/elements/Progress";
 import {TradeType} from "../../enums/TradeType";
+import {upperFirstLetter} from "../../util/Helper";
 
 export default class Subscription {
     moralis : typeof Moralis;
@@ -11,8 +12,7 @@ export default class Subscription {
 
     public getOrderBuyTablePrefix() {
         let networkInfo = NetworkInfo.getInstance();
-        if (networkInfo.ChainId == 43113) return "Fuji";
-        return "";
+        return upperFirstLetter(networkInfo.Name);
     };
 
     public async subscribeToTable(tradeType : TradeType, onUpdateCallback : (object : any) => void) {
@@ -23,7 +23,7 @@ export default class Subscription {
         let query = new this.moralis.Query(tableName);
         let subscription = await query.subscribe();
 
-        subscription.on('update', (response) => {
+        subscription.on('update', (response : any) => {
             const object = response.toJSON();
             console.log('object updated', JSON.stringify(object), object);
             let ethLink = ' <a class="white-link" target="_blank" href="https://mumbai.polygonscan.com/tx/' + object.transaction_hash + '">View transaction</a>';

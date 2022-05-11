@@ -25,7 +25,7 @@
 	"scripts": {
 		"test": "mocha",
 		"server": "webpack-dev-server",
-		"build": "webpack"
+		"build": "webpack --watch"
 	},
 	"jshintConfig": {
 		"esversion": 11

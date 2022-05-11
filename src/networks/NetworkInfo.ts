@@ -5,7 +5,7 @@ import fujiNetwork from './fuji-network';
 import Network from "./Network";
 import CookieHelper from "../util/CookieHelper";
 
-const networkInfos = [localhostNetwork, mumbaiNetwork];
+const networkInfos = [localhostNetwork, mumbaiNetwork, fujiNetwork];
 
 
 export default class NetworkInfo {

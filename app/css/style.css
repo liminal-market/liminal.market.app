@@ -9,6 +9,7 @@
 	--nav-background-color:#040633;
 	--nav-color:#fff;
 	/*--background-color:#f9f6fe;*/
+
 }
 
 /* Blue-grey Dark scheme (Auto) */
@@ -42,8 +43,15 @@
 	--form-element-spacing-vertical:0.3rem;
 	--form-element-spacing-horizontal:0.5rem;
 	--typography-spacing-vertical:0.25rem;
-	--alert-background:#f4511e;
-	--alert-color:#fff;
+
+	--info-bar-background-color: var(--primary);
+	--info-bar-color:var(--primary-inverse);
+
+	--warning-bar-background-color: #ffc147;
+	--warning-bar-color: #000;
+
+	--error-bar-background-color: #f4511e;
+	--error-bar-color:#ff;
 }
 h3 {--typography-spacing-vertical:0.25rem;}
 @font-face {
@@ -104,6 +112,26 @@ a {
 }
 body>footer {
 	padding:3rem;
+}
+.notificationBar {
+	position: fixed;
+	top:0;
+	left:0;
+	width:100%;
+	padding: 0.5rem 1rem;
+	z-index: 1000;
+}
+.infoBar {
+	background-color: var(--info-bar-background-color);
+	color: var(--info-bar-color);
+}
+.warningBar {
+	background-color: var(--warning-bar-background-color);
+	color:var(--warning-bar-color);
+}
+.errorBar {
+	background-color:var(--error-bar-background-color);
+	color:var(--error-bar-color);
 }
 
 .tag_line {
@@ -176,7 +204,7 @@ body>footer {
 	padding-left:4.4rem;
 	margin-left: calc(var(--spacing) + 1rem);
 	background-position: left;
-	background-size: 4rem;
+	background-size: 3.5rem;
 }
 
 #liminal_market_modal_div > article {

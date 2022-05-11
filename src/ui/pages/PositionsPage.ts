@@ -14,9 +14,11 @@ import TradePage from "./TradePage";
 
 export default class PositionsPage {
     moralis : typeof Moralis;
+    documentService : DocumentService;
 
     constructor(moralis : typeof Moralis) {
         this.moralis = moralis;
+        this.documentService = new DocumentService(this.moralis);
     }
 
     public async load() {
@@ -94,8 +96,7 @@ export default class PositionsPage {
         await this.renderSymbolLogos(symbols);
 
         let docTemplate = Handlebars.compile(DocumentsHtml);
-        let documentService = new DocumentService(this.moralis);
-        let documents = await documentService.getDocuments();
+        let documents = await this.documentService.getDocuments();
         let documentDom = document.getElementById('documents');
         if (!documentDom) return;
 
@@ -127,12 +128,14 @@ export default class PositionsPage {
         const alpacaId = user.get('alpacaId');
 
         for (let i = 0; i < links.length; i++) {
-            links[i].addEventListener('click', async function (evt) {
+            links[i].addEventListener('click', async (evt) => {
                 evt.preventDefault();
 
-                let docid = (links[i] as HTMLElement).dataset.docid;
+                let documentId = (links[i] as HTMLElement).dataset.docid;
+                if (!documentId) return;
 
-                location.href = 'http://176.58.106.52:6674/document/?accountId=' + alpacaId + '&id=' + docid;
+                let locationUrl = await this.documentService.getDocument(documentId);
+                window.location = locationUrl;
             });
         }
     }

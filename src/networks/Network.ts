@@ -59,12 +59,17 @@ export default class Network {
 	}
 
 	public async hasEnoughNativeTokens(moralis : typeof Moralis) : Promise<boolean> {
-		const options : any = { chain: this.Name };
-		const result = await moralis.Web3API.account.getNativeBalance(options);
+		//TODO: remove later, Moralis doesnt support getNativeBalance on localhost so it's always true
+		if (this.Name == 'localhost') {
+			return true;
+		} else {
+			const options: any = {chain: this.Name};
+			const result = await moralis.Web3API.account.getNativeBalance(options);
 
-		const balance = parseFloat(Moralis.Units.FromWei(result.balance, 18));
-		if (balance < 0.005) {
-			return false;
+			const balance = parseFloat(Moralis.Units.FromWei(result.balance, 18));
+			if (balance < 0.005) {
+				return false;
+			}
 		}
 
 		return true;

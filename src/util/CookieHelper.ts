@@ -13,12 +13,12 @@ export default class CookieHelper {
     }
 
     public setCookieNetwork = (name: string) => {
-        this.setCookie("network=", name);
+        this.setCookie("network", name);
     }
 
-    public getCookieValue = (name: string) => (
-        this.document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
-    )
+    public getCookieValue(name: string) {
+        return this.document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
+    }
 
     public setCookieProvider(providerName: string) {
        this.setCookie("provider", providerName);

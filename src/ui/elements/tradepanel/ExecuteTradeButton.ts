@@ -76,8 +76,8 @@ export default class ExecuteTradeButton {
             return;
         }
 
-        if (this.sellTradeInput.quantity.eq(0)) {
-            button.innerHTML = 'Type in quantity';
+        if (!this.hasQuantityAndSymbol(button)) {
+            return;
         }
 
         if (!await this.isMarketOpen(button)) {
@@ -190,6 +190,7 @@ export default class ExecuteTradeButton {
 
     public async monitorExecuteTrade(transaction: Moralis.ExecuteFunctionResult, tradeType: TradeType) {
         let subscription = new Subscription(this.moralis);
+
         await subscription.subscribeToTable(tradeType, (object) => {
             console.log(object);
 
@@ -246,6 +247,12 @@ export default class ExecuteTradeButton {
         let chainId = this.authenticateService.getChainId();
         let networkInfo = NetworkInfo.getInstance();
         if (chainId === networkInfo.ChainId) return true;
+
+        let usersWalletNetwork = NetworkInfo.getNetworkInfoByChainId(chainId);
+        if (usersWalletNetwork !== null) {
+            NetworkInfo.setNetworkByChainId(chainId);
+            return true;
+        }
 
         button.innerHTML = 'Switch Network';
         button.addEventListener('click', async () => {
@@ -334,7 +341,7 @@ export default class ExecuteTradeButton {
         let ausdService = new AUSDService(this.moralis);
         if (this.sellTradeInput.symbol == 'aUSD') {
             let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
-            if (balance >= this.sellTradeInput.quantity) return true;
+            if (balance.isGreaterThanOrEqualTo(this.sellTradeInput.quantity)) return true;
 
             button.innerHTML = "You don't have enough aUSD. Click for more funding";
             button.addEventListener('click', () => {
@@ -385,5 +392,20 @@ export default class ExecuteTradeButton {
         if (f) {
             button.removeEventListener('click', f);
         }
+    }
+
+    private hasQuantityAndSymbol(button: HTMLElement) {
+        if (this.sellTradeInput.quantity.eq(0)) {
+            button.innerHTML = 'Type in quantity';
+            this.stopLoadingButton(button);
+            return false;
+        }
+
+        if (this.buyTradeInput.name == '') {
+            button.innerHTML = 'Select stock to buy';
+            this.stopLoadingButton(button);
+            return false;
+        }
+        return true;
     }
 }

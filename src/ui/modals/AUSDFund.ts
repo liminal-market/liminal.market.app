@@ -55,7 +55,6 @@ export default class AUSDFund {
                 .catch((reason) => {
                     this.errorWhileFunding({})
                 });
-            console.log('funding result', result);
 
             if (result.success) {
                 let beforeFunding = document.getElementById('beforeFunding');

@@ -1,4 +1,3 @@
-import SecuritiesService from "../services/broker/SecuritiesService";
 import BigNumber from "bignumber.js";
 
 export const showContainer = function(id : string) {
@@ -48,6 +47,10 @@ export const shortEth = function(ethAddress : string) {
 
 	return ethAddress.substring(0, 6) + "..." + ethAddress.substring(ethAddress.length - 4);
 };
+
+export const upperFirstLetter = function(text : string) {
+	return text[0].toUpperCase() + text.substring(1);
+}
 
 
 export const serialize = function(data : any) {

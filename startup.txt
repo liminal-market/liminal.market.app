@@ -1,16 +1,11 @@
-#node
-node node.js
+#website
+npm run server
 
-#monitor cloud functions
-moralis-admin-cli watch-cloud-folder --moralisSubdomain rucsd2xip9xc.usemoralis.com --autoSave 1 --moralisCloudfolder C:\Users\ingig\source\repos\liminal-app-vanilla\src\cloud-functions
+#build ts code
+npm run build
 
-#moralis monitor contract event
-moralis-admin-cli add-contract --abiPath ".\app\js\abi\LiminalExchange.json"
+#monitor cloud function file localhost
+moralis-admin-cli watch-cloud-file --moralisSubdomain om9bgoayltsu.usemoralis.com --autoSave 1 --moralisCloudFile C:\Users\ingig\source\repos\liminal-app-vanilla\app\js\bundle.js
 
-#deploy to moralis
-moralis-admin-cli deploy --moralisSubdomain rucsd2xip9xc.usemoralis.com -p C:\Users\ingig\source\repos\liminal.market.web\app
-
-#new server
- 1. change main.js serverUrl and appId
- 2. change frpc.ini
- 3. update subdomain on watch-cloud-folder
+#monitor cloud function file test
+moralis-admin-cli watch-cloud-file --moralisSubdomain vddgndqknj3a.usemoralis.com --autoSave 1 --moralisCloudFile C:\Users\ingig\source\repos\liminal-app-vanilla\app\js\bundle.js

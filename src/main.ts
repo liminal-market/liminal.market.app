@@ -6,13 +6,14 @@ import UserInfo from "./ui/elements/UserInfo";
 import ErrorInfo from "./errors/ErrorInfo";
 import WalletHelper from "./util/WalletHelper";
 import GeneralError from "./errors/GeneralError";
+import {upperFirstLetter} from "./util/Helper";
 
 
 
 
 const start = async function () {
     let slowServerTimer = setTimeout(slowServer, 5 * 1000);
-
+console.log(Moralis.liveQueryServerURL);
     let connectionService = new ConnectionService();
     connectionService.start().then(async function () {
         clearTimeout(slowServerTimer);
