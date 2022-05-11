@@ -2,16 +2,16 @@ import CookieHelper from "../util/CookieHelper";
 import mumbaiNetwork from "./mumbai-network";
 
 export default class Network {
-	ServerUrl = "https://5bgiedfv59dd.usemoralis.com:2053/server";
-	AppId = "bhvFURhCqNvKGfVggu50fkcbm9ijMJqK3HRnfM79";
-	ChainId = 80001;
-	Name = "mumbai";
-	ChainName = 'Polygon Mumbai';
-	NativeCurrencyName = "Matic";
-	NativeSymbol = "MATIC";
+	ServerUrl = "";
+	AppId = "";
+	ChainId = 0;
+	Name = "";
+	ChainName = '';
+	NativeCurrencyName = "";
+	NativeSymbol = "";
 	NativeDecimal = 18;
-	RpcUrl = 'https://matic-mumbai.chainstacklabs.com/';
-	BlockExplorer = 'https://mumbai.polygonscan.com/';
+	RpcUrl = '';
+	BlockExplorer = '';
 	TestNetwork = true;
 
 	constructor() {
