@@ -1,0 +1,36 @@
+<div id="switchNetworkInfo">
+    You are using wrong network in your wallet.
+    You can choose any of these networks.
+    <ul>
+        {{#each networks}}
+        <li><a href="" class="setNetwork"
+               data-chainid="{{ChainId}}">{{ChainName}}</a></li>
+        {{/each}}
+    </ul>
+</div>
+<div id="jsSwitchNetworkNotWorking" class="d-none">
+    It seem as we can't add the network automatically for your, so you need to add it your self.
+    This is the information you need to add the network. You will need to figure out where to
+    add new network for your wallet, as it difference between wallets.
+    <form>
+        <label>ChainId:
+            <input id="switchChainId"/>
+        </label>
+        <label>Chain name
+            <input id="switchChainName"/>
+        </label>
+        <label>Currency name
+            <input id="switchCurrencyName"/>
+        </label>
+        <label>
+            Symbol
+            <input id="switchSymbol"/>
+        </label>
+        <label>Decimal
+            <input id="switchDecimal"/>
+        </label>
+        <label>Rpc Url
+            <input id="switchRpcUrl"/>
+        </label>
+    </form>
+</div>

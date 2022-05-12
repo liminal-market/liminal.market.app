@@ -1,7 +1,8 @@
-export const localhostContractAddresses = function() {
+import ContractAddresses from "./ContractAddresses";
 
-	this.KYC_ADDRESS = "0x5C1e3B42d490c108cDca1c404a7A13F9879469a0";
-	this.AUSD_ADDRESS = "0xc3812f3CC2E699a4B7EDB5cF0C64fba4E0b6764d";
-	this.LIMINAL_MARKET_ADDRESS = "0xf268088a5b9f52445eb0C7C19ad78a0793Ca8943";
-	this.USDC_ADDRESS = "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b";
+export default class localhostContractAddresses extends ContractAddresses {
+
+    KYC_ADDRESS = "0xe2688b3e95BbeAF105CDEEAac84E93861CecB3f2";
+    AUSD_ADDRESS = "0x91554B9C8C64DA9220A9EF8FCc00EF4A0a941685";
+    LIMINAL_MARKET_ADDRESS = "0x0008F6880a591c70C4A308f12F61CC96a830d1e3";
 }

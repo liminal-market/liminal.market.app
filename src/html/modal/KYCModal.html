@@ -1,0 +1,219 @@
+<div id="kyc_reg">
+
+    <h3>Fake KYC Registration</h3>
+    <p>In the test version you dont need to fill in you name, we will simply use dummy data. Click the registration
+        button at the bottom to get be KYC verified. This will allow you to buy securities in the sandbox
+        environment.</p>
+    <form id="kyc_wizard_form" name="kyc_wizard_form" novalidate onsubmit="return false">
+        <fieldset>
+            <legend>Contact</legend>
+            <div>
+                <label for="given_name">First name</label>
+                <input type="text" required class="form-control" id="given_name" name="given_name"
+                       placeholder="Ron"
+                       value="Ron Ulysses">
+            </div>
+            <div>
+                <label for="family_name">Last name</label>
+                <input type="text" required class="form-control" id="family_name" name="family_name"
+                       placeholder="Swanson"
+                       value="Swanson">
+            </div>
+            <div>
+                <label for="email_address">Email</label>
+                <input type="text" required class="form-control" id="email_address" name="email_address"
+                       placeholder="ron.swanson@parks-and-rec-example.com"
+                       value="ron.swanson@parks-and-rec-example.com">
+            </div>
+            <div>
+                <label for="phone_number">Phone</label>
+                <input type="text" required class="form-control" id="phone_number" name="phone_number"
+                       placeholder="555-666-7788" value="555-666-7788">
+            </div>
+            <div>
+                <label for="street_address">Street</label>
+                <input type="text" required class="form-control" id="street_address" name="street_address"
+                       placeholder="20 N San Mateo Dr" value="20 N San Mateo Dr">
+            </div>
+            <div>
+                <label for="city">City</label>
+                <input type="text" required class="form-control" id="city" name="city" placeholder="Pawnee"
+                       value="Pawnee">
+            </div>
+            <div>
+                <label for="postal_code">Postal code</label>
+                <input type="text" required class="form-control" id="postal_code" name="postal_code"
+                       placeholder="94401"
+                       value="94401">
+            </div>
+            <div>
+                <label for="email_address">State</label>
+                <input type="text" required class="form-control" id="state" name="state" placeholder="IN"
+                       value="IN">
+            </div>
+            <div>
+                <label for="country">Country</label>
+                <input type="text" required class="form-control" id="country" name="country" placeholder="USA"
+                       value="USA">
+
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Identity</legend>
+            <div>
+                <label for="date_of_birth">Date of birth</label>
+                <input type="text" required class="form-control" id="date_of_birth" name="date_of_birth"
+                       placeholder="1978-11-24" value="1978-11-24">
+            </div>
+            <div>
+                <label for="tax_id">Tax Id</label>
+                <input type="text" required class="form-control" id="tax_id" name="tax_id"
+                       placeholder="666-55-4321"
+                       value="666-55-4321">
+            </div>
+            <div>
+                <label for="tax_id">Tax Id</label>
+                <select required class="form-control" id="tax_id_type" name="tax_id_type" placeholder="USA_SSN">
+                    <option value="USA_SSN">USA Social Security Number</option>
+                    <option value="ARG_AR_CUIT">Argentina CUIT</option>
+                    <option value="AUS_TFN">Australian Tax File Number</option>
+                    <option value="AUS_ABN">Australian Business Number</option>
+                    <option value="BOL_NIT">Bolivia NIT</option>
+                    <option value="BRA_CPF">Brazil CPF</option>
+                    <option value="CHL_RUT">Chile RUT</option>
+                    <option value="COL_NIT">Colombia NIT</option>
+                    <option value="CRI_NITE">Costa Rica NITE</option>
+                    <option value="DEU_TAX_ID">Germany Tax ID (Identifikationsnummer)</option>
+                    <option value="DOM_RNC">Dominican Republic RNC</option>
+                    <option value="ECU_RUC">Ecuador RUC</option>
+                    <option value="FRA_SPI">France SPI (Reference Tax Number)</option>
+                    <option value="GBR_UTR">UK UTR (Unique Taxpayer Reference)</option>
+                    <option value="GBR_NINO">UK NINO (National Insurance Number)</option>
+                    <option value="GTM_NIT">Guatemala NIT</option>
+                    <option value="HND_RTN">Honduras RTN</option>
+                    <option value="HUN_TIN">Hungary TIN Number</option>
+                    <option value="IDN_KTP">Indonesia KTP</option>
+                    <option value="IND_PAN">India PAN Number</option>
+                    <option value="ISR_TAX_ID">Israel Tax ID (Teudat Zehut)</option>
+                    <option value="ITA_TAX_ID">Italy Tax ID (Codice Fiscale)</option>
+                    <option value="JPN_TAX_ID">Japan Tax ID (Koijin Bango)</option>
+                    <option value="MEX_RFC">Mexico RFC</option>
+                    <option value="NIC_RUC">Nicaragua RUC</option>
+                    <option value="NLD_TIN">Netherlands TIN Number</option>
+                    <option value="PAN_RUC">Panama RUC</option>
+                    <option value="PER_RUC">Peru RUC</option>
+                    <option value="PRY_RUC">Paraguay RUC</option>
+                    <option value="SGP_NRIC">Singapore NRIC</option>
+                    <option value="SGP_FIN">Singapore FIN</option>
+                    <option value="SGP_ASGD">Singapore ASGD</option>
+                    <option value="SGP_ITR">Singapore ITR</option>
+                    <option value="SLV_NIT">El Salvador NIT</option>
+                    <option value="SWE_TAX_ID">Sweden Tax ID (Personnummer)</option>
+                    <option value="URY_RUT">Uruguay RUT</option>
+                    <option value="VEN_RIF">Venezuela RIF</option>
+                    <option value="NOT_SPECIFIED">Other Tax IDs
+                </select>
+            </div>
+            <div>
+                <label for="country_of_citizenship">Country of citizenship</label>
+                <input type="text" required class="form-control" id="country_of_citizenship"
+                       name="country_of_citizenship"
+                       placeholder="USA" value="USA">
+            </div>
+            <div>
+                <label for="country_of_birth">Country of birth</label>
+                <input type="text" required class="form-control" id="country_of_birth" name="country_of_birth"
+                       placeholder="USA" value="USA">
+            </div>
+            <div>
+                <label for="country_of_tax_residence">Country of tax residence</label>
+                <input type="text" required class="form-control" id="country_of_tax_residence"
+                       name="country_of_tax_residence" placeholder="USA" value="USA">
+            </div>
+            <div>
+                <label for="funding_source">Funding source</label>
+                <select required class="form-control" id="funding_source" name="funding_source"
+                        placeholder="Employment income" multiple size="4" aria-label="size 3 select">
+                    <option value="employment_income" selected>Employment income</option>
+                    <option value="investments">Investments</option>
+                    <option value="inheritance">Inheritance</option>
+                    <option value="business_income">Business income</option>
+                    <option value="savings">Savings</option>
+                    <option value="family">Family</option>
+                </select>
+            </div>
+        </fieldset>
+        <fieldset class="mt-3">
+            <legend>Disclosures</legend>
+            <div>Are you holding a controlling position in a publicly traded company, member of the board of
+                directors
+                or
+                has policy making abilities in a publicly traded company
+            </div>
+            <div>
+                <label class="form-check-label" for="is_control_person_yes">Yes</label>
+                <input class="form-check-input" type="checkbox" id="is_control_person_yes"
+                       name="is_control_person"
+                       value="true">
+            </div>
+            <div>
+                <label class="form-check-label" for="is_control_person_no">No</label>
+                <input class="form-check-input" type="checkbox" id="is_control_person_no"
+                       name="is_control_person"
+                       value="false" checked>
+            </div>
+            <div>Are you affiliated with exchange or financial regulator</div>
+            <div>
+                <input class="form-check-input" type="checkbox" id="is_affiliated_exchange_or_finra_yes"
+                       name="is_affiliated_exchange_or_finra" value="1">
+                <label class="form-check-label" for="is_affiliated_exchange_or_finra_yes">Yes</label>
+            </div>
+            <div>
+                <input class="form-check-input" type="checkbox" id="is_affiliated_exchange_or_finra_no"
+                       name="is_affiliated_exchange_or_finra" value="0" checked>
+                <label class="form-check-label" for="is_affiliated_exchange_or_finra_no">No</label>
+            </div>
+            <div>Are you affiliated with political connection</div>
+            <div>
+                <input class="form-check-input" type="checkbox" id="is_politically_exposed_yes"
+                       name="is_politically_exposed" value="1">
+                <label class="form-check-label" for="is_politically_exposed_yes">Yes</label>
+            </div>
+            <div>
+                <input class="form-check-input" type="checkbox" id="is_politically_exposed_no"
+                       name="is_politically_exposed" value="0" checked>
+                <label class="form-check-label" for="is_politically_exposed_no">No</label>
+            </div>
+
+            <div>Is your immediate family member (sibling, husband/wife, child, parent) either politically
+                exposed or
+                holds a control position
+            </div>
+            <div>
+                <input class="form-check-input" type="checkbox" id="immediate_family_exposed_yes"
+                       name="immediate_family_exposed" value="1">
+                <label class="form-check-label" for="immediate_family_exposed_yes">Yes</label>
+            </div>
+            <div>
+                <input class="form-check-input" type="checkbox" id="immediate_family_exposed_no"
+                       name="immediate_family_exposed" value="0" checked>
+                <label class="form-check-label" for="immediate_family_exposed_no">No</label>
+            </div>
+        </fieldset>
+        <div>
+            <div class="alert alert-danger" id="kycError" role="alert"></div>
+
+            <button type="submit" id="submitKYC" class="btn btn-primary mb-3">Confirm identity</button>
+
+        </div>
+
+
+    </form>
+</div>
+
+<div id="waiting_for_kyc_reg" class="d-none">
+    KYC is being processed. This may take few seconds. Window will close when it's done.
+    <progress></progress>
+
+</div>

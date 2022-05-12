@@ -1,6 +1,6 @@
-import {Network} from './network';
+import Network from './Network';
 
-export class fujiNetwork extends Network {
+export default class fujiNetwork extends Network {
 	constructor() {
 		super();
 
@@ -14,5 +14,7 @@ export class fujiNetwork extends Network {
 		this.NativeDecimal = 18;
 		this.RpcUrl = 'https://api.avax-test.network/ext/bc/C/rpc';
 		this.BlockExplorer = 'https://explorer.avax-test.network/';
+		this.FaucetUrl = 'https://faucet.avax-test.network/';
+		this.BuyUrl = 'https://www.moonpay.com/buy/avax'
 	}
 }

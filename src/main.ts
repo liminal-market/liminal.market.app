@@ -1,140 +1,73 @@
-import {
-  initAccount
-} from './modules/account';
+import ConnectionService from "./services/backend/ConnectionService";
+import UserService from "./services/backend/UserService";
+import Routing from "./routing/Routing";
+import ConnectWallet from "./ui/modals/ConnectWallet";
+import UserInfo from "./ui/elements/UserInfo";
+import ErrorInfo from "./errors/ErrorInfo";
+import WalletHelper from "./util/WalletHelper";
+import GeneralError from "./errors/GeneralError";
+import Header from "./ui/elements/Header";
 
-import {
-  initPositionsPage
-} from './modules/positions';
-import {
-  render,
-  renderWithMoralis
-} from './modules/render';
-import {
-  sellPageInit
-} from './modules/sell';
-import {
-  buyPageInit
-} from './modules/buy';
-import {
-  isMarketOpen
-} from './modules/market';
-import {attachWalletEvents} from './modules/account';
-import {getNetworkInfo} from './networks/network-info';
-import {getContractsInfo} from './contracts/contract-addresses'
-import {addTokenToWallet} from './modules/helper';
-import {loadSecurities} from './modules/securities';
-import Moralis from 'moralis';
-
-export const Main = {
-  NetworkInfo : null,
-  ContractAddressesInfo : null
-};
-
-const initMoralis = async function() {
-
-  Main.NetworkInfo = await getNetworkInfo();
-  Main.ContractAddressesInfo = getContractsInfo(Main.NetworkInfo.Name);
-
-  await Moralis.start({
-    serverUrl: Main.NetworkInfo.ServerUrl,
-    appId: Main.NetworkInfo.AppId
-  }).catch(function(err) {
-    if (err.message.indexOf('Invalid session token') != -1) {
-      Moralis.User.logOut();
-    }
-    console.log('ERROR', err);
-  });
-
-
-  let user = await Moralis.User.current();
-  if(user) {
-    await attachWalletEvents();
-  }
-
-  window.onpopstate = function (event) {
-    //alert(`location: ${document.location}, state: ${JSON.stringify(event.state)}`)
-  }
-};
-
-
-const loadPath = async function () {
-  let path = window.location.pathname.replace('/', '');
-  if (path === '') path = 'buy';
-
-  const fn = settings['show_' + path];
-  if (typeof fn === 'function') {
-    fn();
-  }
-}
-
-
-const showSell = async function (evt) {
-  if (evt) evt.preventDefault();
-  await renderWithMoralis('positions', null, 'sell', sellPageInit);
-}
-const showBuy = async function (evt) {
-  if (evt) evt.preventDefault();
-  await render('buy', null, buyPageInit);
-}
-
-const showSecurities = async function (evt) {
-  if (evt) evt.preventDefault();
-  await render('securities', null, loadSecurities);
-}
-const showPositions = async function (evt) {
-  if (evt) evt.preventDefault();
-  await renderWithMoralis('positions', null, 'positions', initPositionsPage);
-}
-
-const attachNavLinks = async function () {
-  document.getElementById('nav-sell').addEventListener('click', async function (evt) {
-    showSell(evt);
-  });
-
-  document.getElementById('nav-buy').addEventListener('click', async function (evt) {
-    showBuy(evt);
-  });
-
-  document.getElementById('nav-securities').addEventListener('click', async function (evt) {
-    showSecurities(evt);
-
-  });
-  document.getElementById('nav-positions').addEventListener('click', async function (evt) {
-    showPositions(evt);
-  });
-
-  document.getElementById('add_ausd_to_wallet_menu').addEventListener('click', function(evt) {
-    evt.preventDefault();
-    addTokenToWallet(Main.ContractAddressesInfo.AUSD_ADDRESS, 'aUSD');
-  })
-
-}
-
-let settings = {
-  show_sell: showSell,
-  show_buy: showBuy,
-  show_positions: showPositions,
-  show_securities : showSecurities,
-};
 
 const start = async function () {
+    let slowServerTimer = setTimeout(slowServer, 5 * 1000);
 
-  initMoralis().then(async function() {
-    await loadPath();
-    await initAccount();
-    isMarketOpen();
-  });
+    let connectionService = new ConnectionService();
+    connectionService.start().then(async function () {
+        clearTimeout(slowServerTimer);
+
+        let loadingMessage = document.querySelector('.loading') as HTMLElement;
+        let userService = new UserService(Moralis);
+        let loggedInUser = await userService.isLoggedIn(loadingMessage);
+
+        let routing = new Routing(Moralis);
+        await routing.loadRoutes();
 
 
-  attachNavLinks();
+        if (loggedInUser) {
+            let userInfo = new UserInfo(Moralis, (loggedInUser as any).providerInfo, loggedInUser);
+            await userInfo.renderUserInfo('user_header_info');
+            //load user info into UI
+        } else {
+            //show Connect Wallet button
+            let connectWallet = new ConnectWallet(Moralis);
+            connectWallet.renderButton('user_header_info');
+        }
 
-  /*
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })*/
+    }).catch((reason) => {
+        ErrorInfo.report(new GeneralError("Server is down. Please try again later.<br /><br />" + reason));
+    });
+
+    document.body.addEventListener('click', (evt) => {
+        let userInfoDropdown = document.getElementById('userInfoDropdown');
+        if (userInfoDropdown && !userInfoDropdown.classList.contains('d-none')) {
+            userInfoDropdown.classList.add('d-none');
+            evt.stopPropagation();
+            evt.preventDefault();
+        }
+    })
+
+    let walletHelper = new WalletHelper(Moralis);
+    if (walletHelper.isWebview(window.navigator.userAgent))
+    {
+        console = ErrorInfo as any;
+    }
+
+
+    function slowServer() {
+        let loading = document.querySelector('.loading');
+        if (!loading) {
+            clearTimeout(slowServerTimer);
+            return;
+        }
+
+        loading.innerHTML = 'Hmmm.... our servers are slow and might be down. Give it few minutes.'
+
+    }
+    Header.loadImage();
+
 }
 
-start();
+start().then();
 
 

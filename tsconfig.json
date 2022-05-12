@@ -1,22 +1,31 @@
 {
-	"compilerOptions": {
-		"allowJs": true,
-		"target": "ES6",
-		"sourceMap": true,
-		"module": "ES2020",
-		"moduleResolution": "node",
-		"esModuleInterop" : true,
-		"baseUrl": "./",
-		"outDir": "./app/js/",
-		"paths" : {
-			"Moralis" : ["./app/node_modules/moralis/"],
-			"Handlebars" : ["./app/node_modules/handlebars"]
-		},
-		"types": [
-
-		]
-	},
-	"files": [
-		"./src/main.ts"
-	]
+  "compilerOptions": {
+    "module": "ES6",
+    "target": "ES6",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "app/js",
+    "baseUrl": "./",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "typeRoots": ["node_modules/@types", "types"],
+    "paths": {
+      "Handlebars": [
+        "./app/node_modules/handlebars"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": ["./src/html/*.html"],
+  "files": [
+    "./src/main.ts",
+    "./src/.d.ts",
+    "./src/html.d.ts",
+    "./node_modules/moralis/types/index.d.ts",
+  ],
+  "compileOnSave": true
 }

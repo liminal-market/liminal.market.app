@@ -1,0 +1,35 @@
+
+<article class="trade_executed">
+    <nav>
+    <ul>
+        <li>
+            <img src="{{sellingLogo}}"><br />
+            {{sellingSymbol}}<br />
+            {{sellingAmount}}
+        </li>
+    </ul>
+    <ul>
+        <li> ----> </li>
+    </ul>
+    <ul>
+        <li>
+            <img src="{{buyingLogo}}" /><br />
+            {{buyingSymbol}}<br />
+            <abbr title="{{buyingQuantity}}" data-tooltip="{{buyingQuantity}}">{{buyingRoundQuantity}}</abbr> shares
+        </li>
+    </ul>
+    </nav>
+    <div>
+        If you haven't already, add the {{buyingSymbol}} to your wallet.
+        <br /><br />
+        <button id="addTokenToWallet" data-address="{{tokenAddress}}">Add {{buyingSymbol}} to wallet</button>
+        <div id="addTokenToWalletFailed" class="d-none">
+            You can copy the address, to import the token
+            <input value="{{tokenAddress}}" />
+        </div>
+        <br />
+        Should be visible in your {{walletName}} on address {{shortEthAddress}}.
+        <br /><br />
+        <small>You can view the <a href="{{blockExplorerLink}}" target="_blank">block transaction here</a></small>
+    </div>
+</article>

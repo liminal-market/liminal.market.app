@@ -1,0 +1,40 @@
+
+<div id="userMenuPanel">
+    <a href="#" id="userInfoAction" aria-expanded="false">
+        <img src="https://effigy.im/a/{{ethAddress}}.png" width="24">
+        <span id="user_info_ethAddress">{{shortEthAddress}}</span>
+    </a>
+
+    <div id="userInfoDropdown" class="d-none">
+        <div class="grid account_info">
+            <h6>Account</h6>
+            <a id="disconnectFromNetwork" href="#">Disconnect</a>
+        </div>
+        <hr />
+        <div class="grid">
+            <div>
+                <img src="https://effigy.im/a/{{ethAddress}}.png">
+            </div>
+            <div>
+                <strong class="d-block"><a href="{{blockchainExplorer}}{{ethAddress}}" target="_blank">{{shortEthAddress}}</a></strong>
+                <small>{{walletName}}</small>
+            </div>
+        </div>
+        <hr />
+        <div class="grid" id="userInfoAUsdBalance">
+            <div> <img src="https://app.liminal.market/img/ausd.png"></div>
+            <div>
+                <strong class="d-block">aUSD <span id="user_info_ausd_balance"></span></strong>
+
+                <button class="fund_account"></button>
+            </div>
+        </div>
+        <hr />
+        <div class="grid">
+            <strong class="d-block">Network</strong>
+            <small>{{networkName}}</small>
+
+        </div>
+    </div>
+
+</div>

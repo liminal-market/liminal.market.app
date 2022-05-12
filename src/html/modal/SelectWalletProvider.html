@@ -1,0 +1,69 @@
+
+<article id="tos_pp_cookie_panel">
+    <p>
+        By connecting a wallet, I agree to liminal.market Terms of Use, Cookies Policy and Privacy Policy.
+    </p>
+    <ul>
+        <li>
+    <label>
+        <input type="checkbox" name="all" value="1">
+
+        I accept all
+
+    </label>
+        </li>
+        <li>
+    <label>
+        <input type="checkbox" name="tos" value="1">
+        <span>
+        I accept <a href="https://www.liminal.market/terms-of-service" target="_blank">Terms of service</a>
+        <small>Things to note. You are taking a risk by buying stocks. You will be asked to do KYC/AML. You are responsible for any transaction you make.</small>
+      </span>
+    </label></li>
+        <li>
+    <label>
+        <input type="checkbox" name="pp" value="1">
+        <span>
+        I accept the <a href="https://www.liminal.market/privacy-policy" target="_blank">Privacy Policy</a>
+        <small>Liminal.market doesn't store any personal data. Any KYC info is stored with the broker. If you register on our mailing list, that will be the only personal info we store.</small>
+      </span>
+    </label></li>
+        <li>
+    <label>
+        <input type="checkbox" name="cookie" value="1">
+        <span>
+        I accept <a href="https://www.liminal.market/cookie-policy" target="_blank">Cookie policy</a>
+        <small>We use some cookies & services to improve our service. You don't have to accept but we will then just store essential cookies.</small>
+      </span>
+    </label>
+        </li>
+    </ul>
+</article>
+
+<div class="d-none" id="wallet_connector_panel">
+    <article class="provider" id="connect_wallet_walletConnect" data-provider="walletConnect">
+
+        <h3>Connect using WalletConnect</h3>
+        <p>
+            Popular option to connect your mobile wallet.
+            For mobile we like <a href="https://www.tokenpocket.pro/" target="_blank onclick='event.stopProgation();'">Token
+            Poket</a>
+            as is support test network</p>
+
+    </article>
+    <div class="d-none" id="walletConnectConnectionInfo"></div>
+    <!--
+    <article class="provider" id="connect_wallet_coinbaseWallet" data-provider="coinbase">
+
+        <h3>Coinbase wallet</h3>
+        <p>Connect using your Coinbase app</p>
+
+    </article>
+    -->
+    <article id="connect_wallet_metamask" class="provider" data-provider="metamask">
+
+        <h3>Metamask</h3>
+        <p>Connect using your Metamask</p>
+
+    </article>
+</div>

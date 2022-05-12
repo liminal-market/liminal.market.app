@@ -1,0 +1,31 @@
+<article>
+    <div id="beforeFunding">
+        To use liminal.market you need some aUSD. aUSD is the same value as USD.
+        We can give you some aUSD (this is all fake money), so you can play with the system.
+
+        First, you need to add aUSD to you wallet.
+
+        <button id="addTokenToWallet">Add aUSD to wallet</button>
+        <blockquote id="needToCopy" class="d-none">
+            If the button didn't work, you can copy the address here and import it into your wallet
+            <input value="{{aUSDAddress}}"/>
+        </blockquote>
+        When you have aUSD to you wallet, you can request some money to trade with.
+
+        <button id="requestFakeAUSD">Request some aUSD</button>
+    </div>
+    <div id="afterFunding" class="d-none center">
+        We have now sending aUSD to your wallet. This usually takes few seconds, so lets wait. Sometime
+        when things are slow it can take few minutes.
+<br /><br />
+        When you have the aUSD in you wallet, we will tell you.
+        <div>
+            <h3>Current aUSD balance</h3>
+            <div id="currentAUSDBalance"></div>
+        </div>
+    </div>
+    <div id="errorAfterTryFunding" class="d-none">
+        We had an error while trying to fund you. We'll be cracking at the issue soon to fix it.
+        Try again in few minutes. If not, try again in few hours.
+    </div>
+</article>
