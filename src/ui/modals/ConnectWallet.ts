@@ -101,7 +101,7 @@ export default class ConnectWallet {
         if (checkboxes.tos && checkboxes.pp) {
             cookieHelper.setCookie('tos', new Date().toDateString());
 
-            let walletHelper = new WalletHelper();
+            let walletHelper = new WalletHelper(this.moralis);
             if (walletHelper.isWebview(window.navigator.userAgent)) {
                 this.modal.hideModal();
                 this.connectWallet('');
@@ -157,7 +157,7 @@ export default class ConnectWallet {
         let networkInfo = NetworkInfo.getInstance();
         if (this.providerInfo.ChainId != networkInfo.ChainId) {
             let userNetwork = NetworkInfo.getNetworkInfoByChainId(this.providerInfo.ChainId);
-            if (userNetwork === null) {
+            if (!userNetwork) {
                 this.showUnsupportedNetworkMessage(connectionInfo);
             } else {
                 NetworkInfo.setNetworkByChainId(this.providerInfo.ChainId)

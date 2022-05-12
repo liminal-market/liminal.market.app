@@ -1,3 +1,4 @@
+import NetworkInfo from "../../networks/NetworkInfo";
 
 export default class FundingService {
     moralis : typeof Moralis;
@@ -7,7 +8,9 @@ export default class FundingService {
     }
 
     public async requestFakeFunding() {
-        return await this.moralis.Cloud.run('fundUser');
+        let networkInfo = NetworkInfo.getInstance();
+
+        return await this.moralis.Cloud.run('fundUser', {chainId:networkInfo.ChainId});
     }
 
 }

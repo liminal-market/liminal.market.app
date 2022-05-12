@@ -1,9 +1,17 @@
 import SecuritiesService from "../services/broker/SecuritiesService";
 import LoadingHelper from "./LoadingHelper";
 import ErrorInfo from "../errors/ErrorInfo";
+import GeneralError from "../errors/GeneralError";
+import Network from "../networks/Network";
+import * as net from "net";
 
 export default class WalletHelper {
     static addTokenFallbackLoaded?: boolean = undefined;
+    moralis: typeof Moralis;
+
+    constructor(moralis: typeof Moralis) {
+        this.moralis = moralis;
+    }
 
     public getAUsdAsset() {
         return {
@@ -11,13 +19,13 @@ export default class WalletHelper {
         };
     }
 
-    public async addTokenToWallet(moralis: typeof Moralis, address: string, symbol: string, fallbackTimeout: () => void) {
+    public async addTokenToWallet(address: string, symbol: string, fallbackTimeout: () => void) {
         let securitiesService = await SecuritiesService.getInstance();
 
         const asset = (symbol == 'aUSD') ? this.getAUsdAsset() : await securitiesService.getSecurityBySymbol(symbol);
-        let web3 = moralis.web3 as any;
+        let web3 = this.moralis.web3 as any;
         if (!web3) {
-            web3 = await moralis.enableWeb3().catch(reason => {
+            web3 = await this.moralis.enableWeb3().catch(reason => {
                 ErrorInfo.report(reason);
             }) as any;
             if (!web3) {
@@ -71,5 +79,49 @@ export default class WalletHelper {
         ]
         let webviewRegExp = new RegExp('(' + rules.join('|') + ')', 'ig');
         return !!ua.match(webviewRegExp)
+    }
+
+    public async switchNetwork(network: Network) : Promise<boolean> {
+        let web3 = this.moralis.web3 as any;
+
+        return await web3.provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{chainId: '0x' + network.ChainId.toString(16)}]
+        })
+            .then((result: any) => {
+                console.log('switch result:', result);
+                return true;
+            })
+            .catch(async (err: any) => {
+                // This error code indicates that the chain has not been added to MetaMask
+                if (err.code === 4902) {
+                    return await web3.provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                            {
+                                chainName: network.ChainName,
+                                chainId: '0x' + network.ChainId.toString(16),
+                                nativeCurrency: {
+                                    name: network.NativeCurrencyName,
+                                    decimals: network.NativeDecimal,
+                                    symbol: network.NativeSymbol
+                                },
+                                rpcUrls: [network.RpcUrl]
+                            }
+                        ]
+                    })
+                        .then((result: any) => {
+                            console.log('addChain result:' + result);
+                            return true;
+                        }).catch((error: any) => {
+                            console.log('error on addNetwork:', error);
+                            throw new GeneralError(error);
+                        });
+                } else {
+                    throw new GeneralError(err);
+                }
+
+            });
+
     }
 }

@@ -81,8 +81,8 @@ export default class PositionsPage {
                     return;
                 }
 
-                let walletHelper = new WalletHelper();
-                await walletHelper.addTokenToWallet(this.moralis, contractAddress.toString(), symbol, () => {
+                let walletHelper = new WalletHelper(this.moralis);
+                await walletHelper.addTokenToWallet(contractAddress.toString(), symbol, () => {
                     let modal = new Modal();
                     let template = Handlebars.compile(AddressInfoHtml);
                     let content = template({symbol: symbol, address: contractAddress});

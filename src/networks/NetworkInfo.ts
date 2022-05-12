@@ -37,16 +37,20 @@ export default class NetworkInfo {
 
     public static getNetworks() : Array<Network> {
         let networks = new Array<Network>();
+        let isLocalhost = window.location.host.indexOf('localhost') != -1;
         networkInfos.forEach(networkInfoType => {
             let tmp = new networkInfoType();
+            if (!isLocalhost && tmp.Name == "localhost") return;
+
             networks.push(tmp);
         });
         return networks;
     }
 
-    public static getNetworkInfoByChainId(chainId : number) : Network | null {
+    public static getNetworkInfoByChainId(chainId : number) : Network | undefined {
 
-        let networkInfo : Network | null = null;
+        let networkInfo : Network | undefined;
+
         networkInfos.forEach(networkInfoType => {
             let tmp = new networkInfoType();
             if (tmp.ChainId == chainId) {

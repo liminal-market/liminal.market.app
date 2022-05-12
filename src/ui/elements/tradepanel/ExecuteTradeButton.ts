@@ -19,6 +19,7 @@ import TradeExecutedHtml from '../../../html/elements/tradepanel/TradeExecuted.h
 import Modal from "../../modals/Modal";
 import WalletHelper from "../../../util/WalletHelper";
 import BlockchainError from "../../../errors/BlockchainError";
+import NativeTokenNeeded from "../../modals/NativeTokenNeeded";
 
 export default class ExecuteTradeButton {
     moralis: typeof Moralis;
@@ -178,8 +179,8 @@ export default class ExecuteTradeButton {
         addTokenToWallet.addEventListener('click', (evt) => {
 
             let address = (evt.target as HTMLElement).dataset.address as string;
-            let walletHelper = new WalletHelper();
-            walletHelper.addTokenToWallet(this.moralis, address, this.buyTradeInput.symbol, () => {
+            let walletHelper = new WalletHelper(this.moralis);
+            walletHelper.addTokenToWallet(address, this.buyTradeInput.symbol, () => {
                 let addTokenToWalletFailed = document.getElementById('addTokenToWalletFailed');
                 if (!addTokenToWalletFailed) return;
 
@@ -192,8 +193,6 @@ export default class ExecuteTradeButton {
         let subscription = new Subscription(this.moralis);
 
         await subscription.subscribeToTable(tradeType, (object) => {
-            console.log(object);
-
             if (object.status == 'order_filled') {
                 this.showTradeExecuted(object);
 
@@ -249,7 +248,7 @@ export default class ExecuteTradeButton {
         if (chainId === networkInfo.ChainId) return true;
 
         let usersWalletNetwork = NetworkInfo.getNetworkInfoByChainId(chainId);
-        if (usersWalletNetwork !== null) {
+        if (usersWalletNetwork) {
             NetworkInfo.setNetworkByChainId(chainId);
             return true;
         }
@@ -269,17 +268,15 @@ export default class ExecuteTradeButton {
         if (hasEnoughNativeTokens) return true;
 
         button.classList.replace('enabled', 'disabled');
-        if (networkInfo.TestNetwork) {
-            button.innerHTML = 'You need ' + networkInfo.NativeCurrencyName + ' tokens. Click me for some tokens';
-            button.addEventListener('click', () => {
-                window.open('https://faucet.polygon.technology/', '_blank');
+
+        button.innerHTML = 'You need ' + networkInfo.NativeCurrencyName + ' tokens. Click me for some tokens';
+        button.addEventListener('click', () => {
+            let nativeTokenNeededModal = new NativeTokenNeeded(this.moralis, () => {
+                this.renderButton();
             });
-        } else {
-            button.innerHTML = 'You need ' + networkInfo.NativeCurrencyName + ' tokens. Click me to buy some';
-            button.addEventListener('click', () => {
-                window.open('https://www.moonpay.com/buy/matic', '_blank');
-            });
-        }
+            nativeTokenNeededModal.show()
+        });
+
         this.stopLoadingButton(button);
         return false;
 
@@ -291,7 +288,6 @@ export default class ExecuteTradeButton {
         if (ethAddress === '') {
             console.log('no ETH address, kyc check failed')
             return false;
-
         }
 
         let hasValidKYC = await kycService.hasValidKYC(ethAddress);
@@ -299,10 +295,10 @@ export default class ExecuteTradeButton {
 
         button.innerHTML = 'Finish KYC';
         button.addEventListener('click', () => {
-            let kycForm = new KYCForm();
-            kycForm.showKYCForm(() => {
+            let kycForm = new KYCForm(() => {
                 this.renderButton();
             });
+            kycForm.showKYCForm();
         });
         this.stopLoadingButton(button);
         return false;

@@ -64,6 +64,9 @@ h3 {--typography-spacing-vertical:0.25rem;}
 .d-none {
 	display:none;
 }
+.center {
+	text-align: center;
+}
 
 
 body {
@@ -132,6 +135,11 @@ body>footer {
 .errorBar {
 	background-color:var(--error-bar-background-color);
 	color:var(--error-bar-color);
+}
+
+dialog .infoBar {
+	padding:1rem;
+	border-radius: 0.5rem;
 }
 
 .tag_line {
@@ -210,6 +218,9 @@ body>footer {
 #liminal_market_modal_div > article {
 	margin:auto;
 }
+#liminal_market_modal_div > article ul, #liminal_market_modal_div > article ol {
+	margin-left: 1rem;
+}
 
 
 #liminal_market_securities_table tr {
@@ -281,7 +292,7 @@ body>footer {
 	grid-row-gap: 15px;
 	justify-items: stretch;
 	align-items: stretch;
-	font-size:0.7rem;
+	font-size:0.6rem;
 }
 
 .tradeInput .trade_input, .tradeInput .total_usd_value {
@@ -365,7 +376,7 @@ progress.invalid {
 	.desktopNavigation {display:flex;}
 
 	.tradeInput {
-		font-size:0.8rem;
+		font-size:0.7rem;
 	}
 }
 @media (min-width: 992px) {

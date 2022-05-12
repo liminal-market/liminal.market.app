@@ -19,6 +19,8 @@ export default class mumbaiNetwork extends Network {
 		this.NativeDecimal = 18;
 		this.RpcUrl = 'https://matic-mumbai.chainstacklabs.com/';
 		this.BlockExplorer = 'https://mumbai.polygonscan.com/';
+		this.FaucetUrl = 'https://faucet.polygon.technology/';
+		this.BuyUrl = 'https://www.moonpay.com/buy/matic';
 	}
 
 

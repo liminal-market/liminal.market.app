@@ -40,7 +40,7 @@ export default class UserService {
             let cookieHelper = new CookieHelper(document);
             let providerName = cookieHelper.getCookieValue('provider');
 
-            let walletHelper = new WalletHelper();
+            let walletHelper = new WalletHelper(this.moralis);
             if (walletHelper.isWebview(window.navigator.userAgent)) providerName = ' ';
 
             if (!providerName) {

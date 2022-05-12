@@ -13,6 +13,8 @@ export default class Network {
 	RpcUrl = '';
 	BlockExplorer = '';
 	TestNetwork = true;
+	FaucetUrl = '';
+	BuyUrl ='';
 
 	constructor() {
 	}
@@ -63,7 +65,7 @@ export default class Network {
 		if (this.Name == 'localhost') {
 			return true;
 		} else {
-			const options: any = {chain: this.Name};
+			const options: any = {chain: '0x' + this.ChainId.toString(16)};
 			const result = await moralis.Web3API.account.getNativeBalance(options);
 
 			const balance = parseFloat(Moralis.Units.FromWei(result.balance, 18));

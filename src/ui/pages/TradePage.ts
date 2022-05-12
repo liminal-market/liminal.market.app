@@ -67,8 +67,8 @@ export default class TradePage {
         addAUSDToWallet.addEventListener('click', (evt) => {
             evt.preventDefault();
 
-            let walletHelper = new WalletHelper();
-            walletHelper.addTokenToWallet(this.moralis, contractInfo.AUSD_ADDRESS, 'aUSD', () => {
+            let walletHelper = new WalletHelper(this.moralis);
+            walletHelper.addTokenToWallet(contractInfo.AUSD_ADDRESS, 'aUSD', () => {
                 let modal = new Modal();
                 let template = Handlebars.compile(CopyTokenAddressToAddToWallet);
                 let content = template({symbol: 'aUSD', tokenAddress: contractInfo.AUSD_ADDRESS});

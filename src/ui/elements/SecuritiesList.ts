@@ -193,9 +193,9 @@ export default class SecuritiesList {
 
     public async showAddToWallet(element: HTMLElement, symbol: string, address: string) {
         if (address !== AddressZero) {
-            let walletHelper = new WalletHelper();
+            let walletHelper = new WalletHelper(Moralis);
 
-            let added = await walletHelper.addTokenToWallet(Moralis, address, symbol, () => {
+            let added = await walletHelper.addTokenToWallet(address, symbol, () => {
                LoadingHelper.removeLoading();
                this.renderContractInfoToString(element, address, symbol, AddToWalletHtml);
             });

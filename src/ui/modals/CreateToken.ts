@@ -41,8 +41,8 @@ export default class CreateToken {
             }
             LoadingHelper.removeLoading();
             btn.innerHTML = 'Add token to wallet';
-            let walletHelper = new WalletHelper();
-            await walletHelper.addTokenToWallet(this.moralis, address, symbol, () => {
+            let walletHelper = new WalletHelper(this.moralis);
+            await walletHelper.addTokenToWallet(address, symbol, () => {
                 let tokenAddressInput = document.getElementById('tokenAddress');
                 if (!tokenAddressInput) return;
 

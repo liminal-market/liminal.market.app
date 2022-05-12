@@ -25,7 +25,9 @@ export default class AUSDFund {
 
     public showAUSDFakeFund(callback : () => void) {
         let template = Handlebars.compile(FakeFundingHtml);
-        let content = template(null);
+
+        let contractInfo = ContractInfo.getContractInfo();
+        let content = template({aUSDAddress:contractInfo.AUSD_ADDRESS});
 
         let modal = new Modal();
         modal.showModal('Fund my account (Fake money)', content);
@@ -36,8 +38,8 @@ export default class AUSDFund {
         addToWallet.addEventListener('click', async (evt) => {
             let contractInfo = ContractInfo.getContractInfo();
 
-            let walletHelper = new WalletHelper();
-            let result = await walletHelper.addTokenToWallet(this.moralis, contractInfo.AUSD_ADDRESS, 'aUSD', () => {
+            let walletHelper = new WalletHelper(this.moralis);
+            let result = await walletHelper.addTokenToWallet(contractInfo.AUSD_ADDRESS, 'aUSD', () => {
                 this.showCopyField();
             })
             if (!result) this.showCopyField();

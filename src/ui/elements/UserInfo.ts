@@ -48,6 +48,17 @@ export default class UserInfo {
     public async loadAUSDBalanceUI() {
         if (!this.user) return;
 
+        let userInfoAUsdBalance = document.getElementById('userInfoAUsdBalance');
+        let frontpageAUsdBalance = document.getElementById('frontpageAUsdBalance');
+        if (!this.user.get('alpacaId')) {
+            if (frontpageAUsdBalance) frontpageAUsdBalance.classList.add('d-none');
+            if (userInfoAUsdBalance) userInfoAUsdBalance.classList.add('d-none');
+            return;
+        } else {
+            if (frontpageAUsdBalance) frontpageAUsdBalance.classList.remove('d-none');
+            if (userInfoAUsdBalance) userInfoAUsdBalance.classList.remove('d-none');
+        }
+
         let aUSDService = new AUSDService(this.moralis);
         let aUsdValue = await aUSDService.getAUSDBalanceOf(this.user.get('ethAddress'));
         aUsdValue = roundBigNumber(aUsdValue);

@@ -1,6 +1,12 @@
 import Moralis from "moralis";
 import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
 import NetworkInfo from "../../networks/NetworkInfo";
+import ErrorInfo from "../../errors/ErrorInfo";
+import GeneralError from "../../errors/GeneralError";
+import InfoBar from "../../ui/elements/InfoBar";
+import Modal from "../../ui/modals/Modal";
+import WalletHelper from "../../util/WalletHelper";
+import SwitchNetworkModal from "../../ui/modals/SwitchNetworkModal";
 
 export default class AuthenticateService {
     moralis : typeof Moralis
@@ -19,11 +25,8 @@ export default class AuthenticateService {
         let web3Result = await moralis.enableWeb3({provider:provider,
             chainId:chainId, appLogo : 'https://app.liminal.market/img/logos/default_logo.png' })
             .catch(async (reason) => {
-                if (!reason && reason.indexOf('but is not finished yet') != -1) {
-                    alert('adfads');
 
-                }
-                throw new Error(reason);
+                throw new GeneralError(reason);
             });
         if (enableWeb3Callback) enableWeb3Callback(web3Result);
 
@@ -33,11 +36,24 @@ export default class AuthenticateService {
             return;
         }
 
+        if (web3Result.network.chainId != chainId) {
+            let userNetwork = NetworkInfo.getNetworkInfoByChainId(web3Result.network.chainId);
+            if (userNetwork) {
+                NetworkInfo.setNetworkByChainId(web3Result.network.chainId)
+            } else {
+                let modal = new SwitchNetworkModal(this.moralis);
+                modal.show();
+                return;
+            }
+        }
 
         let result = await moralis.authenticate({
             signingMessage: "You are logging into Liminal.market.\n\n",
             provider: provider,
             chainId: chainId
+        }).catch((reason : any) => {
+            console.log(reason);
+            throw new GeneralError(reason);
         });
 
         if (authenticatedCallback) authenticatedCallback(result);

@@ -1,6 +1,7 @@
 import ContractInfo from "../../contracts/ContractInfo";
 import ErrorInfo from "../../errors/ErrorInfo";
 import BlockchainError from "../../errors/BlockchainError";
+import GeneralError from "../../errors/GeneralError";
 
 export default class KYCService {
     moralis : typeof  Moralis;
@@ -48,13 +49,11 @@ export default class KYCService {
         return isValid;
     }
 
-    public async saveKYCInfo(data : any) {
+    public async saveKYCInfo(data : any) : Promise<string> {
         let user = this.moralis.User.current();
-        if (!user) return;
+        if (!user) throw new GeneralError("You need to be logged in to do KYC. Please login again.")
 
-        let alpacaId = await this.moralis.Cloud.run("kycRegistration", data);
-        user.set('alpacaId', alpacaId);
-        user.save();
+        return await this.moralis.Cloud.run("kycRegistration", data);
     }
 
     public async getKYCIsValidOptions(ethAddress : string) : Promise<any> {

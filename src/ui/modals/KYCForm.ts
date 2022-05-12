@@ -4,17 +4,25 @@ import Progress from "../elements/Progress";
 import KYCService from "../../services/blockchain/KYCService";
 import NetworkInfo from "../../networks/NetworkInfo";
 import {serialize} from "../../util/Helper";
+import ErrorInfo from "../../errors/ErrorInfo";
+import UserService from "../../services/backend/UserService";
 
 export default class KYCForm {
+    modal : Modal;
+    timeout? : any = undefined;
+    onHide : () => void;
+    constructor(onHide : () => void) {
+        this.modal = new Modal();
+        this.onHide = onHide;
+    }
 
-
-    public showKYCForm(callback : () => void) {
+    public showKYCForm() {
 
         let template = Handlebars.compile(KYCFormHtml);
         let content = template(null);
 
-        let modal = new Modal();
-        modal.showModal('KYC & AML', content, true);
+
+        this.modal.showModal('KYC & AML', content, true, () => {this.clearTimeout()});
 
         let networkInfo = NetworkInfo.getInstance();
         if (networkInfo.TestNetwork) {
@@ -38,15 +46,49 @@ export default class KYCForm {
             let params = serialize(data);
 
             let kycService = new KYCService(Moralis);
-            let result = await kycService.saveKYCInfo(params);
-
-            console.log('saving kyc result', result);
-            submitBtn.removeAttribute('aria-busy');
-            callback();
-
+            let result = await kycService.saveKYCInfo(params)
+                .catch((reason : any) => {
+                    ErrorInfo.report(reason);
+                });
+            if (result) {
+                await this.showWaiting();
+            }
 
         })
 
+    }
+
+    private async showWaiting() {
+        let kyc_reg = document.getElementById('kyc_reg');
+        if (!kyc_reg) return;
+        let waiting_for_kyc_reg = document.getElementById('waiting_for_kyc_reg');
+        if (!waiting_for_kyc_reg) return;
+
+        kyc_reg.classList.add('d-none');
+        waiting_for_kyc_reg.classList.remove('d-none');
+
+        await this.checkKycStatus();
+
+    }
+
+    public clearTimeout() {
+        if (this.timeout) clearTimeout(this.timeout);
+    }
+
+    public async checkKycStatus() {
+        let userService = new UserService(Moralis);
+        let ethAddress = userService.getEthAddress();
+
+        let kycService = new KYCService(Moralis);
+        let isValid = await kycService.hasValidKYC(ethAddress)
+
+        if (isValid) {
+            clearTimeout();
+            this.modal.hideModal();
+            this.onHide();
+        } else {
+            this.timeout = setTimeout(() => {this.checkKycStatus()}, 5 * 1000)
+        }
     }
 
     public loadNames() {
@@ -74,4 +116,6 @@ export default class KYCForm {
 
 
     }
+
+
 }
