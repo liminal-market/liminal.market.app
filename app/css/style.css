@@ -252,6 +252,7 @@ dialog .infoBar {
 	padding-left: 2.3rem;
 	background-position-x: 0.3rem;
 	background-position-y: center;
+	background-color: #fff;
 }
 
 #wallet_connector_panel .provider {

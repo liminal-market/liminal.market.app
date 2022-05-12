@@ -58,7 +58,16 @@ export default class AUSDFund {
                     this.errorWhileFunding({})
                 });
 
-            if (result.success) {
+            if (!result.success) {
+                let fundingError = document.getElementById('fundingError');
+                if (fundingError) {
+                    fundingError.classList.remove('d-none');
+                    fundingError.innerHTML = result.message;
+                    setTimeout(() => {
+                        fundingError!.classList.add('d-none')
+                    }, 10 * 1000)
+                }
+            } else if (result.success) {
                 let beforeFunding = document.getElementById('beforeFunding');
                 let afterFunding = document.getElementById('afterFunding');
                 if (!beforeFunding || !afterFunding) return;

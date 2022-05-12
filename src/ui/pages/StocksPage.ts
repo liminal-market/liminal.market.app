@@ -29,6 +29,7 @@ export default class StocksPage {
 
 			let tradePage = new TradePage(this.moralis);
 			await tradePage.load(symbol, name, logo, address);
+			window.scrollTo(0, 0);
 		})
 	};
 
