@@ -78,7 +78,6 @@ body > header {
 	overflow: hidden;
 	height: 10rem;
 	position: relative;
-	background-image: url("../img/header.jpg");
 	background-size: cover;
 	background-position: 50%;
 }

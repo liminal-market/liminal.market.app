@@ -6,6 +6,7 @@ import UserInfo from "./ui/elements/UserInfo";
 import ErrorInfo from "./errors/ErrorInfo";
 import WalletHelper from "./util/WalletHelper";
 import GeneralError from "./errors/GeneralError";
+import Header from "./ui/elements/Header";
 
 
 const start = async function () {
@@ -63,7 +64,7 @@ const start = async function () {
         loading.innerHTML = 'Hmmm.... our servers are slow and might be down. Give it few minutes.'
 
     }
-
+    Header.loadImage();
 
 }
 
