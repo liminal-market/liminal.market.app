@@ -11,8 +11,11 @@
     <link href="css/style.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/font/Inter-VariableFont_slnt,wght.ttf"/>
 
-    <!--
-        <script src="/js/external/sendtry.bundle.min.js" crossorigin="anonymous"></script>
+    <script
+            src="https://browser.sentry-cdn.com/6.19.7/bundle.min.js"
+            integrity="sha384-KXjn4K+AYjp1cparCXazrB+5HKdi69IUYz8glD3ySH3fnDgMX3Wg6VTMvXUGr4KB"
+            crossorigin="anonymous"
+    ></script>
         <script>
 
           console.log('sentry:', typeof(Sentry), typeof(Sentry) !== 'undefined');
@@ -23,7 +26,7 @@
             tracesSampleRate: 1.0,
           });
         }</script>
-    -->
+
 </head>
 <body>
 
@@ -92,7 +95,7 @@
 
 <script type="module" src="./js/bundle.js"></script>
 
-<!--
+
   <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
     data-cf-beacon='{"token": "89aeea2757bf4ee1974d575bf253ecb3"}'></script>
   <script>
@@ -111,7 +114,7 @@
       a.appendChild(r);
     })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
   </script>
--->
+
 </body>
 
 </html>
