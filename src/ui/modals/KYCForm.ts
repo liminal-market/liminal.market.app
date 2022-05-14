@@ -45,6 +45,9 @@ export default class KYCForm {
             let data = new FormData(form);
             let params = serialize(data);
 
+            let networkInfo = NetworkInfo.getInstance();
+            params.chainId = networkInfo.ChainId;
+
             let kycService = new KYCService(Moralis);
             let result = await kycService.saveKYCInfo(params)
                 .catch((reason : any) => {

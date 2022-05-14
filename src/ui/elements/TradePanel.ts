@@ -22,7 +22,7 @@ export default class TradePanel {
         let contractInfo = ContractInfo.getContractInfo();
 
         let sellTradeInput = new TradePanelInput(this.moralis, "aUSD", "aUSD at Broker", "/img/ausd.png", contractInfo.AUSD_ADDRESS, TradeType.Sell);
-        let buyTradeInput;
+        let buyTradeInput : TradePanelInput;
         if (!symbol) {
             buyTradeInput = new TradePanelInput(this.moralis, "Select stock", "", "", "", TradeType.Buy);
         } else {
@@ -54,9 +54,11 @@ export default class TradePanel {
 
         tradeSwitch.bindEvents(sellTradeInput, buyTradeInput, executeTradeButton);
         sellTradeInput.onUpdate = () => {
+            if (buyTradeInput.isDirty) buyTradeInput.updatePanel();
             executeTradeButton.renderButton();
         }
         buyTradeInput.onUpdate = () => {
+            if (sellTradeInput.isDirty) sellTradeInput.updatePanel();
             executeTradeButton.renderButton();
         }
 

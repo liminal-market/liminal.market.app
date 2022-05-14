@@ -155,18 +155,22 @@ export default class ExecuteTradeButton {
     public async showTradeExecuted(object: any) {
         let proverInfo = ProviderInfo.Instance;
         let networkInfo = NetworkInfo.getInstance();
+
+        let ethAddress = (object.userAddress) ? object.userAddress : object.sender;
+        let tokenAddress = (object.tokenAddress) ? object.tokenAddress : object.recipient;
+        let buyingQuantity = (object.userAddress) ? object.filledQty + ' shares' : '$' + object.filledQty;
         let obj: any = {
             sellingLogo: '/img/logos/' + this.sellTradeInput.symbol + '.png',
             sellingSymbol: this.sellTradeInput.symbol,
             sellingAmount: this.sellTradeInput.quantityFormatted(),
             buyingLogo: '/img/logos/' + this.buyTradeInput.symbol + '.png',
             buyingSymbol: this.buyTradeInput.symbol,
-            buyingQuantity: object.filledQty,
+            buyingQuantity: buyingQuantity,
             buyingRoundQuantity: roundNumberDecimal(object.filledQty, 6),
             walletName: proverInfo.WalletName,
-            shortEthAddress: shortEth(object.userAddress),
+            shortEthAddress: shortEth(ethAddress),
             blockExplorerLink: networkInfo.BlockExplorer + '/tx/' + object.transaction_hash,
-            tokenAddress: object.tokenAddress
+            tokenAddress: tokenAddress
         }
         let template = Handlebars.compile(TradeExecutedHtml);
         let content = template(obj);

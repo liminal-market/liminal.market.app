@@ -18,7 +18,7 @@ export default class TradePanelInput {
     name: string;
     logo: string;
     address: string;
-    tradeType: TradeType;
+    readonly tradeType: TradeType;
     quantity: BigNumber;
     strQuantity : string;
     balance: BigNumber;
@@ -29,6 +29,7 @@ export default class TradePanelInput {
     pricePerShareTemplate: any;
     otherTradePanelInput: TradePanelInput | undefined;
     onUpdate : (() => void) | undefined;
+    isDirty : boolean = false;
 
     constructor(moralis: typeof Moralis, symbol: string, name: string, logo: string, address: string, tradeType: TradeType) {
         this.moralis = moralis;
@@ -56,11 +57,12 @@ export default class TradePanelInput {
         return this.template(this);
     }
 
-    public render(): void {
+    public render(bindEvents : boolean = true): void {
         let element = document.querySelector('.' + this.tradeType + 'Inputs') as HTMLElement;
         element.outerHTML = this.renderToString();
-
-        this.bindEvents();
+        if (bindEvents) {
+            this.bindEvents();
+        }
     }
 
     public bindEvents() {
@@ -69,9 +71,16 @@ export default class TradePanelInput {
         this.bindMaxLink();
     }
 
+    public setSymbol(symbol: string, name: string, logo: string) {
+        this.symbol = symbol;
+        this.name = name;
+        this.logo = logo;
+
+        this.isDirty = true;
+    }
 
     private bindSelectStockButton() {
-        let selectStock = document.querySelector('.' + this.tradeType + 'Inputs .selectStock') as HTMLInputElement;
+        let selectStock = document.querySelector('#' + this.tradeType + 'SelectStock') as HTMLInputElement;
         if (!selectStock) return;
 
         selectStock.addEventListener('click', async (evt) => {
@@ -81,6 +90,10 @@ export default class TradePanelInput {
             await securityList.showModal(async (symbol: string, name: string, logo: string) => {
                 securityList.hideModal();
 
+                if (this.otherTradePanelInput && this.symbol == 'aUSD' && symbol != this.symbol) {
+                    this.otherTradePanelInput.setSymbol(this.symbol, this.name, this.logo)
+                }
+
                 this.symbol = symbol;
                 this.name = name;
                 this.logo = logo;
@@ -89,8 +102,8 @@ export default class TradePanelInput {
                 this.address = await liminalMarketService.getSymbolContractAddress(symbol);
 
                 this.render();
-                await this.loadBalance().then();
-                await this.loadLastTrade();
+                this.loadBalance().then();
+                this.loadLastTrade();
 
                 if (this.onUpdate) this.onUpdate();
             });
@@ -119,23 +132,13 @@ export default class TradePanelInput {
         let maxBalanceDom = document.querySelector('.' + this.tradeType + 'Inputs .balance_max') as HTMLElement;
         if (!maxBalanceDom) return;
 
-        if (this.balance.eq(0)) {
-            maxBalanceDom.classList.add('d-none');
-        } else {
-            maxBalanceDom.classList.remove('d-none');
-        }
-
-        maxBalanceDom.dataset.balance = this.balance.toString();
         maxBalanceDom.addEventListener('click', (evt) => {
             evt.preventDefault();
-
-            let balance = (evt.target as HTMLElement).dataset.balance;
-            if (!balance) return;
 
             let qtyInput = document.querySelector('.' + this.tradeType + 'Inputs .trade_input input') as HTMLInputElement;
             if (!qtyInput) return;
 
-            qtyInput.value = balance;
+            qtyInput.value = this.balance.toFixed();
             this.setQuantity(qtyInput.value);
             this.loadProgressbar();
 
@@ -164,6 +167,7 @@ export default class TradePanelInput {
         balanceDom.title = this.balance.toString();
 
         this.loadProgressbar();
+        this.toggleMaxBalanceLink();
     }
 
     public async loadLastTrade() {
@@ -222,7 +226,6 @@ export default class TradePanelInput {
     private loadProgressbar() {
         if (this.quantity.eq(0) || this.balance.eq(0) || this.tradeType == TradeType.Buy) return;
 
-
         let progressDom = document.querySelector('.' + this.tradeType + 'Inputs .progress') as HTMLProgressElement;
         if (!progressDom) return;
 
@@ -237,42 +240,51 @@ export default class TradePanelInput {
         } else {
             exceedsBalance.classList.add('d-none');
         }
-
     }
 
     public static switchPanels(sellTradePanelInput : TradePanelInput, buyTradePanelInput : TradePanelInput) : [TradePanelInput, TradePanelInput] {
-        let tmpSellObj = sellTradePanelInput.clone();
-        sellTradePanelInput = buyTradePanelInput;
-        sellTradePanelInput.tradeType = TradeType.Sell;
-        if (sellTradePanelInput.otherTradePanelInput) sellTradePanelInput.otherTradePanelInput.tradeType = TradeType.Buy;
+        let sellSymbol = sellTradePanelInput.symbol;
+        let sellName = sellTradePanelInput.name;
+        let sellLogo = sellTradePanelInput.logo;
+        let sellQuantity = sellTradePanelInput.quantity;
+        sellTradePanelInput.setSymbol(buyTradePanelInput.symbol, buyTradePanelInput.name, buyTradePanelInput.logo)
+        sellTradePanelInput.quantity = buyTradePanelInput.quantity;
 
-        buyTradePanelInput = tmpSellObj;
-        buyTradePanelInput.tradeType = TradeType.Buy;
-        if (buyTradePanelInput.otherTradePanelInput) buyTradePanelInput.otherTradePanelInput.tradeType = TradeType.Sell;
-
-        sellTradePanelInput.render();
-        buyTradePanelInput.render();
+        buyTradePanelInput.setSymbol(sellSymbol, sellName, sellLogo)
+        buyTradePanelInput.quantity = sellQuantity;
+        sellTradePanelInput.updatePanel();
+        buyTradePanelInput.updatePanel();
 
         return [sellTradePanelInput, buyTradePanelInput];
     }
 
-    public clone(): any {
-        let cloneObj = new TradePanelInput(this.moralis, this.symbol, this.name, this.logo, this.address, this.tradeType) as any;
-        for (let attribut in this) {
-            if (typeof this[attribut] === "object") {
-                cloneObj[attribut] = (this[attribut] as any);
-            } else {
-                cloneObj[attribut] = this[attribut];
-            }
-        }
-        return cloneObj;
-    }
-
     public setQuantity(value : string) {
+        if (value == '' || value == '0') return;
         this.quantity = new BigNumber(value);
         this.strQuantity = value;
     }
     public quantityFormatted() {
         return (this.symbol === 'aUSD') ? '$' + this.quantity : this.quantity;
+    }
+
+    public async updatePanel() {
+        this.updateQuantity();
+        this.render(true);
+
+        await this.loadBalance();
+        await this.loadLastTrade();
+
+
+    }
+
+    private toggleMaxBalanceLink() {
+        let maxBalanceDom = document.querySelector('.' + this.tradeType + 'Inputs .balance_max') as HTMLElement;
+        if (!maxBalanceDom) return;
+
+        if (this.balance.eq(0)) {
+            maxBalanceDom.classList.add('d-none');
+        } else {
+            maxBalanceDom.classList.remove('d-none');
+        }
     }
 }

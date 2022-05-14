@@ -11,11 +11,14 @@ import WalletHelper from "../../util/WalletHelper";
 import AddToWalletHtml from '../../html/elements/AddToWallet.html';
 import HTML = Mocha.reporters.HTML;
 import LoadingHelper from "../../util/LoadingHelper";
+import ErrorInfo from "../../errors/ErrorInfo";
+import GeneralError from "../../errors/GeneralError";
 
 export default class SecuritiesList {
     page: number;
     tbodyId = 'liminal_market_securities_list';
     loadmore: boolean;
+    onSelectSymbol? : (symbol: string, name: string, logo: string) => void  = undefined;
 
     constructor() {
         this.page = 0;
@@ -50,9 +53,21 @@ export default class SecuritiesList {
     }
 
     private bindOnClickEvent(onSelectSymbol: (symbol: string, name: string, logo: string) => void) {
+        let table = document.getElementById('liminal_market_securities_table');
 
+        if (!table) {
+            ErrorInfo.report(new GeneralError("Page could not load correctly, try reloading"));
+            return;
+        }
+        this.onSelectSymbol = onSelectSymbol;
 
-        document.getElementById('liminal_market_securities_table')!.addEventListener('click', async (evt) => {
+        table.onclick = async (evt) => {
+            await this.handleClick(evt);
+        }
+    }
+
+    public async handleClick(evt : MouseEvent) {
+
             let element = (evt.target! as HTMLElement);
             if (element.tagName.toLocaleLowerCase() === 'a') {
                 await this.addToWalletOrGetAddress(evt, element);
@@ -73,9 +88,11 @@ export default class SecuritiesList {
             let name = parentTr.dataset.name!
             let logo = parentTr.dataset.logo!;
 
-            onSelectSymbol(symbol, name, logo);
+            if (this.onSelectSymbol) {
+                this.onSelectSymbol(symbol, name, logo);
+            }
             parentTr.removeAttribute('aria-busy');
-        });
+
     }
 
     public async bindSearchEvent() {

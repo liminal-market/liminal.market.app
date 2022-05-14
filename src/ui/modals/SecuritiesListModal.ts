@@ -23,7 +23,8 @@ export default class SecuritiesListModal {
 
         let newInstance = this.modal.showModal('Select stock to buy', content,
             true);
-        if (newInstance) {
+        //if (newInstance)
+        {
             await securitiesList.bindEvents(onSelectSymbol);
         }
     }

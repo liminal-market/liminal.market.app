@@ -104,6 +104,10 @@ body > nav {
 }
 body > nav li, body > nav li a {
 	color:var(--nav-color);
+	text-decoration: none;
+}
+body > nav li a:hover {
+	text-decoration: underline;
 }
 body header h2 {color:#fff;margin-bottom: 0;}
 body header .fund_account {

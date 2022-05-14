@@ -30,6 +30,8 @@ export default class TradeSwitch {
             evt.preventDefault();
 
             [sellTradePanelInput, buyTradePanelInput] = TradePanelInput.switchPanels(sellTradePanelInput, buyTradePanelInput);
+
+            /*
             await sellTradePanelInput.loadBalance();
             await buyTradePanelInput.loadBalance();
 
@@ -37,13 +39,11 @@ export default class TradeSwitch {
             buyTradePanelInput.updateQuantity();
 
             if (sellTradePanelInput.symbol == 'aUSD') {
-                await  buyTradePanelInput.loadLastTrade();
+                await buyTradePanelInput.loadLastTrade();
             } else {
                 await sellTradePanelInput.loadLastTrade();
             }
-
-            executeTradeButton.sellTradeInput = sellTradePanelInput;
-            executeTradeButton.buyTradeInput = buyTradePanelInput;
+*/
 
         })
     }
