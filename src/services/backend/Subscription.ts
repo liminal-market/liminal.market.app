@@ -17,7 +17,6 @@ export default class Subscription {
 
     public async subscribeToTable(tradeType : TradeType, onUpdateCallback : (object : any) => void) {
         let tableName = this.getOrderBuyTablePrefix() + 'Order' + tradeType;
-
         console.log('subscribe to table:' + tableName);
 
         let query = new this.moralis.Query(tableName);
