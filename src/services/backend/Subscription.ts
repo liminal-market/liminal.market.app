@@ -12,7 +12,7 @@ export default class Subscription {
 
     public getOrderBuyTablePrefix() {
         let networkInfo = NetworkInfo.getInstance();
-        return upperFirstLetter(networkInfo.Name);
+        return networkInfo.Name;
     };
 
     public async subscribeToTable(tradeType : TradeType, onUpdateCallback : (object : any) => void) {
