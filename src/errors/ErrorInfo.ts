@@ -3,6 +3,9 @@ import GeneralError from "./GeneralError";
 import InfoBar from "../ui/elements/InfoBar";
 import {InfoBarType} from "../ui/elements/InfoBarType";
 import PredefinedErrorHandlers from "./PredefinedErrorHandlers";
+import BlockchainError from "./BlockchainError";
+import Modal from "../ui/modals/Modal";
+import WalletMissingHtml from "../html/modal/WalletMissing.html";
 
 export default class ErrorInfo {
 
@@ -19,9 +22,17 @@ export default class ErrorInfo {
         LoadingHelper.removeLoading();
 
         let errorHandler = new PredefinedErrorHandlers();
-        if (!errorHandler.handle(error.message)) {
-            InfoBar.show(error.message, InfoBarType.Error);
+        if (errorHandler.handle(error.message)) {
+            return;
         }
+
+        if (error.callback) {
+            error.callback();
+            return;
+        }
+
+        InfoBar.show(error.message, InfoBarType.Error);
+
     }
 
     public static log(obj : any) {

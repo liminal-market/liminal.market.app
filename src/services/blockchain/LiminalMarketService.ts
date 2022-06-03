@@ -50,8 +50,11 @@ export default class LiminalMarketService {
     }
 
     public async createToken(symbol: string, creatingToken : () => void): Promise<string | BlockchainError> {
+        let salt = (new Date().getTime() + (Math.random() * 100000)).toString();
+        salt = salt.substring(0, salt.indexOf('.'));
         const liminalOptions = await this.getOptions("createToken", {
-            symbol: symbol
+            symbol: symbol,
+            salt : salt
         });
 
         let result = await this.moralis.executeFunction(liminalOptions)

@@ -43,11 +43,6 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'app')
     },
-    allowedHosts: [
-      '192.168.5.11.sslip.io',
-      '192.168.5.15.sslip.io',
-      '192.168.5.10.sslip.io'
-    ],
     liveReload:false,
     hot:false,
     devMiddleware : {

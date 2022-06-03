@@ -59,8 +59,10 @@ export default class AUSDFund {
                 });
 
             if (!result.success) {
+                console.log(result);
                 let fundingError = document.getElementById('fundingError');
                 if (fundingError) {
+                    requestFakeAUSD!.removeAttribute('aria-busy');
                     fundingError.classList.remove('d-none');
                     fundingError.innerHTML = result.message;
                     setTimeout(() => {

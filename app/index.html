@@ -11,21 +11,24 @@
     <link href="css/style.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/font/Inter-VariableFont_slnt,wght.ttf"/>
 
-    <script
-            src="https://browser.sentry-cdn.com/6.19.7/bundle.min.js"
-            integrity="sha384-KXjn4K+AYjp1cparCXazrB+5HKdi69IUYz8glD3ySH3fnDgMX3Wg6VTMvXUGr4KB"
-            crossorigin="anonymous"
-    ></script>
-        <script>
-
-          console.log('sentry:', typeof(Sentry), typeof(Sentry) !== 'undefined');
-        if (typeof(Sentry) !== 'undefined') {
-          Sentry.init({
-            dsn: "https://1237a6f4596f43f1889ad827ead1a46f@o1074405.ingest.sentry.io/6074136",
-           // integrations: [new Integrations.BrowserTracing()],
-            tracesSampleRate: 1.0,
-          });
-        }</script>
+    <script>
+        if (window.location.host.indexOf('localhost') == -1) {
+            let script = document.createElement('script');
+            script.integrity = 'sha384-KXjn4K+AYjp1cparCXazrB+5HKdi69IUYz8glD3ySH3fnDgMX3Wg6VTMvXUGr4KB';
+            script.crossorigin = "anonymous"
+            script.src = 'https://browser.sentry-cdn.com/6.19.7/bundle.min.js';
+            script.onload = () => {
+                if (Sentry) {
+                    Sentry.init({
+                        dsn: "https://1237a6f4596f43f1889ad827ead1a46f@o1074405.ingest.sentry.io/6074136",
+                        // integrations: [new Integrations.BrowserTracing()],
+                        tracesSampleRate: 1.0,
+                    });
+                }
+            }
+            document.head.appendChild(script);
+        }
+    </script>
 
 </head>
 <body>
@@ -94,22 +97,28 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script type="module" src="./js/bundle.js"></script>
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "89aeea2757bf4ee1974d575bf253ecb3"}'></script>
 <script>
-(function (h, o, t, j, a, r) {
-  h.hj = h.hj || function () {
-    (h.hj.q = h.hj.q || []).push(arguments)
-  };
-  h._hjSettings = {
-    hjid: 2728440,
-    hjsv: 6
-  };
-  a = o.getElementsByTagName('head')[0];
-  r = o.createElement('script');
-  r.async = 1;
-  r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
-  a.appendChild(r);
-})(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    if (window.location.host.indexOf('localhost') == -1) {
+        let script = document.createElement('script');
+        script.dataset['cf-beacon'] = '{"token": "89aeea2757bf4ee1974d575bf253ecb3"}';
+        script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        document.head.appendChild(script);
+
+        (function (h, o, t, j, a, r) {
+            h.hj = h.hj || function () {
+                (h.hj.q = h.hj.q || []).push(arguments)
+            };
+            h._hjSettings = {
+                hjid: 2728440,
+                hjsv: 6
+            };
+            a = o.getElementsByTagName('head')[0];
+            r = o.createElement('script');
+            r.async = 1;
+            r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    }
 </script>
 
 </body>

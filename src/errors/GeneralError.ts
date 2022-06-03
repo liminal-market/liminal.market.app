@@ -4,6 +4,7 @@ export default class GeneralError extends Error {
     headers : any;
     error : any;
     stack : string;
+    callback? : () => void;
 
     constructor(e : any) {
         super();
@@ -16,6 +17,10 @@ export default class GeneralError extends Error {
             this.message = e.message.data.message;
             this.error = e;
             this.headers = e.message.headers;
+            this.stack = e.stack;
+        } else if (typeof(e.data) == 'object') {
+            this.code = e.data.code;
+            this.message = e.data.message;
             this.stack = e.stack;
         } else if (e.message) {
             this.message = e.message;

@@ -9,7 +9,7 @@ export default class CookieHelper {
 
     public setCookie(name : string, value : string) {
         let date = new Date();
-        this.document.cookie = name + "=" + value + "; expires=Mon, 2 Dec 2024 12:00:00 UTC;path=/";
+        this.document.cookie = name + "=" + value + "; expires=Mon, 2 Dec 2024 12:00:00 UTC;path=/;SameSite=Strict";
     }
 
     public setCookieNetwork = (name: string) => {

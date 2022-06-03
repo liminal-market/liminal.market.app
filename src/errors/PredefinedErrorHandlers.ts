@@ -1,6 +1,7 @@
 import InfoBar from "../ui/elements/InfoBar";
 import {InfoBarType} from "../ui/elements/InfoBarType";
 import WalletMissingHtml from '../html/modal/WalletMissing.html';
+import MarketIsClosedHtml from '../html/modal/MarketIsClosed.html';
 import Modal from "../ui/modals/Modal";
 
 export default class PredefinedErrorHandlers {
@@ -28,7 +29,7 @@ export default class PredefinedErrorHandlers {
             modal.showModal('New to blockchain?', template(null), false, () => {
                 window.location.reload();
             })
-        })
+        });
     }
 
     public handle(message : string) {
@@ -43,7 +44,6 @@ export default class PredefinedErrorHandlers {
                 handled = true;
                 return handled;
             }
-
         })
         return handled;
     }

@@ -16,7 +16,7 @@ export default class AUSDService {
 
     public async getAUSDBalanceOf(ethAddress : string) : Promise<BigNumber> {
         if (AUSDService.lastUpdate && AUSDService.aUSDAmount &&
-                DateHelper.IsOlderThen(AUSDService.lastUpdate, 5)) {
+                DateHelper.isOlderThen(AUSDService.lastUpdate, 5)) {
             return AUSDService.aUSDAmount;
         }
 
