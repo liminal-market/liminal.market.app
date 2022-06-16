@@ -50,7 +50,7 @@ const start = async function () {
     let walletHelper = new WalletHelper(Moralis);
     if (walletHelper.isWebview(window.navigator.userAgent))
     {
-        console = ErrorInfo as any;
+        //console = ErrorInfo as any;
     }
 
 
