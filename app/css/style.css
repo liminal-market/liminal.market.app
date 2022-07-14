@@ -61,7 +61,7 @@ h3 {--typography-spacing-vertical:0.25rem;}
 .justify-between {
 	justify-content: space-between;
 }
-.d-none {
+.d-none, .hidden {
 	display:none;
 }
 .center {

@@ -32,7 +32,6 @@ export default class ErrorInfo {
         }
 
         InfoBar.show(error.message, InfoBarType.Error);
-
     }
 
     public static log(obj : any) {
@@ -43,6 +42,7 @@ export default class ErrorInfo {
     }
 
     public static error(obj : any) {
+        console.log(obj);
         ErrorInfo.report(new GeneralError(obj));
     }
 }

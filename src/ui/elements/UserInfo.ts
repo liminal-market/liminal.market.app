@@ -92,7 +92,7 @@ export default class UserInfo {
                 })
             }
         })
-        if (aUsdValue.isLessThan(51)) {
+        if (aUsdValue.isLessThan(10)) {
             let frontpage_fund_account = document.getElementById('frontpage_fund_account');
             if (!frontpage_fund_account) return;
             frontpage_fund_account.classList.remove('d-none');

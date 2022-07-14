@@ -6,6 +6,9 @@ import NetworkInfo from "../../networks/NetworkInfo";
 import {serialize} from "../../util/Helper";
 import ErrorInfo from "../../errors/ErrorInfo";
 import UserService from "../../services/backend/UserService";
+import LoadingHelper from "../../util/LoadingHelper";
+import CloudError from "../../errors/CloudError";
+import GeneralError from "../../errors/GeneralError";
 
 export default class KYCForm {
     modal : Modal;
@@ -28,7 +31,7 @@ export default class KYCForm {
         if (networkInfo.TestNetwork) {
             this.loadNames();
         }
-
+        this.bindListeners();
         let submitKYC = document.getElementById('submitKYC');
         if (!submitKYC) return;
 
@@ -36,7 +39,7 @@ export default class KYCForm {
             evt.preventDefault();
 
             let submitBtn = (evt.target as HTMLElement);
-            submitBtn.setAttribute('aria-busy', 'true');
+            LoadingHelper.setLoading(submitBtn);
 
             let progress = new Progress();
             progress.show('Register KYC with broker', 33, false, ['submitKYC']);
@@ -51,7 +54,7 @@ export default class KYCForm {
             let kycService = new KYCService(Moralis);
             let result = await kycService.saveKYCInfo(params)
                 .catch((reason : any) => {
-                    ErrorInfo.report(reason);
+                    let cloudError = new CloudError(reason);
                 });
             if (result) {
                 await this.showWaiting();
@@ -79,11 +82,8 @@ export default class KYCForm {
     }
 
     public async checkKycStatus() {
-        let userService = new UserService(Moralis);
-        let ethAddress = userService.getEthAddress();
-
         let kycService = new KYCService(Moralis);
-        let isValid = await kycService.hasValidKYC(ethAddress)
+        let isValid = await kycService.hasValidKYC()
 
         if (isValid) {
             clearTimeout();
@@ -95,8 +95,6 @@ export default class KYCForm {
     }
 
     public loadNames() {
-
-
             let characters = [
                 {given_name : 'Leslie', family_name : 'Knope', email_address:'leslie.knope' },
                 {given_name : 'April', family_name : 'Ludgate', email_address:'april.ludgate' },
@@ -115,10 +113,68 @@ export default class KYCForm {
             let character = characters[idx];
             (document.getElementById('given_name') as HTMLInputElement).value = character.given_name;
             (document.getElementById('family_name') as HTMLInputElement).value = character.family_name;
-            (document.getElementById('email_address') as HTMLInputElement).value = character.email_address + '.' + (new Date().getTime()) + '@parks-and-rec-example.com';
+    }
+
+
+    private bindListeners() {
+        let country_of_tax_residence = document.getElementById('country_of_tax_residence') as HTMLInputElement;
+        if (country_of_tax_residence) {
+            country_of_tax_residence.addEventListener('keyup', () => {
+                let div = document.getElementById('visa_type_div') as HTMLElement;
+                if (!div) return;
+
+                if (country_of_tax_residence.value.toUpperCase() == 'USA') {
+                    div.style.display = 'block';
+                } else {
+                    div.style.display = 'none';
+                }
+            })
+        }
+
+        let immediate_family_exposed_yes = document.getElementById('immediate_family_exposed_yes') as HTMLInputElement;
+        immediate_family_exposed_yes.addEventListener('click', (evt) => {
+            this.discloseReaction(evt, 'immediate_family', true);
+        })
+
+        let immediate_family_exposed_no = document.getElementById('immediate_family_exposed_no') as HTMLInputElement;
+        immediate_family_exposed_no.addEventListener('click', (evt) => {
+            this.discloseReaction(evt, 'immediate_family', false);
+        })
+
+
+        let is_affiliated_exchange_or_finra_yes = document.getElementById('is_affiliated_exchange_or_finra_yes') as HTMLInputElement;
+        is_affiliated_exchange_or_finra_yes.addEventListener('click', (evt) => {
+            this.discloseReaction(evt, 'affiliate_or_controlled', true)
+        })
+
+        let is_affiliated_exchange_or_finra_no = document.getElementById('is_affiliated_exchange_or_finra_no') as HTMLInputElement;
+        is_affiliated_exchange_or_finra_no.addEventListener('click', (evt) => {
+            this.discloseReaction(evt,'affiliate_or_controlled', false);
+        })
+
+        let is_control_person_yes = document.getElementById('is_control_person_yes') as HTMLInputElement;
+        is_control_person_yes.addEventListener('click', (evt) => {
+            this.discloseReaction(evt, 'affiliate_or_controlled', true)
+        })
+
+        let is_control_person_no = document.getElementById('is_control_person_no') as HTMLInputElement;
+        is_control_person_no.addEventListener('click', (evt) => {
+            this.discloseReaction(evt,'affiliate_or_controlled', false);
+        })
 
 
     }
 
-
+    private discloseReaction(event : MouseEvent, elementId : string, show : boolean) {
+        let input = event.target as HTMLInputElement;
+        if (input?.checked) {
+            let fieldset = document.getElementById(elementId) as HTMLElement;
+            if (fieldset) {
+                if (show) {
+                    fieldset.classList.remove('hidden')
+                } else {
+                    fieldset.classList.add('hidden')                }
+            }
+        }
+    }
 }
