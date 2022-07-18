@@ -348,12 +348,17 @@ progress.invalid {
 .trade_executed img {
 	width:5rem;
 }
-.trade_executed  {
+.trade_executed {
 	text-align: center;
 }
+
+.trade_executed > nav {
+	justify-content: space-around;
+}
+
 #tradingPanel {
-	max-width:510px;
-	margin:0 auto;
+	max-width: 510px;
+	margin: 0 auto;
 }
 #use_wallet_for_orders ul {
 	margin-left:1rem;
