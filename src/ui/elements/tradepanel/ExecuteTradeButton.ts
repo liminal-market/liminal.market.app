@@ -158,7 +158,7 @@ export default class ExecuteTradeButton {
 
         let ethAddress = (object.userAddress) ? object.userAddress : object.sender;
         let tokenAddress = (object.tokenAddress) ? object.tokenAddress : object.recipient;
-        let buyingQuantity = (object.userAddress) ? object.filledQty + ' shares' : '$' + object.filledQty;
+        let buyingQuantity = (object.userAddress) ? object.filled_qty + ' shares' : '$' + object.filled_qty;
         let obj: any = {
             sellingLogo: '/img/logos/' + this.sellTradeInput.symbol + '.png',
             sellingSymbol: this.sellTradeInput.symbol,
@@ -166,7 +166,7 @@ export default class ExecuteTradeButton {
             buyingLogo: '/img/logos/' + this.buyTradeInput.symbol + '.png',
             buyingSymbol: this.buyTradeInput.symbol,
             buyingQuantity: buyingQuantity,
-            buyingRoundQuantity: roundNumberDecimal(object.filledQty, 6),
+            buyingRoundQuantity: roundNumberDecimal(object.filled_qty, 6),
             walletName: proverInfo.WalletName,
             shortEthAddress: shortEth(ethAddress),
             blockExplorerLink: networkInfo.BlockExplorer + '/tx/' + object.transaction_hash,
