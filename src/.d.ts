@@ -5,5 +5,6 @@ import Handlebars from "handlebars";
 declare global {
     export const Moralis : Moralis;
     export const ExecuteFunctionCallResult : Moralis.ExecuteFunctionCallResult;
+
 }
 

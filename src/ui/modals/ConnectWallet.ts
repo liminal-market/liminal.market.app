@@ -9,6 +9,7 @@ import CookieHelper from "../../util/CookieHelper";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import WalletHelper from "../../util/WalletHelper";
 import ErrorInfo from "../../errors/ErrorInfo";
+import TradePage from "../pages/TradePage";
 
 
 
@@ -137,10 +138,15 @@ export default class ConnectWallet {
                 this.web3EnabledResult(providerName, walletConnectionInfo);
             },
             async (user) => {
+                this.modal.hideModal();
+
                 let userInfo = new UserInfo(this.moralis, this.providerInfo, user);
                 await userInfo.renderUserInfo('user_header_info');
 
-                this.modal.hideModal();
+                if (location.pathname.indexOf('trade') != -1) {
+                    let page = new TradePage(this.moralis);
+                    await page.load();
+                }
             })
             .catch((reason) => {
                 ErrorInfo.report(reason);

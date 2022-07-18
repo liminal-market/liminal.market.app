@@ -8,9 +8,11 @@ import Modal from "../../ui/modals/Modal";
 import CreateToken from "../../ui/modals/CreateToken";
 import AddressInfoHtml from '../../html/elements/AddressInfo.html';
 import PositionPageHtml from '../../html/pages/positions.html';
+import SyncStockHtml from '../../html/modal/SyncStock.html';
 import PositionsService from "../../services/backend/PositionsService";
 import HandlebarHelpers from "../../util/HandlebarHelpers";
 import TradePage from "./TradePage";
+import NetworkInfo from "../../networks/NetworkInfo";
 
 export default class PositionsPage {
     moralis : typeof Moralis;
@@ -36,8 +38,16 @@ export default class PositionsPage {
         let template = Handlebars.compile(PositionPageHtml);
         mainContainer.innerHTML = template({result:positions});
 
-        let symbols = new Array<string>();
+        let syncWalletBtn = document.getElementById('syncWallet');
+        if (syncWalletBtn) {
+            syncWalletBtn.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                this.syncAllTokens();
+            })
+        }
 
+
+        let symbols = new Array<string>();
         const sellLinks = document.getElementsByClassName('tradeSecurity');
         for (let i = 0; i < sellLinks.length; i++) {
             let element = sellLinks[i] as HTMLElement;
@@ -116,7 +126,30 @@ export default class PositionsPage {
                 document.getElementById('symbol_logo_' + symbols[i])!.setAttribute('src', '/img/logos/' + asset.Logo);
             }
         }
+    }
 
+    public async syncAllTokens() {
+        let networkInfo = NetworkInfo.getInstance();
+        let costOfSync = await this.moralis.Cloud.run('costOfSync');
+        let template = Handlebars.compile(SyncStockHtml);
+        let content = template({
+            shareCount: costOfSync.shareCount,
+            costPerShare: Moralis.Units.FromWei(costOfSync.costPerShare, 18),
+            priceInNativeToken: costOfSync.priceInNativeToken,
+            totalCost: Moralis.Units.FromWei(costOfSync.cost, 18),
+            NativeSymbol: networkInfo.NativeSymbol
+        });
+
+        let modal = new Modal();
+        modal.showModal('Sync all stock to wallet', content)
+
+        let syncAllPositions = document.getElementById('syncAllPositions');
+        if (syncAllPositions) {
+            syncAllPositions.addEventListener('click', async (evt) => {
+                evt.preventDefault();
+
+            })
+        }
     }
 
     public async initDocuments() {
@@ -124,8 +157,6 @@ export default class PositionsPage {
         const links = document.getElementsByClassName('downloadDoc');
         const user = this.moralis.User.current();
         if (!user) return;
-
-        const alpacaId = user.get('alpacaId');
 
         for (let i = 0; i < links.length; i++) {
             links[i].addEventListener('click', async (evt) => {
@@ -135,6 +166,10 @@ export default class PositionsPage {
                 if (!documentId) return;
 
                 let locationUrl = await this.documentService.getDocument(documentId);
+                if (locationUrl == '') {
+                    alert('Could not find document. Please contact us if you should have gotten a document')
+                    return;
+                }
                 window.location = locationUrl;
             });
         }

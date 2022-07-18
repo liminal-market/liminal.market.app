@@ -4,7 +4,6 @@ import ContractInfo from "../../contracts/ContractInfo";
 import SecuritiesListModal from "../modals/SecuritiesListModal";
 import AUSDService from "../../services/blockchain/AUSDService";
 import UserService from "../../services/backend/UserService";
-import doc = Mocha.reporters.doc;
 import WalletHelper from "../../util/WalletHelper";
 import Modal from "../modals/Modal";
 import CopyTokenAddressToAddToWallet from '../../html/modal/CopyTokenAddressToAddToWallet.html';

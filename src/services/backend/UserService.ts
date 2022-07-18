@@ -79,20 +79,6 @@ export default class UserService {
         return undefined;
     }
 
-    public setOffHours(isOffHours: boolean): void {
-        let user = this.moralis.User.current();
-        if (!user) return;
-
-        user.set('offHours', isOffHours); // do stuff with your user
-        user.save();
-    }
-
-    public isOffHours() : boolean {
-        let user = Moralis.User.current();
-        if (!user) return false;
-
-        return user.get('offHours') as boolean;
-    }
 
     public async isMarketOpenOrUserOffHours() : Promise<boolean> {
         let marketService = new MarketService(this.moralis);
@@ -101,9 +87,6 @@ export default class UserService {
 
         let networkInfo = NetworkInfo.getInstance();
         if (!networkInfo.TestNetwork) return false;
-
-        let isOffHours = this.isOffHours();
-        if (isOffHours) return true;
 
         return false;
     }

@@ -294,7 +294,7 @@ export default class ExecuteTradeButton {
             return false;
         }
 
-        let hasValidKYC = await kycService.hasValidKYC(ethAddress);
+        let hasValidKYC = await kycService.hasValidKYC();
         if (hasValidKYC) return true;
 
         button.innerHTML = 'Finish KYC';

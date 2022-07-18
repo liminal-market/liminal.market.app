@@ -1,38 +1,39 @@
 import Moralis from "moralis";
-import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
 import NetworkInfo from "../../networks/NetworkInfo";
-import ErrorInfo from "../../errors/ErrorInfo";
 import GeneralError from "../../errors/GeneralError";
-import InfoBar from "../../ui/elements/InfoBar";
-import Modal from "../../ui/modals/Modal";
-import WalletHelper from "../../util/WalletHelper";
 import SwitchNetworkModal from "../../ui/modals/SwitchNetworkModal";
+import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
 
 export default class AuthenticateService {
-    moralis : typeof Moralis
+    moralis: typeof Moralis
 
-    public constructor(moralis : typeof Moralis) {
+    public constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
     }
 
-    public async authenticateUser(provider : any,
-                                  enableWeb3Callback? : (walletConnectionInfo : MoralisWeb3Provider) => void,
-                                  authenticatedCallback? : (user : Moralis.Attributes) => void
-        ) {
+    public async authenticateUser(provider: any,
+                                  enableWeb3Callback?: (walletConnectionInfo: MoralisWeb3Provider) => void,
+                                  authenticatedCallback?: (user: Moralis.Attributes) => void
+    ) {
         let moralis = this.moralis;
         let chainId = NetworkInfo.getInstance().ChainId;
 
-        let web3Result = await moralis.enableWeb3({provider:provider,
-            chainId:chainId, appLogo : 'https://app.liminal.market/img/logos/default_logo.png' })
+        let web3Result = await moralis.enableWeb3({
+            provider: provider,
+            chainId: chainId, appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
+        })
             .catch(async (reason) => {
 
                 throw new GeneralError(reason);
             });
-        if (enableWeb3Callback) enableWeb3Callback(web3Result);
+
+        if (enableWeb3Callback) {
+            enableWeb3Callback(web3Result);
+        }
 
         let user = this.moralis.User.current();
         if (user) {
-            if (authenticatedCallback) return authenticatedCallback(user);
+            if (authenticatedCallback) authenticatedCallback(user);
             return;
         }
 
@@ -51,19 +52,23 @@ export default class AuthenticateService {
             signingMessage: "You are logging into Liminal.market.\n\n",
             provider: provider,
             chainId: chainId
-        }).catch((reason : any) => {
+        }).catch((reason: any) => {
             console.log(reason);
             throw new GeneralError(reason);
         });
 
-        if (authenticatedCallback) authenticatedCallback(result);
+        if (authenticatedCallback) {
+            authenticatedCallback(result);
+        } else {
+            location.reload();
+        }
     }
 
     public getUser() {
         return this.moralis.User.current();
     }
 
-    public getEthAddress() : string {
+    public getEthAddress(): string {
         let user = this.getUser();
         if (!user) return '';
 
@@ -79,7 +84,7 @@ export default class AuthenticateService {
         return (this.moralis.User.current() !== null);
     }
 
-    public getChainId() : number {
+    public getChainId(): number {
         if (!this.moralis.chainId) return 0;
 
         return parseInt(this.moralis.chainId, 16);
