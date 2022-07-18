@@ -1,8 +1,9 @@
 <article>
     If your wallet is out of sync with your position you can sync it here. This happens when you move from
     one chain to another. If you like to switch to new chain click the button below.
-
-    You will be asked to confirm a transaction of {{costOfSync}} Matic. This is the cost of syncing the tokens (plus service fee)
-
+    <br/><br/>
+    You will be asked to confirm a transaction of {{totalCost}} {{NativeSymbol}} (${{priceInNativeToken}}).
+    Each stock costs {{costPerShare}} {{NativeSymbol}} to sync. You have total of {{shareCount}} share.
+    <br/><br/>
     <button id="syncAllPositions">Sync stock to my wallet</button>
 </article>

@@ -12,6 +12,7 @@ import SyncStockHtml from '../../html/modal/SyncStock.html';
 import PositionsService from "../../services/backend/PositionsService";
 import HandlebarHelpers from "../../util/HandlebarHelpers";
 import TradePage from "./TradePage";
+import NetworkInfo from "../../networks/NetworkInfo";
 
 export default class PositionsPage {
     moralis : typeof Moralis;
@@ -128,12 +129,27 @@ export default class PositionsPage {
     }
 
     public async syncAllTokens() {
+        let networkInfo = NetworkInfo.getInstance();
         let costOfSync = await this.moralis.Cloud.run('costOfSync');
         let template = Handlebars.compile(SyncStockHtml);
-        let content = template({costOfSync:costOfSync});
+        let content = template({
+            shareCount: costOfSync.shareCount,
+            costPerShare: Moralis.Units.FromWei(costOfSync.costPerShare, 18),
+            priceInNativeToken: costOfSync.priceInNativeToken,
+            totalCost: Moralis.Units.FromWei(costOfSync.cost, 18),
+            NativeSymbol: networkInfo.NativeSymbol
+        });
 
         let modal = new Modal();
         modal.showModal('Sync all stock to wallet', content)
+
+        let syncAllPositions = document.getElementById('syncAllPositions');
+        if (syncAllPositions) {
+            syncAllPositions.addEventListener('click', async (evt) => {
+                evt.preventDefault();
+
+            })
+        }
     }
 
     public async initDocuments() {
