@@ -9,7 +9,7 @@ import AUSDService from "../../../services/blockchain/AUSDService";
 import AUSDFund from "../../modals/AUSDFund";
 import SecurityTokenService from "../../../services/blockchain/SecurityTokenService";
 import LiminalMarketService from "../../../services/blockchain/LiminalMarketService";
-import {AddressZero, roundNumberDecimal, shortEth} from "../../../util/Helper";
+import {AddressZero, roundBigNumberDecimal, roundNumberDecimal, shortEth} from "../../../util/Helper";
 import Subscription from "../../../services/backend/Subscription";
 import {TradeType} from '../../../enums/TradeType';
 import TradePanelInput from "./TradePanelInput";
@@ -20,6 +20,7 @@ import Modal from "../../modals/Modal";
 import WalletHelper from "../../../util/WalletHelper";
 import BlockchainError from "../../../errors/BlockchainError";
 import NativeTokenNeeded from "../../modals/NativeTokenNeeded";
+import BigNumber from "bignumber.js";
 
 export default class ExecuteTradeButton {
     moralis: typeof Moralis;
@@ -152,26 +153,56 @@ export default class ExecuteTradeButton {
         })
     }
 
-    public async showTradeExecuted(object: any) {
-        let proverInfo = ProviderInfo.Instance;
-        let networkInfo = NetworkInfo.getInstance();
+    public getBuyingSharesObj(object: any): any {
+        let ethAddress = object.userAddress;
+        let tokenAddress = object.tokenAddress;
+        let buyingQuantity = object.filled_qty;
+        let sellingAmount = '$' + new BigNumber(object.amount).div(10 ** 18).toFixed();
 
-        let ethAddress = (object.userAddress) ? object.userAddress : object.sender;
-        let tokenAddress = (object.tokenAddress) ? object.tokenAddress : object.recipient;
-        let buyingQuantity = (object.userAddress) ? object.filled_qty + ' shares' : '$' + object.filled_qty;
         let obj: any = {
-            sellingLogo: '/img/logos/' + this.sellTradeInput.symbol + '.png',
-            sellingSymbol: this.sellTradeInput.symbol,
-            sellingAmount: this.sellTradeInput.quantityFormatted(),
-            buyingLogo: '/img/logos/' + this.buyTradeInput.symbol + '.png',
-            buyingSymbol: this.buyTradeInput.symbol,
+            sellingLogo: '/img/logos/aUSD.png',
+            sellingSymbol: 'aUSD',
+            sellingAmount: sellingAmount,
+            buyingLogo: '/img/logos/' + object.symbol + '.png',
+            buyingSymbol: object.symbol,
             buyingQuantity: buyingQuantity,
-            buyingRoundQuantity: roundNumberDecimal(object.filled_qty, 6),
-            walletName: proverInfo.WalletName,
+            buyingRoundQuantity: roundNumberDecimal(buyingQuantity, 6) + ' shares',
             shortEthAddress: shortEth(ethAddress),
-            blockExplorerLink: networkInfo.BlockExplorer + '/tx/' + object.transaction_hash,
             tokenAddress: tokenAddress
         }
+
+        return obj;
+    }
+
+    public getSellSharesObj(object: any): any {
+        let ethAddress = object.sender;
+        let tokenAddress = object.recipient;
+        let buyingQuantity = new BigNumber(object.filled_avg_price).multipliedBy(new BigNumber(object.filled_qty))
+        let sellingAmount = object.filled_qty;
+
+        let obj: any = {
+            sellingLogo: '/img/logos/' + object.symbol + '.png',
+            sellingSymbol: object.symbol,
+            sellingAmount: sellingAmount + ' shares',
+            buyingLogo: '/img/logos/aUSD.png',
+            buyingSymbol: 'aUSD',
+            buyingQuantity: buyingQuantity.toFixed(),
+            buyingRoundQuantity: '$' + roundBigNumberDecimal(buyingQuantity, 6).toFixed(),
+            shortEthAddress: shortEth(ethAddress),
+            tokenAddress: tokenAddress
+        }
+        return obj;
+    }
+
+    public async showTradeExecuted(object: any) {
+        let providerInfo = ProviderInfo.Instance;
+        let networkInfo = NetworkInfo.getInstance();
+        let isBuy = (object.side == 'buy');
+
+        let obj = (isBuy) ? this.getBuyingSharesObj(object) : this.getSellSharesObj(object);
+        obj.walletName = providerInfo.WalletName;
+        obj.blockExplorerLink = networkInfo.BlockExplorer + '/tx/' + object.transaction_hash;
+
         let template = Handlebars.compile(TradeExecutedHtml);
         let content = template(obj);
         let modal = new Modal();
