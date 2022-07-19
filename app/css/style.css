@@ -55,8 +55,7 @@
 }
 h3 {--typography-spacing-vertical:0.25rem;}
 @font-face {
-	font-family:"Inter";
-	src: url('../font/Inter-VariableFont_slnt,wght.ttf') format("truetype");
+    font-family: "Inter", sans-serif;
 }
 .justify-between {
 	justify-content: space-between;

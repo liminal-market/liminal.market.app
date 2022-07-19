@@ -11,6 +11,8 @@ export default class BlockchainError extends GeneralError {
 
     constructor(e : any) {
         super(e);
+        this.message = e.toString();
+
         if (this.userDeniedTransactionSignature()) {
             this.code = BlockchainError.UserCancelled;
         } else if (this.addressIsNotValidKYC()) {

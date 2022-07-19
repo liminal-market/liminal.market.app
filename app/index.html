@@ -9,13 +9,14 @@
     <link rel="shortcut icon" href="https://app.liminal.market/img/logos/default_logo.png"/>
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
     <link href="css/style.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="/font/Inter-VariableFont_slnt,wght.ttf"/>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap" rel="stylesheet">
     <script>
-        if (window.location.host.indexOf('localhost') == -1) {
+        if (window.location.host.indexOf('1localhost') == -1) {
             let script = document.createElement('script');
-            script.integrity = 'sha384-KXjn4K+AYjp1cparCXazrB+5HKdi69IUYz8glD3ySH3fnDgMX3Wg6VTMvXUGr4KB';
-            script.crossorigin = "anonymous"
+            script.setAttribute('integrity', 'sha384-KXjn4K+AYjp1cparCXazrB+5HKdi69IUYz8glD3ySH3fnDgMX3Wg6VTMvXUGr4KB');
+            script.setAttribute('crossorigin', "anonymous");
             script.src = 'https://browser.sentry-cdn.com/6.19.7/bundle.min.js';
             script.onload = () => {
                 if (Sentry) {
@@ -98,9 +99,9 @@
 
 <script type="module" src="./js/bundle.js"></script>
 <script>
-    if (window.location.host.indexOf('localhost') == -1) {
+    if (window.location.host.indexOf('1localhost') == -1) {
         let script = document.createElement('script');
-        script.dataset['cf-beacon'] = '{"token": "89aeea2757bf4ee1974d575bf253ecb3"}';
+        script.setAttribute('data-cf-beacon', '{"token": "89aeea2757bf4ee1974d575bf253ecb3"}');
         script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
         document.head.appendChild(script);
 

@@ -1,4 +1,3 @@
-import ContractInfo from "../../contracts/ContractInfo";
 import ErrorInfo from "../../errors/ErrorInfo";
 import BlockchainError from "../../errors/BlockchainError";
 import GeneralError from "../../errors/GeneralError";
@@ -24,7 +23,7 @@ export default class KYCService {
     public async hasValidKYC(): Promise<boolean> {
         if (KYCService.IsValidKYC) return KYCService.IsValidKYC;
 
-        let alpacaId = await this.moralis.Cloud.run('isValidKyc').catch(reason => {
+        let alpacaId = await this.moralis.Cloud.run('isValidKyc', {chainId: this.moralis.chainId}).catch(reason => {
             let blockchainError = new BlockchainError(reason);
             if (blockchainError.addressIsNotValidKYC()) {
                 return false;
@@ -38,11 +37,6 @@ export default class KYCService {
 
             let user = this.moralis.User.current();
             if (!user) return false;
-
-
-            if (!user.get('alpacaId')) {
-               // user.set('alpacaId', alpacaId)
-            }
         }
 
         return alpacaId !== undefined;
