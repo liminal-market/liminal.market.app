@@ -212,14 +212,18 @@ dialog .infoBar {
 .liminal_market {
 	background-image: url("../img/logo2.png");
 	background-repeat: no-repeat;
-	padding-left:4.4rem;
+	padding-left: 4.4rem;
 	margin-left: calc(var(--spacing) + 1rem);
 	background-position: left;
 	background-size: 3.5rem;
 }
 
+#liminal_market_modal_div {
+	margin-bottom: 30px;
+}
+
 #liminal_market_modal_div > article {
-	margin:auto;
+	margin: auto;
 }
 #liminal_market_modal_div > article ul, #liminal_market_modal_div > article ol {
 	margin-left: 1rem;
