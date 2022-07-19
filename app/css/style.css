@@ -6,10 +6,10 @@
 	--primary-hover: #455a64;
 	--primary-focus: rgba(84, 110, 122, 0.125);
 	--primary-inverse: #FFF;
-	--nav-background-color:#040633;
-	--nav-color:#fff;
+	--nav-background-color: #040633;
+	--nav-color: #fff;
 	/*--background-color:#f9f6fe;*/
-
+	--highlight-background: lightyellow;
 }
 
 /* Blue-grey Dark scheme (Auto) */
@@ -30,7 +30,8 @@
 	--primary-hover: #607d8b;
 	--primary-focus: rgba(84, 110, 122, 0.25);
 	--primary-inverse: #FFF;
-	--nav-background-color:#040633;
+	--nav-background-color: #040633;
+	--highlight-background: #515100;
 }
 
 /* Blue-grey (Common styles) */
@@ -39,30 +40,42 @@
 	--form-element-focus-color: var(--primary-focus);
 	--switch-color: var(--primary-inverse);
 	--switch-checked-background-color: var(--primary);
-	--spacing:0.4rem;
-	--form-element-spacing-vertical:0.3rem;
-	--form-element-spacing-horizontal:0.5rem;
-	--typography-spacing-vertical:0.25rem;
+	--spacing: 0.4rem;
+	--form-element-spacing-vertical: 0.3rem;
+	--form-element-spacing-horizontal: 0.5rem;
+	--typography-spacing-vertical: 0.25rem;
 
 	--info-bar-background-color: var(--primary);
-	--info-bar-color:var(--primary-inverse);
+	--info-bar-color: var(--primary-inverse);
 
 	--warning-bar-background-color: #ffc147;
 	--warning-bar-color: #000;
 
 	--error-bar-background-color: #f4511e;
-	--error-bar-color:#ff;
+	--error-bar-color: #ff;
 }
-h3 {--typography-spacing-vertical:0.25rem;}
+
+.kycFigure {
+	background-color: var(--highlight-background);
+	padding: 45px;
+}
+
+h3 {
+	--typography-spacing-vertical: 0.25rem;
+}
+
 @font-face {
-    font-family: "Inter", sans-serif;
+	font-family: "Inter", sans-serif;
 }
+
 .justify-between {
 	justify-content: space-between;
 }
+
 .d-none, .hidden {
-	display:none;
+	display: none;
 }
+
 .center {
 	text-align: center;
 }
@@ -218,9 +231,6 @@ dialog .infoBar {
 	background-size: 3.5rem;
 }
 
-#liminal_market_modal_div {
-	margin-bottom: 30px;
-}
 
 #liminal_market_modal_div > article {
 	margin: auto;
@@ -373,7 +383,7 @@ progress.invalid {
 }
 
 #submitKYC {
-	margin-bottom: 20px;
+	margin-bottom: 80px;
 }
 
 @media (min-width: 576px) {
