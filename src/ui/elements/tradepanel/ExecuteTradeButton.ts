@@ -204,6 +204,9 @@ export default class ExecuteTradeButton {
                 if (!executingTrade) return;
 
                 executingTrade.classList.add('d-none');
+            } else if (object.status == 'order_failed') {
+                let modal = new Modal();
+                modal.showModal('Order failed', 'We could not finish your order.')
             }
         });
 
