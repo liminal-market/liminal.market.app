@@ -279,29 +279,53 @@ dialog .infoBar {
 
 #error_info {
 	background-color: var(--alert-background);
-	color:var(--alert-color);
+	color: var(--alert-color);
 	position: fixed;
-	top:0;
-	left:0;
+	top: 0;
+	left: 0;
 	padding: 0.5rem 1rem;
 	width: 100%;
 }
 
 .mobileNavigation {
-	display:flex;
-	margin-left:0.5rem !important;
+	display: flex;
+	margin-left: 0.5rem !important;
 }
-.desktopNavigation {display:none;}
 
+nav details[role=list] .mobileNavLinks > li > a {
+	padding: 1rem;
+}
+
+#mobile_logo {
+	background-image: url(../img/logo2.png);
+	background-repeat: no-repeat;
+	padding-left: 3rem;
+	margin-left: 0;
+	background-position: left;
+	background-size: 3.5rem;
+}
+
+.mobileNavigation details[role=list] summary::after {
+	margin-top: 4px;
+}
+
+.mobileNavigation details[role=list] svg {
+	margin-top: 6px;
+}
+
+.desktopNavigation {
+	display: none;
+}
 
 
 #liminal_market_trade_panel {
 
 }
+
 .tradeInputArticle {
-	margin:0;
+	margin: 0;
 	overflow: hidden;
-	padding:calc(var(--spacing)*2);
+	padding: calc(var(--spacing) * 2);
 }
 .tradeInput {
 	grid-template-columns: 11rem 1fr;
