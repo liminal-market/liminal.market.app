@@ -37,6 +37,8 @@ export default class KYCService {
 
             let user = this.moralis.User.current();
             if (!user) return false;
+
+            user.set('alpacaId', alpacaId);
         }
 
         return alpacaId !== undefined;
