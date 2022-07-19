@@ -4,11 +4,8 @@ import Progress from "../elements/Progress";
 import KYCService from "../../services/blockchain/KYCService";
 import NetworkInfo from "../../networks/NetworkInfo";
 import {serialize} from "../../util/Helper";
-import ErrorInfo from "../../errors/ErrorInfo";
-import UserService from "../../services/backend/UserService";
 import LoadingHelper from "../../util/LoadingHelper";
 import CloudError from "../../errors/CloudError";
-import GeneralError from "../../errors/GeneralError";
 
 export default class KYCForm {
     modal : Modal;
@@ -27,10 +24,6 @@ export default class KYCForm {
 
         this.modal.showModal('KYC & AML', content, true, () => {this.clearTimeout()});
 
-        let networkInfo = NetworkInfo.getInstance();
-        if (networkInfo.TestNetwork) {
-            this.loadNames();
-        }
         this.bindListeners();
         let submitKYC = document.getElementById('submitKYC');
         if (!submitKYC) return;

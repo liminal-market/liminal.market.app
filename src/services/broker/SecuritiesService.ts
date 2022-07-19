@@ -1,4 +1,3 @@
-import TradeInfo from "../backend/TradeInfo";
 import Security from "./Security";
 
 export default class SecuritiesService {
@@ -6,8 +5,8 @@ export default class SecuritiesService {
     securities = new Map<string, Security>();
     securitiesArray : any;
     private static instance : SecuritiesService;
-    page : number;
-    symbols = ["MSFT", "AAPL", "AMZN", "TSLA", "GOOGL", "GOOG", "GME", "FB", "NVDA", "BRK.B", "JPM", "HD", "JNJ", "UNH", "PG", "BAC", "V", "ADBE", "NFLX", "CRM", "PFE", "DIS", "MA", "XOM", "TMO", "COST"]
+    page: number;
+    symbols = ["MSFT", "AAPL", "AMZN", "TSLA", "GOOGL", "GOOG", "GME", "META", "NVDA", "BRK.B", "JPM", "HD", "JNJ", "UNH", "PG", "BAC", "V", "ADBE", "NFLX", "CRM", "PFE", "DIS", "MA", "XOM", "TMO", "COST"]
 
     private constructor() {
         this.securities = new Map<string, Security>();

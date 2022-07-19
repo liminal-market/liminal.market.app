@@ -1,11 +1,10 @@
 <div id="kyc_reg">
 
     <h3>Fake KYC Registration</h3>
-    <p>In the test version you dont need to fill in you name, we will simply use dummy data. Click the registration
-        button at the bottom to get be KYC verified. This will allow you to buy securities in the sandbox
-        environment.</p>
     <form id="kyc_wizard_form" name="kyc_wizard_form" novalidate onsubmit="return false">
-        <fieldset>
+        <fieldset style="background-color: lightyellow;padding: 45px;">
+            <strong>It is enough just to fill in this part.</strong><br/>
+
             <div>
                 <label for="email_address">Email</label>
                 <input type="text" required class="form-control" id="email_address" name="email_address"
@@ -19,7 +18,7 @@
                        value="">
             </div>
             <div>
-                <label for="given_name">Middle name</label>
+                <label for="middle_name">Middle name</label>
                 <input type="text" required class="form-control" id="middle_name" name="middle_name"
                        placeholder=""
                        value="">
@@ -30,6 +29,10 @@
                        placeholder="Swanson"
                        value="">
             </div>
+            <small>Everything below is part of regular KYC process, but we are running on test network, so you can leave
+                it as is.
+                Simply click Confirm Identity button at the bottom.
+            </small>
         </fieldset>
         <fieldset>
             <legend>Contact</legend>
