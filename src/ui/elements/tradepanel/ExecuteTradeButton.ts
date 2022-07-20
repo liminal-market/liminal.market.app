@@ -126,6 +126,8 @@ export default class ExecuteTradeButton {
                         if (!transaction) return;
 
                         this.monitorExecuteTrade(transaction as Moralis.ExecuteFunctionResult, TradeType.Buy);
+                        this.setProgressText('Sending to blockchain', transaction.hash)
+
                         console.log('THEN - aUsdService.transfer', transaction);
                     }).finally(() => {
                         this.stopLoadingButton(button);
@@ -238,6 +240,10 @@ export default class ExecuteTradeButton {
             } else if (object.status == 'order_failed') {
                 let modal = new Modal();
                 modal.showModal('Order failed', 'We could not finish your order.')
+            } else if (!object.status) {
+                this.setProgressText('Received order sending to stock exchange', object.block_hash)
+            } else if (object.status == 'order_requested') {
+                this.setProgressText('Sent to stock exchange', object.block_hash)
             }
         });
 
@@ -441,5 +447,13 @@ export default class ExecuteTradeButton {
             return false;
         }
         return true;
+    }
+
+    private setProgressText(text: string, hash: string) {
+        let progressText = document.getElementById('progress-text');
+        if (progressText) {
+            let networkInfo = NetworkInfo.getInstance();
+            progressText.innerHTML = text + '<br /><a href="' + networkInfo.BlockExplorer + '/tx/' + hash + '" target="_blank" style="font-size:10px">View</a>';
+        }
     }
 }

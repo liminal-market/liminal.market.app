@@ -149,12 +149,17 @@ body>footer {
 	color:var(--warning-bar-color);
 }
 .errorBar {
-	background-color:var(--error-bar-background-color);
-	color:var(--error-bar-color);
+	background-color: var(--error-bar-background-color);
+	color: var(--error-bar-color);
+}
+
+.input_error {
+	font-size: small;
+	font-style: italic;
 }
 
 dialog .infoBar {
-	padding:1rem;
+	padding: 1rem;
 	border-radius: 0.5rem;
 }
 
@@ -340,9 +345,15 @@ nav details[role=list] .mobileNavLinks > li > a {
 .tradeInput .trade_input, .tradeInput .total_usd_value {
 	text-align: right;
 }
+
 .tradeInput .trade_input input {
 	text-align: right;
-	border:0;
+	border: 0;
+}
+
+#progress-text {
+	text-align: center;
+	line-height: 1rem;
 }
 
 progress.invalid {

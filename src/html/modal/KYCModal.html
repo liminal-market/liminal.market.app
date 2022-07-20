@@ -65,9 +65,11 @@
             </div>
             <div>
                 <label for="country">Country</label>
-                <input type="text" required class="form-control" id="country" name="country" placeholder="USA"
-                       value="USA">
-
+                <select required id="country" name="country">
+                    {{#each countries}}
+                    <option value="{{code}}">{{name}}</option>
+                    {{/each}}
+                </select>
             </div>
         </fieldset>
 
@@ -129,19 +131,27 @@
             </div>
             <div>
                 <label for="country_of_citizenship">Country of citizenship</label>
-                <input type="text" required class="form-control" id="country_of_citizenship"
-                       name="country_of_citizenship"
-                       placeholder="USA" value="USA">
+                <select required id="country_of_citizenship" name="country_of_citizenship">
+                    {{#each countries}}
+                    <option value="{{code}}">{{name}}</option>
+                    {{/each}}
+                </select>
             </div>
             <div>
                 <label for="country_of_birth">Country of birth</label>
-                <input type="text" required class="form-control" id="country_of_birth" name="country_of_birth"
-                       placeholder="USA" value="USA">
+                <select required id="country_of_birth" name="country_of_birth">
+                    {{#each countries}}
+                    <option value="{{code}}">{{name}}</option>
+                    {{/each}}
+                </select>
             </div>
             <div>
                 <label for="country_of_tax_residence">Country of tax residence</label>
-                <input type="text" required class="form-control" id="country_of_tax_residence"
-                       name="country_of_tax_residence" placeholder="USA" value="USA">
+                <select required id="country_of_tax_residence" name="country_of_tax_residence">
+                    {{#each countries}}
+                    <option value="{{code}}">{{name}}</option>
+                    {{/each}}
+                </select>
             </div>
             <div id="visa_type_div">
                 <div>
@@ -289,7 +299,11 @@
             </div>
             <div>
                 <label for="company_country">Company country</label>
-                <input name="company_country" id="company_country" />
+                <select required id="company_country" name="company_country">
+                    {{#each countries}}
+                    <option value="{{code}}">{{name}}</option>
+                    {{/each}}
+                </select>
             </div>
             <div>
                 <label for="company_compliance_email">Company compliance officer email</label>
@@ -347,7 +361,7 @@
 </div>
 
 <div id="waiting_for_kyc_reg" class="d-none">
-    KYC is being processed. This may take few seconds. Window will close when it's done.
+    KYC is being processed. This may take about 4-5 minutes. Window will close when it's done.
     <progress></progress>
 
 </div>

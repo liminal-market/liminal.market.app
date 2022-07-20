@@ -1,14 +1,18 @@
 <div id="tradingPanel">
     <a href="#use_wallet_for_orders">Trade in your wallet instead of here</a>
     <article id="liminal_market_trade_panel"></article>
-    <progress id="executing-trade-progress" class="d-none"></progress>
+    <div id="executing-trade-progress" class="d-none">
+        <div id="progress-text"></div>
+        <progress></progress>
+    </div>
     <button id="liminal_market_execute_trade"></button>
 
     <article id="use_wallet_for_orders">
 
         <h3>How to buy in wallet</h3>
         <ul>
-            <li>If you haven't added aUSD to your wallet, now is the time - <small><a href="" id="addAUSDToWallet">Click here to add aUSD to wallet</a></small></li>
+            <li>If you haven't added aUSD to your wallet, now is the time - <small><a href="" id="addAUSDToWallet">Click
+                here to add aUSD to wallet</a></small></li>
             <li><a href="" class="findSymbol">Find symbol</a> you want to buy & click "Get address"</li>
             <li>Go to your wallet and find the aUSD token, click "Send"</li>
             <li>Paste in the address you just copied for the Receiver.

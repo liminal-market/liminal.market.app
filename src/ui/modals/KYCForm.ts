@@ -6,6 +6,7 @@ import NetworkInfo from "../../networks/NetworkInfo";
 import {serialize} from "../../util/Helper";
 import LoadingHelper from "../../util/LoadingHelper";
 import CloudError from "../../errors/CloudError";
+import CountryHelper from "../../util/CountryHelper";
 
 export default class KYCForm {
     modal : Modal;
@@ -18,8 +19,9 @@ export default class KYCForm {
 
     public showKYCForm() {
 
+        let countries = CountryHelper.Countries;
         let template = Handlebars.compile(KYCFormHtml);
-        let content = template(null);
+        let content = template({countries: countries});
 
 
         this.modal.showModal('KYC & AML', content, true, () => {this.clearTimeout()});
@@ -48,7 +50,9 @@ export default class KYCForm {
             let result = await kycService.saveKYCInfo(params)
                 .catch((reason : any) => {
                     let cloudError = new CloudError(reason);
+                    LoadingHelper.removeLoading();
                 });
+
             if (result) {
                 await this.showWaiting();
             }
