@@ -53,11 +53,12 @@ export default class AUSDFund {
             requestFakeAUSD!.setAttribute('aria-busy', 'true');
 
             let fundingService = new FundingService(this.moralis);
-            let result = await fundingService.requestFakeFunding()
+            let response = await fundingService.requestFakeFunding()
                 .catch((reason) => {
                     this.errorWhileFunding({})
                 });
-
+            let result = response.result;
+            console.log('success', result.success);
             if (!result.success) {
                 console.log(result);
                 let fundingError = document.getElementById('fundingError');
