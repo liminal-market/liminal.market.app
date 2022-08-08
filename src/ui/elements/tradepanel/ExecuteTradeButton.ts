@@ -230,6 +230,13 @@ export default class ExecuteTradeButton {
         let subscription = new Subscription(this.moralis);
 
         await subscription.subscribeToTable(tradeType, (object) => {
+            let user = this.moralis.User.current();
+            if (!user) return;
+            if (object.address != user.get('ethAddress')) {
+                console.log('obj.address:' + object.address + ' user:' + user.get('ethAddress'));
+                return;
+            }
+
             if (object.status == 'order_filled') {
                 this.showTradeExecuted(object);
 
