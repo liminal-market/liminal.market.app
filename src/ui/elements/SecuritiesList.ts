@@ -9,7 +9,6 @@ import ContractAddressNotFound from '../../html/elements/ContractAddressNotFound
 import {AddressZero} from "../../util/Helper";
 import WalletHelper from "../../util/WalletHelper";
 import AddToWalletHtml from '../../html/elements/AddToWallet.html';
-import HTML = Mocha.reporters.HTML;
 import LoadingHelper from "../../util/LoadingHelper";
 import ErrorInfo from "../../errors/ErrorInfo";
 import GeneralError from "../../errors/GeneralError";
@@ -81,8 +80,8 @@ export default class SecuritiesList {
             if (parentTr.tagName.toLocaleLowerCase() !== 'tr') {
                 parentTr = parentTr.parentElement!;
             }
-            parentTr.setAttribute('aria-busy', 'true');
-            let symbol = parentTr.dataset.symbol;
+
+        let symbol = parentTr.dataset.symbol;
             if (!symbol) return;
 
             let name = parentTr.dataset.name!
@@ -91,7 +90,6 @@ export default class SecuritiesList {
             if (this.onSelectSymbol) {
                 this.onSelectSymbol(symbol, name, logo);
             }
-            parentTr.removeAttribute('aria-busy');
 
     }
 
