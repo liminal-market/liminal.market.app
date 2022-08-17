@@ -17,7 +17,7 @@ export default class SecuritiesList {
     page: number;
     tbodyId = 'liminal_market_securities_list';
     loadmore: boolean;
-    onSelectSymbol? : (symbol: string, name: string, logo: string) => void  = undefined;
+    onSelectSymbol?: (symbol: string, name: string, logo: string) => void = undefined;
 
     constructor() {
         this.page = 0;
@@ -65,31 +65,31 @@ export default class SecuritiesList {
         }
     }
 
-    public async handleClick(evt : MouseEvent) {
+    public async handleClick(evt: MouseEvent) {
 
-            let element = (evt.target! as HTMLElement);
-            if (element.tagName.toLocaleLowerCase() === 'a') {
-                await this.addToWalletOrGetAddress(evt, element);
+        let element = (evt.target! as HTMLElement);
+        if (element.tagName.toLocaleLowerCase() === 'a') {
+            await this.addToWalletOrGetAddress(evt, element);
 
-                return;
-            }
-            let parentTr = element.parentElement;
-            if (!parentTr) return;
+            return;
+        }
+        let parentTr = element.parentElement;
+        if (!parentTr) return;
 
 
-            if (parentTr.tagName.toLocaleLowerCase() !== 'tr') {
-                parentTr = parentTr.parentElement!;
-            }
+        if (parentTr.tagName.toLocaleLowerCase() !== 'tr') {
+            parentTr = parentTr.parentElement!;
+        }
 
         let symbol = parentTr.dataset.symbol;
-            if (!symbol) return;
+        if (!symbol) return;
 
-            let name = parentTr.dataset.name!
-            let logo = parentTr.dataset.logo!;
+        let name = parentTr.dataset.name!
+        let logo = parentTr.dataset.logo!;
 
-            if (this.onSelectSymbol) {
-                this.onSelectSymbol(symbol, name, logo);
-            }
+        if (this.onSelectSymbol) {
+            this.onSelectSymbol(symbol, name, logo);
+        }
 
     }
 
@@ -211,8 +211,8 @@ export default class SecuritiesList {
             let walletHelper = new WalletHelper(Moralis);
 
             let added = await walletHelper.addTokenToWallet(address, symbol, () => {
-               LoadingHelper.removeLoading();
-               this.renderContractInfoToString(element, address, symbol, AddToWalletHtml);
+                LoadingHelper.removeLoading();
+                this.renderContractInfoToString(element, address, symbol, AddToWalletHtml);
             });
             if (added) {
                 return '';
