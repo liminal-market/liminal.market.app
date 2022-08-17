@@ -232,8 +232,8 @@ export default class ExecuteTradeButton {
         await subscription.subscribeToTable(tradeType, (object) => {
             let user = this.moralis.User.current();
             if (!user) return;
-            if (object.address != user.get('ethAddress')) {
-                console.log('obj.address:' + object.address + ' user:' + user.get('ethAddress'));
+            if (object.userAddress != user.get('ethAddress')) {
+                console.log('obj.userAddress:' + object.userAddress + ' user:' + user.get('ethAddress'));
                 return;
             }
 
