@@ -1,6 +1,4 @@
 import ContractInfo from "../../contracts/ContractInfo";
-import {AddressZero} from "../../util/Helper";
-import LoadingHelper from "../../util/LoadingHelper";
 import ErrorInfo from "../../errors/ErrorInfo";
 import BlockchainError from "../../errors/BlockchainError";
 
@@ -36,7 +34,7 @@ export default class LiminalMarketService {
             contractAddress: contractInfo.LIMINAL_MARKET_ADDRESS,
             functionName: functionName,
             abi: abi,
-            params: params
+            params: params,
         };
         return options;
     }

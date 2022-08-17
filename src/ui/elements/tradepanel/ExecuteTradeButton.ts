@@ -109,30 +109,15 @@ export default class ExecuteTradeButton {
                 if (symbolAddress === AddressZero) {
                     let result = await liminalMarketService.createToken(this.buyTradeInput.symbol, () => {
                         button.innerHTML = 'Creating token. Give it few seconds';
-                    })
-                        .finally(() => {
-                            this.stopLoadingButton(button);
-                            button.innerHTML = 'Execute trade';
-                        });
-                    if (result instanceof BlockchainError) return;
-                    symbolAddress = result as string;
-                }
-
-                let aUsdService = new AUSDService(this.moralis);
-                await aUsdService.transfer(symbolAddress, this.sellTradeInput.quantity)
-                    .catch(reason => {
-                        console.log('CATCH - aUsdService.transfer', reason);
-                    }).then(transaction => {
-                        if (!transaction) return;
-
-                        this.monitorExecuteTrade(transaction as Moralis.ExecuteFunctionResult, TradeType.Buy);
-                        this.setProgressText('Sending to blockchain', transaction.hash)
-
-                        console.log('THEN - aUsdService.transfer', transaction);
                     }).finally(() => {
                         this.stopLoadingButton(button);
                         button.innerHTML = 'Execute trade';
                     });
+                    if (result instanceof BlockchainError) return;
+                    symbolAddress = result as string;
+                }
+
+                await this.executeTransfer(symbolAddress, button);
             } else {
                 let liminalMarketService = new LiminalMarketService(this.moralis);
                 let symbolAddress = await liminalMarketService.getSymbolContractAddress(this.sellTradeInput.symbol);
@@ -153,6 +138,24 @@ export default class ExecuteTradeButton {
                     });
             }
         })
+    }
+
+    private async executeTransfer(symbolAddress: string, button: HTMLElement) {
+        let aUsdService = new AUSDService(this.moralis);
+        await aUsdService.transfer(symbolAddress, this.sellTradeInput.quantity)
+            .catch(reason => {
+                console.log('CATCH - aUsdService.transfer', reason);
+            }).then(transaction => {
+                if (!transaction) return;
+
+                this.monitorExecuteTrade(transaction as Moralis.ExecuteFunctionResult, TradeType.Buy);
+                this.setProgressText('Sending to blockchain', transaction.hash)
+
+                console.log('THEN - aUsdService.transfer', transaction);
+            }).finally(() => {
+                this.stopLoadingButton(button);
+                button.innerHTML = 'Execute trade';
+            });
     }
 
     public getBuyingSharesObj(object: any): any {
