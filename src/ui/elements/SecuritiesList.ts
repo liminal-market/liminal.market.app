@@ -66,7 +66,7 @@ export default class SecuritiesList {
     }
 
     public async handleClick(evt: MouseEvent) {
-
+console.log('evt on handleClick', evt);
         let element = (evt.target! as HTMLElement);
         if (element.tagName.toLocaleLowerCase() === 'a') {
             await this.addToWalletOrGetAddress(evt, element);
@@ -75,7 +75,6 @@ export default class SecuritiesList {
         }
         let parentTr = element.parentElement;
         if (!parentTr) return;
-
 
         if (parentTr.tagName.toLocaleLowerCase() !== 'tr') {
             parentTr = parentTr.parentElement!;
