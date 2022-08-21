@@ -29,10 +29,8 @@ export default class StocksPage {
 			let address = await liminalMarketService.getSymbolContractAddress(symbol);
 
 			let tradePage = new TradePage(this.moralis);
-			await tradePage.load(symbol, name, logo, address);
-
-			console.log('scrollTo')
 			window.scrollTo(0, 0);
+			await tradePage.load(symbol, name, logo, address);
 		})
 	};
 
