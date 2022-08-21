@@ -28,7 +28,7 @@ export default class SecuritiesList {
     public async render() {
         let securitiesService = await SecuritiesService.getInstance();
 
-        let securitiesCount = await securitiesService.securitiesArray.length;
+        let securitiesCount = securitiesService.securitiesArray.length;
         let securities = await securitiesService.getPaginatingSecurities(this.page++);
 
         Handlebars.registerPartial(
