@@ -1,0 +1,206 @@
+<div id="kyc_reg">
+
+    <h3>Fake KYC Registration</h3>
+    <form id="kyc_wizard_form" name="kyc_wizard_form" novalidate onsubmit="return false">
+        <fieldset class="kycFigure">
+            <strong>It is enough just to fill in this part.</strong><br/>
+
+            <div>
+                <label for="email_address">Email</label>
+                <input type="text" required class="form-control" id="email_address" name="email_address"
+                       placeholder="name@example.com"
+                       value="">
+            </div>
+            <small>Everything below is part of regular KYC process, but we are running on test network, so you can leave
+                it as is.
+                Simply click Confirm Identity button at the bottom.
+            </small>
+        </fieldset>
+        <fieldset>
+            <legend>Contact</legend>
+
+            <div>
+                <label for="phone_number">Phone</label>
+                <input type="text" required class="form-control" id="phone_number" name="phone_number"
+                       placeholder="555-666-7788" value="555-666-7788">
+            </div>
+            <div>
+                <label for="street_address">Street</label>
+                <input type="text" required class="form-control" id="street_address" name="street_address"
+                       placeholder="20 N San Mateo Dr" value="20 N San Mateo Dr">
+            </div>
+            <div>
+                <label for="city">City</label>
+                <input type="text" required class="form-control" id="city" name="city" placeholder="Pawnee"
+                       value="Pawnee">
+            </div>
+            <div>
+                <label for="postal_code">Postal code</label>
+                <input type="text" required class="form-control" id="postal_code" name="postal_code"
+                       placeholder="94401"
+                       value="94401">
+            </div>
+            <div>
+                <label for="state">State</label>
+                <input type="text" required class="form-control" id="state" name="state" placeholder="IN"
+                       value="IN">
+            </div>
+
+        </fieldset>
+
+
+        <fieldset>
+            <legend>Disclosures</legend>
+            <div>Are you holding a controlling position in a publicly traded company, member of the board of
+                directors or has policymaking abilities in a publicly traded company
+            </div>
+            <div>
+                <label class="form-check-label" for="is_control_person_yes">
+                    <input class="form-check-input" type="radio" id="is_control_person_yes"
+                           name="is_control_person"
+                           value="true">Yes</label>
+            </div>
+            <div>
+                <label class="form-check-label" for="is_control_person_no">
+                    <input class="form-check-input" type="radio" id="is_control_person_no"
+                           name="is_control_person"
+                           value="false" checked>No</label>
+            </div>
+            <div>Are you affiliated with exchange or financial regulator</div>
+            <div>
+                <input class="form-check-input" type="radio" id="is_affiliated_exchange_or_finra_yes"
+                       name="is_affiliated_exchange_or_finra" value="1">
+                <label class="form-check-label" for="is_affiliated_exchange_or_finra_yes">Yes</label>
+            </div>
+            <div>
+                <input class="form-check-input" type="radio" id="is_affiliated_exchange_or_finra_no"
+                       name="is_affiliated_exchange_or_finra" value="0" checked>
+                <label class="form-check-label" for="is_affiliated_exchange_or_finra_no">No</label>
+            </div>
+            <div>Are you affiliated with political connection</div>
+            <div>
+                <input class="form-check-input" type="radio" id="is_politically_exposed_yes"
+                       name="is_politically_exposed" value="1">
+                <label class="form-check-label" for="is_politically_exposed_yes">Yes</label>
+            </div>
+            <div>
+                <input class="form-check-input" type="radio" id="is_politically_exposed_no"
+                       name="is_politically_exposed" value="0" checked>
+                <label class="form-check-label" for="is_politically_exposed_no">No</label>
+            </div>
+
+            <div>Is your immediate family member (sibling, husband/wife, child, parent) either politically
+                exposed or holds a control position
+            </div>
+            <div>
+                <input class="form-check-input" type="radio" id="immediate_family_exposed_yes"
+                       name="immediate_family_exposed" value="1">
+                <label class="form-check-label" for="immediate_family_exposed_yes">Yes</label>
+            </div>
+            <div>
+                <input class="form-check-input" type="radio" id="immediate_family_exposed_no"
+                       name="immediate_family_exposed" value="0" checked>
+                <label class="form-check-label" for="immediate_family_exposed_no">No</label>
+            </div>
+        </fieldset>
+        <fieldset id="immediate_family" class="hidden">
+            <div>Since you chose that your immediate family member, you need to fill in the following information</div>
+            <div>
+                <label for="disclosure_given_name">Given name</label>
+                <input name="disclosure_given_name" id="disclosure_given_name"/>
+            </div>
+            <div>
+                <label for="disclosure_family_name">Family name</label>
+                <input name="disclosure_family_name" id="disclosure_family_name"/>
+            </div>
+        </fieldset>
+        <fieldset id="affiliate_or_controlled" class="hidden">
+            <div>Since you chose that your Affiliated or a Control person, you need to fill in the company information
+            </div>
+            <div>
+                <label for="company_name">Company name</label>
+                <input name="company_name" id="company_name"/>
+            </div>
+            <div>
+                <label for="company_street_address">Company street address</label>
+                <input name="company_street_address" id="company_street_address"/>
+            </div>
+            <div>
+                <label for="company_city">Company city</label>
+                <input name="company_city" id="company_city"/>
+            </div>
+            <div>
+                <label for="company_state">Company state</label>
+                <input name="company_state" id="company_state"/>
+            </div>
+            <div>
+                <label for="company_country">Company country</label>
+                <select required id="company_country" name="company_country">
+                    {{#each countries}}
+                    <option value="{{code}}">{{name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div>
+                <label for="company_compliance_email">Company compliance officer email</label>
+                <input name="company_compliance_email" id="company_compliance_email"/>
+            </div>
+        </fieldset>
+        <fieldset>
+            <div>These fields are not required.</div>
+            <div>
+                <label for="employment_status">Employment status</label>
+                <select id="employment_status" name="employment_status">
+                    <option value=""></option>
+                    <option value="employed">Employed</option>
+                    <option value="unemployed">Unemployed</option>
+                    <option value="retired">Retired</option>
+                    <option value="student">Student</option>
+                </select>
+            </div>
+            <div>
+                <label for="employer_name">Employer name</label>
+                <input name="employer_name" id="employer_name"/>
+            </div>
+            <div>
+                <label for="employer_address">Employer address</label>
+                <input name="employer_address" id="employer_address"/>
+            </div>
+            <div>
+                <label for="employment_position">Employment position</label>
+                <input name="employment_position" id="employment_position"/>
+            </div>
+        </fieldset>
+        <fieldset class="hidden">
+            <label for="account_agreement">
+                <input type="checkbox" name="account_agreement" id="account_agreement" value="1" checked/>
+                I agree to <a href="https://files.alpaca.markets/disclosures/library/AcctAppMarginAndCustAgmt.pdf"
+                              target="_blank">Account agreement</a>
+            </label>
+            <label for="customer_agreement">
+                <input type="checkbox" name="customer_agreement" id="customer_agreement" value="1" checked/>
+                I agree to <a href="https://files.alpaca.markets/disclosures/library/AcctAppMarginAndCustAgmt.pdf"
+                              target="_blank">Customer agreement</a>
+            </label>
+            <label for="margin_agreement">
+                <input type="checkbox" name="margin_agreement" id="margin_agreement" value="1" checked/>
+                I agree to <a href="https://files.alpaca.markets/disclosures/library/MarginDiscStmt.pdf"
+                              target="_blank">Margin agreement</a>
+            </label>
+        </fieldset>
+        <div>
+            <div class="alert alert-danger" id="kycError" role="alert"></div>
+
+            <button type="submit" id="submitKYC" class="btn btn-primary mb-3">Confirm identity</button>
+
+        </div>
+
+
+    </form>
+</div>
+
+<div id="waiting_for_kyc_reg" class="d-none">
+    KYC is being processed. This may take about 4-5 minutes. Window will close when it's done.
+    <progress></progress>
+
+</div>

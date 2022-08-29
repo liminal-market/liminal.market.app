@@ -225,8 +225,14 @@ dialog .infoBar {
 	text-align: right;
 }
 #userInfoDropdown button {
-	font-size:12px;
+	font-size: 12px;
 }
+
+.edit_account {
+	text-align: left;
+	padding: 0 1rem;
+}
+
 .liminal_market {
 	background-image: url("../img/logo2.png");
 	background-repeat: no-repeat;
@@ -376,12 +382,12 @@ progress.invalid {
 }
 
 .tradeSwitch {
-	grid-template-columns: 12rem 1fr;
-	grid-template-rows: 42px;
-	grid-column-gap: 20px;
-	grid-row-gap: 15px;
-	justify-items: stretch;
-	align-items: stretch;
+    grid-template-columns: 4rem 1fr;
+    grid-template-rows: 42px;
+    grid-column-gap: 20px;
+    grid-row-gap: 15px;
+    justify-items: stretch;
+    align-items: stretch;
 }
 .tradeSwitch .exchange_ratio {
 	text-align: right;

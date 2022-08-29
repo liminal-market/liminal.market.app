@@ -51,6 +51,12 @@ export default class KYCService {
         return await this.moralis.Cloud.run("kycRegistration", data);
     }
 
+    public async updateKYCInfo(data: any): Promise<string> {
+        let user = this.moralis.User.current();
+        if (!user) throw new GeneralError("You need to be logged in to do KYC. Please login again.")
+
+        return await this.moralis.Cloud.run("updateAccount", data);
+    }
 
     public isValidAccountId(str: string) {
         const regex = new RegExp('^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$');
