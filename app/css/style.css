@@ -225,8 +225,14 @@ dialog .infoBar {
 	text-align: right;
 }
 #userInfoDropdown button {
-	font-size:12px;
+	font-size: 12px;
 }
+
+.edit_account {
+	text-align: left;
+	padding: 0 1rem;
+}
+
 .liminal_market {
 	background-image: url("../img/logo2.png");
 	background-repeat: no-repeat;
