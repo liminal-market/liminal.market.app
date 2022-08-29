@@ -19,8 +19,8 @@ export default class UserService {
     async logIn() {
         try {
 
-            let web3 = await this.moralis.enableWeb3();
-            console.log('account', this.moralis.account)
+            await this.moralis.enableWeb3();
+
             let user = this.moralis.User.current();
             if (user) return Promise.resolve(user);
 
@@ -90,14 +90,23 @@ export default class UserService {
 
         return false;
     }
+
     public getUser() {
         return this.moralis.User.current();
     }
-    public async getAlpacaId() : Promise<string> {
+
+    public async getAlpacaId(): Promise<string> {
         let user = this.getUser();
         if (!user) return '';
 
         return (await user.fetch()).get('alpacaId').toString();
+    }
+
+    public async getAccount() {
+        let user = this.getUser();
+        if (!user) return;
+
+        return await this.moralis.Cloud.run('account');
     }
 
     getEthAddress() {

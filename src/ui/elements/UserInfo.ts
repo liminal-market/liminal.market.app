@@ -1,11 +1,13 @@
 import UserService from "../../services/backend/UserService";
 import Moralis from "Moralis";
 import UserInfoElement from '../../html/elements/UserInfo.html'
-import {roundBigNumber, roundNumber, shortEth} from "../../util/Helper";
+import {roundBigNumber, shortEth} from "../../util/Helper";
 import AUSDService from "../../services/blockchain/AUSDService";
 import NetworkInfo from "../../networks/NetworkInfo";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import AUSDFund from "../modals/AUSDFund";
+import KYCEditForm from "../modals/KYCEditForm";
+
 
 export default class UserInfo {
     moralis: typeof Moralis;
@@ -68,6 +70,18 @@ export default class UserInfo {
 
         let userInfoAUSDBalance = document.getElementById('user_info_ausd_balance')
         if (userInfoAUSDBalance) userInfoAUSDBalance.innerHTML = '$' + aUsdValue;
+
+        let editAccount = document.getElementById('editAccount');
+        if (editAccount) {
+            editAccount.addEventListener('click', (evt) => {
+                evt.preventDefault();
+
+                let kycModal = new KYCEditForm(() => {
+                })
+                kycModal.showKYCForm();
+
+            })
+        }
 
         let networkInfo = NetworkInfo.getInstance();
         let fund_accountBtns = document.querySelectorAll('.fund_account');

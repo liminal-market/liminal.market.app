@@ -376,12 +376,12 @@ progress.invalid {
 }
 
 .tradeSwitch {
-	grid-template-columns: 12rem 1fr;
-	grid-template-rows: 42px;
-	grid-column-gap: 20px;
-	grid-row-gap: 15px;
-	justify-items: stretch;
-	align-items: stretch;
+    grid-template-columns: 4rem 1fr;
+    grid-template-rows: 42px;
+    grid-column-gap: 20px;
+    grid-row-gap: 15px;
+    justify-items: stretch;
+    align-items: stretch;
 }
 .tradeSwitch .exchange_ratio {
 	text-align: right;
