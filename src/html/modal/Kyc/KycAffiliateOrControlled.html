@@ -1,0 +1,34 @@
+<fieldset id="affiliate_or_controlled" class="hidden">
+    <div>Since you chose that your Affiliated or a Control person, you need to fill in the company information
+    </div>
+    <div>
+        <label for="company_name">Company name</label>
+        <input name="company_name" id="company_name"/>
+    </div>
+    <div>
+        <label for="company_street_address">Company street address</label>
+        <input name="company_street_address" id="company_street_address"/>
+    </div>
+    <div>
+        <label for="company_city">Company city</label>
+        <input name="company_city" id="company_city"/>
+    </div>
+    <div>
+        <label for="company_state">Company state</label>
+        <input name="company_state" id="company_state"/>
+    </div>
+    <div>
+        <label for="company_country">Company country</label>
+        <select required id="company_country" name="company_country">
+            {{#each countries}}
+            <option value="{{code}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div>
+        <label for="company_compliance_email">Company compliance officer email</label>
+        <input name="company_compliance_email" id="company_compliance_email"/>
+    </div>
+
+
+</fieldset>

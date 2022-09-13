@@ -1,0 +1,32 @@
+<fieldset class="kycAccountAgreement hidden">
+    <label for="account_agreement">
+        <input type="checkbox" name="account_agreement" id="account_agreement" value="1"/>
+        I agree to <a href="https://files.alpaca.markets/disclosures/library/AcctAppMarginAndCustAgmt.pdf"
+                      target="_blank">Alpaca Customer Agreement</a>
+    </label>
+    <label for="customer_agreement">
+        <input type="checkbox" name="customer_agreement" id="customer_agreement" value="1"/>
+        Customer Agreement Acknowledgement
+        <div class="explain">
+            I have read, understood, and agree to be bound by Alpaca Securities LLC and Liminal.market Inc. account
+            terms,
+            and all other terms, disclosures and disclaimers applicable to me, as referenced in the Alpaca Customer
+            Agreement.
+            I also acknowledge that the Alpaca Customer Agreement contains a pre-dispute arbitration clause in Section
+            43.
+        </div>
+    </label>
+    <label for="digital_signature">
+        <input type="checkbox" name="digital_signature" id="digital_signature" value="1"/>
+        Digital Signature Acknowledgement<br/>
+        <div class="explain">
+            I understand I am signing this agreement electronically,
+            and that my electronic signature will have the same effect as physically signing and returning the
+            Application Agreement.
+        </div>
+    </label>
+    <div>
+        <div class="alert alert-danger" id="kycError" role="alert"></div>
+        <button type="submit" id="submitKYC" class="btn btn-primary mb-3">Confirm identity</button>
+    </div>
+</fieldset>

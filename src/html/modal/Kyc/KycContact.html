@@ -1,0 +1,49 @@
+<fieldset class="kycContact">
+    <legend>Contact</legend>
+    <div>
+        <label for="email_address">Email</label>
+        <input type="text" required class="form-control" id="email_address" name="email_address"
+               placeholder="name@example.com"
+               value="">
+    </div>
+    <div>
+        <label for="phone_number">Phone</label>
+        <input type="text" class="form-control" id="phone_number" name="phone_number"
+               placeholder="+1-555-666-7788" value="">
+    </div>
+    <div>
+        <label for="street_address">Permanent Residential Address</label>
+        <div class="explain">It must be a physical address, not a PO box.</div>
+        <input type="text" required class="form-control" id="street_address" name="street_address"
+               placeholder="20 N San Mateo Dr" value="">
+    </div>
+    <div>
+        <label for="unit">Unit / Apt #</label>
+        <input type="text" class="form-control" id="unit" name="unit" value="">
+    </div>
+    <div>
+        <label for="city">City</label>
+        <input type="text" required class="form-control" id="city" name="city" placeholder="Pawnee"
+               value="">
+    </div>
+    <div>
+        <label for="postal_code">Postal code</label>
+        <input type="text" required class="form-control" id="postal_code" name="postal_code"
+               placeholder="94401"
+               value="">
+    </div>
+    <div>
+        <label for="state">State</label>
+        <input type="text" required class="form-control" id="state" name="state" placeholder="NY"
+               value="">
+    </div>
+    <div>
+        <label for="country_of_tax_residence">Country of tax residence</label>
+        <select required id="country_of_tax_residence" name="country_of_tax_residence">
+            {{#each countries}}
+            <option value="{{code}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <button type="button" class="showIdentity">Next: Identity (2 of 4)</button>
+</fieldset>

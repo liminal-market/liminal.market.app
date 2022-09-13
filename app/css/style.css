@@ -448,13 +448,21 @@ progress.invalid {
 }
 @media (min-width: 992px) {
 	.container {
-		max-width: 920px;
-	}
+        max-width: 920px;
+    }
 }
 
 
 @media (min-width: 1200px) {
-	.container {
-		max-width: 1130px;
-	}
+    .container {
+        max-width: 1130px;
+    }
+}
+
+.explain {
+    font-size: 0.7rem;
+}
+
+#citizen_no_type_options {
+    margin-left: 1rem;
 }

@@ -1,0 +1,84 @@
+<fieldset class="kycDisclosures hidden">
+    <legend>Disclosures</legend>
+    <div>
+        <label for="employment_status">Employment status</label>
+        <select id="employment_status" name="employment_status">
+            <option value=""></option>
+            <option value="employed">Employed</option>
+            <option value="unemployed">Unemployed</option>
+            <option value="retired">Retired</option>
+            <option value="student">Student</option>
+        </select>
+    </div>
+    <div>
+        <label for="employer_name">Employer name</label>
+        <input name="employer_name" id="employer_name"/>
+    </div>
+    <div>
+        <label for="employer_address">Employer address</label>
+        <input name="employer_address" id="employer_address"/>
+    </div>
+    <div>
+        <label for="employment_position">Employment position</label>
+        <input name="employment_position" id="employment_position"/>
+    </div>
+
+    <div>Are you holding a controlling position in a publicly traded company, member of the board of
+        directors or has policymaking abilities in a publicly traded company
+    </div>
+    <div>
+        <label class="form-check-label" for="is_control_person_yes">
+            <input class="form-check-input" type="radio" id="is_control_person_yes"
+                   name="is_control_person"
+                   value="true">Yes</label>
+    </div>
+    <div>
+        <label class="form-check-label" for="is_control_person_no">
+            <input class="form-check-input" type="radio" id="is_control_person_no"
+                   name="is_control_person"
+                   value="false" checked>No</label>
+    </div>
+    <div>Are you affiliated with exchange or financial regulator</div>
+    <div>
+        <input class="form-check-input" type="radio" id="is_affiliated_exchange_or_finra_yes"
+               name="is_affiliated_exchange_or_finra" value="1">
+        <label class="form-check-label" for="is_affiliated_exchange_or_finra_yes">Yes</label>
+    </div>
+    <div>
+        <input class="form-check-input" type="radio" id="is_affiliated_exchange_or_finra_no"
+               name="is_affiliated_exchange_or_finra" value="0" checked>
+        <label class="form-check-label" for="is_affiliated_exchange_or_finra_no">No</label>
+    </div>
+    <div>Are you affiliated with political connection</div>
+    <div>
+        <input class="form-check-input" type="radio" id="is_politically_exposed_yes"
+               name="is_politically_exposed" value="1">
+        <label class="form-check-label" for="is_politically_exposed_yes">Yes</label>
+    </div>
+    <div>
+        <input class="form-check-input" type="radio" id="is_politically_exposed_no"
+               name="is_politically_exposed" value="0" checked>
+        <label class="form-check-label" for="is_politically_exposed_no">No</label>
+    </div>
+
+    <div>Is your immediate family member (sibling, husband/wife, child, parent) either politically
+        exposed or holds a control position
+    </div>
+    <div>
+        <input class="form-check-input" type="radio" id="immediate_family_exposed_yes"
+               name="immediate_family_exposed" value="1">
+        <label class="form-check-label" for="immediate_family_exposed_yes">Yes</label>
+    </div>
+    <div>
+        <input class="form-check-input" type="radio" id="immediate_family_exposed_no"
+               name="immediate_family_exposed" value="0" checked>
+        <label class="form-check-label" for="immediate_family_exposed_no">No</label>
+    </div>
+    {{{ImmediateFamilyHtml}}}
+    {{{AffiliateOrControlledHtml}}}
+
+    <div class="grid">
+        <button type="button" class="showIdentity">Previous: Identity (2 of 4)</button>
+        <button type="button" class="showAgreements">Next: Agreements (4 of 4)</button>
+    </div>
+</fieldset>

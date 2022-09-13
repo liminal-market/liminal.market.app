@@ -21,6 +21,9 @@ export default class KycValidatorError implements ICloudError {
         let input = document.getElementById(this.inputName);
         if (!input) return;
 
+        let inputError = input.parentElement!.querySelector('.input_error');
+        if (inputError) return;
+
         input.focus();
         input.setAttribute('aria-invalid', 'true');
         input.insertAdjacentHTML("beforebegin", '<div class="input_error" id="input_error_' + this.inputName + '">' + this.message + '</div>');
