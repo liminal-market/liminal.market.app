@@ -2,8 +2,9 @@ import localhostNetwork from './localhost-network';
 import mumbaiNetwork from './mumbai-network';
 import Network from "./Network";
 import CookieHelper from "../util/CookieHelper";
+import fujiNetwork from "./fuji-network";
 
-const networkInfos = [localhostNetwork, mumbaiNetwork];
+const networkInfos = [localhostNetwork, mumbaiNetwork, fujiNetwork];
 
 
 export default class NetworkInfo {
