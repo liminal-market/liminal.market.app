@@ -1,6 +1,3 @@
-import CookieHelper from "../util/CookieHelper";
-import mumbaiNetwork from "./mumbai-network";
-
 export default class Network {
 	ServerUrl = "";
 	AppId = "";
@@ -17,25 +14,6 @@ export default class Network {
 	BuyUrl ='';
 
 	constructor() {
-	}
-
-	setNetwork = (networkInfo: Network): void => {
-
-		this.ServerUrl = networkInfo.ServerUrl;
-		this.AppId = networkInfo.AppId;
-		this.ChainId = networkInfo.ChainId;
-		this.Name = networkInfo.Name;
-
-		this.ChainName = networkInfo.ChainName;
-		this.NativeCurrencyName = networkInfo.NativeCurrencyName;
-		this.NativeSymbol = networkInfo.NativeSymbol;
-		this.NativeDecimal = networkInfo.NativeDecimal;
-		this.RpcUrl = networkInfo.RpcUrl;
-		this.BlockExplorer = networkInfo.BlockExplorer;
-		this.TestNetwork = networkInfo.TestNetwork;
-
-		let cookieHelper = new CookieHelper(document);
-		cookieHelper.setCookieNetwork(this.Name);
 	}
 
 	public async addNetworkToWallet(moralis : typeof Moralis) {
