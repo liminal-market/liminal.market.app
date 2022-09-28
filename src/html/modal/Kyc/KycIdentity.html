@@ -29,7 +29,7 @@
         <fieldset>
             <label>
                 <input type="radio" id="citizen_yes"
-                       name="tax_id_type" value="USA_SSN" checked> Yes
+                       name="tax_id_type" value="USA_SSN"> Yes
             </label>
             <label>
                 <input type="radio" id="citizen_no"
@@ -47,8 +47,8 @@
     </div>
     <div id="tax_id_type_options">
         <label for="tax_id_type">Tax Id Type</label>
-        <select id="tax_id_type" name="tax_id_type" placeholder="USA_SSN">
-            <option></option>
+        <select required id="tax_id_type" name="tax_id_type" placeholder="USA_SSN">
+            <option value="USA_SSN"></option>
             <option value="ARG_AR_CUIT">Argentina CUIT</option>
             <option value="AUS_TFN">Australian Tax File Number</option>
             <option value="AUS_ABN">Australian Business Number</option>
@@ -113,7 +113,8 @@
     <div id="visa_type_option" class="hidden">
         <div>
             <label for="visa_type">Visa type - <a
-                    href="https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/all-visa-categories.html">Visa
+                    href="https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/all-visa-categories.html"
+                    target="_blank">Visa
                 information</a></label>
             <select type="text" id="visa_type" name="visa_type">
                 <option value=""></option>
@@ -169,7 +170,7 @@
             other purposes, and investments or accounts subject to substantial penalties
             if they were sold or if assets were withdrawn from them.
         </div>
-        <select required name="liquid_net_worth" id="liquid_net_worth">
+        <select name="liquid_net_worth" required id="liquid_net_worth">
             <option value=""></option>
             <option value="1">0 - $20,000</option>
             <option value="2">$20,000 - $49,999</option>

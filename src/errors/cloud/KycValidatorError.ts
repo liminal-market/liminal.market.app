@@ -33,7 +33,7 @@ export default class KycValidatorError implements ICloudError {
             let input = evt.target as HTMLInputElement;
             let pattern = input.getAttribute('pattern');
 
-            if (pattern && input.value.match(pattern)) {
+            if ((pattern && input.value.match(pattern)) || (input.required && input.value)) {
                 input.removeAttribute('aria-invalid');
                 let errorMessage = document.getElementById('input_error_' + this.inputName);
                 if (errorMessage) errorMessage.remove();
