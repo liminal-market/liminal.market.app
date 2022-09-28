@@ -41,7 +41,7 @@ export default class KYCService {
             user.set('alpacaId', alpacaId);
         }
 
-        return alpacaId !== undefined;
+        return alpacaId;
     }
 
     public async saveKYCInfo(data: any): Promise<string> {
