@@ -1,5 +1,6 @@
 // In a `.d.ts` file within the included folders of your project
 import Moralis from 'Moralis';
+import Handlebars from "handlebars";
 
 declare global {
     export const Moralis : Moralis;
