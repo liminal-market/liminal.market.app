@@ -28,7 +28,6 @@ export default class PositionsPage {
         let mainContainer = document.getElementById('main_container');
         if (!mainContainer) return;
 
-        history.pushState(null, 'Positions', 'positions');
 
         let positionService = new PositionsService(this.moralis);
         let positions = await positionService.getPositions();

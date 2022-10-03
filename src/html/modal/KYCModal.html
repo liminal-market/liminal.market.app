@@ -3,14 +3,18 @@
     <form id="kyc_wizard_form" name="kyc_wizard_form" novalidate onsubmit="return false">
         {{{KycContactHtml}}}
         {{{KycIdentityHtml}}}
-        {{{KycDisclosureHtml}}}
         {{{KycTrustedContactHtml}}}
+        {{{KycDisclosureHtml}}}
+        {{{KycUploadHtml}}}
         {{{KycAccountAgreementHtml}}}
     </form>
 </div>
 
-<div id="waiting_for_kyc_reg" class="d-none">
+<div id="waiting_for_kyc_reg" class="hidden">
     KYC is being processed. This may take about 4-5 minutes. Window will close when it's done.
+    <br/><br/>
+    You can close the window, we will email you when KYC is finished.
+
     <progress></progress>
 
 </div>

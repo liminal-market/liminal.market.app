@@ -1,18 +1,16 @@
 import KycContactHtml from '../../../html/modal/Kyc/KycContact.html';
-import KycHelper from "./KycHelper";
+import KycBase from "./KycBase";
 import KYCForm from "../KYCForm";
 import CountryHelper from "../../../util/CountryHelper";
 
 
-export default class KycContact extends KycHelper {
+export default class KycContact extends KycBase {
 
-    kycForm: KYCForm;
     usTaxResidence = false;
 
     constructor(kycForm: KYCForm) {
-        super();
+        super(kycForm);
 
-        this.kycForm = kycForm;
     }
 
     public render() {
@@ -22,7 +20,7 @@ export default class KycContact extends KycHelper {
     }
 
     public show() {
-        document.querySelector('.kycContact')!.classList.remove('hidden');
+        this.showFieldset('.kycContact', 'Contact information');
     }
 
     public bindEvents() {
@@ -31,21 +29,26 @@ export default class KycContact extends KycHelper {
             this.usTaxResidence = (input.value.toUpperCase() == 'USA');
 
             if (this.usTaxResidence) {
+                this.kycForm.steps = 5;
                 this.setRequired('state')
+                document.getElementById('state_div')?.classList.remove('hidden')
             } else {
+                this.kycForm.steps = 6;
                 this.removeRequired('state');
+                document.getElementById('state_div')?.classList.add('hidden')
             }
         });
 
-        let showIdentityButtons = document.querySelectorAll('.showIdentity');
-        for (let i = 0; i < showIdentityButtons.length; i++) {
-            showIdentityButtons[i].addEventListener('click', (evt) => {
+        let showIdentityButton = document.getElementById('contact_next');
+        if (showIdentityButton) {
+            showIdentityButton.addEventListener('click', (evt) => {
                 if (!this.validateRequiredFields('.kycContact')) return;
 
-                this.hideFieldsets();
                 this.kycForm.kycIdentity.show();
             })
         }
 
     }
+
+
 }

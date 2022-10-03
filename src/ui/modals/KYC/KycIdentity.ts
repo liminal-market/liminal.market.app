@@ -1,16 +1,12 @@
 import KYCForm from "../KYCForm";
-import KycHelper from "./KycHelper";
+import KycBase from "./KycBase";
 import KycIdentityHtml from "../../../html/modal/Kyc/KycIdentity.html";
 import CountryHelper from "../../../util/CountryHelper";
 import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 
-export default class KycIdentity extends KycHelper {
-    kycForm: KYCForm;
-
+export default class KycIdentity extends KycBase {
     constructor(kycForm: KYCForm) {
-        super();
-
-        this.kycForm = kycForm;
+        super(kycForm);
     }
 
     public render() {
@@ -19,14 +15,17 @@ export default class KycIdentity extends KycHelper {
     }
 
     public show() {
-        document.querySelector('.kycIdentity')!.classList.remove('hidden');
 
         if (this.kycForm.kycContact.usTaxResidence) {
             this.showElement('citizen_of_usa_question');
         } else {
             this.hideElement('citizen_of_usa_question');
-            document.getElementById('tax_id_label')!.innerHTML = 'Tax Id (SSN)'
+            document.getElementById('tax_id_label')!.innerHTML = 'SSN'
         }
+        this.showFieldset('.kycIdentity', 'Identity');
+        this.showElement('country_of_citizenship_option');
+        let country_of_citizenship = document.getElementById('country_of_citizenship') as HTMLSelectElement;
+        country_of_citizenship.options[1].disabled = false;
     }
 
     public bindEvents() {
@@ -34,11 +33,24 @@ export default class KycIdentity extends KycHelper {
         this.bind('#citizen_yes', 'click', (evt) => {
             let input = evt.target as HTMLInputElement;
             if (input.checked) {
+                let taxIdType = document.getElementById('tax_id_type') as HTMLSelectElement;
+                if (taxIdType) taxIdType.value = 'USA_SSN';
+
+                let country_of_citizenship = document.getElementById('country_of_citizenship') as HTMLSelectElement;
+                country_of_citizenship.options[1].disabled = false;
+                country_of_citizenship.value = 'USA';
+
                 this.hideElement('tax_id_type_options')
-                this.hideElement('citizen_no_type_options')
-                this.hideElement('country_of_birth_option');
+                this.hideElement('citizen_no_type_options');
                 this.hideElement('visa_type_option');
+                this.hideElement('country_of_citizenship_option');
+                this.removeRequired('country_of_birth');
+                this.removeRequired('visa_type');
+                this.removeRequired('visa_expiration_date');
+                this.removeRequired('date_of_departure_from_usa');
                 document.getElementById('tax_id_label')!.innerHTML = 'SSN'
+                this.hideCitizenErrorMessage();
+
             }
         })
 
@@ -47,8 +59,15 @@ export default class KycIdentity extends KycHelper {
             let input = evt.target as HTMLInputElement;
             if (input.checked) {
                 this.showElement('citizen_no_type_options');
-                this.showElement('country_of_birth_option');
-                document.getElementById('tax_id_label')!.innerHTML = 'Tax Id (SSN)'
+                this.showElement('country_of_citizenship_option');
+                this.setRequired('country_of_birth');
+                document.getElementById('tax_id_label')!.innerHTML = 'SSN'
+                let country_of_citizenship = document.getElementById('country_of_citizenship') as HTMLSelectElement;
+                country_of_citizenship.options[0].selected = true;
+                country_of_citizenship.options[1].disabled = true;
+
+                this.hideCitizenErrorMessage();
+
             }
         })
 
@@ -56,9 +75,12 @@ export default class KycIdentity extends KycHelper {
         this.bind('#citizen_no_type_options_1', 'click', (evt) => {
             let input = evt.target as HTMLInputElement;
             if (input.checked) {
-                this.showElement('country_of_birth_option');
                 this.showElement('country_of_citizenship_option');
                 this.hideElement('visa_type_option');
+                this.setRequired('country_of_birth');
+                this.removeRequired('visa_type')
+                this.removeRequired('visa_expiration_date')
+                this.removeRequired('date_of_departure_from_usa')
             }
         })
 
@@ -66,8 +88,12 @@ export default class KycIdentity extends KycHelper {
             let input = evt.target as HTMLInputElement;
             if (input.checked) {
                 this.showElement('visa_type_option');
-                this.showElement('country_of_birth_option');
                 this.showElement('country_of_citizenship_option');
+                this.setRequired('country_of_birth');
+                this.setRequired('country_of_citizenship');
+                this.setRequired('visa_type')
+                this.setRequired('visa_expiration_date')
+                this.setRequired('date_of_departure_from_usa')
             }
         })
 
@@ -83,44 +109,64 @@ export default class KycIdentity extends KycHelper {
         this.bindButtons();
     }
 
+    private hideCitizenErrorMessage() {
+        document.getElementById('citizen_yes')!.removeAttribute('aria-invalid');
+        let errorMessage = document.getElementById('input_error_citizen_yes');
+        if (errorMessage) errorMessage.remove();
+    }
+
     private bindButtons() {
-        let showContactButtons = document.querySelectorAll('.showContact');
-        for (let i = 0; i < showContactButtons.length; i++) {
-            showContactButtons[i].addEventListener('click', (evt) => {
+        let showContactButton = document.getElementById('identity_prev');
+        showContactButton?.addEventListener('click', (evt) => {
+            this.kycForm.kycContact.show();
+        })
 
-                this.hideFieldsets();
-                document.querySelector('.kycContact')!.classList.remove('hidden')
-            })
-        }
+        let showDisclosuresButton = document.getElementById('identity_next');
+        showDisclosuresButton?.addEventListener('click', (evt) => {
+            if (!this.validateInputs()) return;
+            if (!this.validateRequiredFields('.kycIdentity')) return;
 
-        let showDisclosuresButtons = document.querySelectorAll('.showDisclosures');
-        for (let i = 0; i < showDisclosuresButtons.length; i++) {
-            showDisclosuresButtons[i].addEventListener('click', (evt) => {
-                if (!this.validateInputs()) return;
-                if (!this.validateRequiredFields('.kycIdentity')) return;
+            this.kycForm.kycTrustedContact.show();
 
-                this.hideFieldsets();
-                document.querySelector('.kycDisclosures')!.classList.remove('hidden')
-            })
-        }
+        })
     }
 
     private validateInputs() {
-        if (this.kycForm.kycContact.usTaxResidence) {
-            let citizen_yes = document.getElementById('citizen_yes') as HTMLInputElement;
-            let citizen_no = document.getElementById('citizen_no') as HTMLInputElement;
+        let citizen_yes = document.getElementById('citizen_yes') as HTMLInputElement;
+        let citizen_no = document.getElementById('citizen_no') as HTMLInputElement;
 
-            if (!citizen_yes.checked && !citizen_no.checked) {
-                let obj = {
-                    message: 'You must select either option',
-                    inputName: 'citizen_yes',
-                    labelText: document.querySelector('label[for=citizen_yes]')!.innerHTML
-                }
-
-                let kycValidationError = new KycValidatorError(obj);
-                kycValidationError.handle();
-            }
+        if (!this.kycForm.kycContact.usTaxResidence) {
+            citizen_yes.checked = false;
+            citizen_no.checked = false;
+            return true;
         }
+
+        if (!citizen_yes.checked && !citizen_no.checked) {
+            let obj = {
+                message: 'You must select either option',
+                inputName: 'citizen_yes',
+                labelText: document.querySelector('label[for=citizen_yes]')!.innerHTML
+            }
+
+            let kycValidationError = new KycValidatorError(obj, this.kycForm);
+            kycValidationError.handle();
+            return false;
+        }
+
+        let greenCardOption = document.getElementById('citizen_no_type_options_1') as HTMLInputElement;
+        let visaOption = document.getElementById('citizen_no_type_options_2') as HTMLInputElement;
+        if (citizen_no.checked && !greenCardOption.checked && !visaOption.checked) {
+            let obj = {
+                message: 'You must select either option, "Green Card / Permanent Resident" or "Visa"',
+                inputName: 'citizen_no',
+                labelText: ''
+            }
+
+            let kycValidationError = new KycValidatorError(obj, this.kycForm);
+            kycValidationError.handle();
+            return false;
+        }
+
 
         return true;
 

@@ -5,6 +5,7 @@ import AuthenticateService from "./AuthenticateService";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import WalletHelper from "../../util/WalletHelper";
 import ErrorInfo from "../../errors/ErrorInfo";
+import KycResult from "../../dto/KycResult";
 
 
 export default class UserService {
@@ -111,5 +112,10 @@ export default class UserService {
 
     getEthAddress() {
         return this.getUser()?.get('ethAddress');
+    }
+
+    public async kycActionRequired(): Promise<KycResult> {
+        let kycResults = await this.moralis.Cloud.run('kycActionRequired') as KycResult;
+        return kycResults;
     }
 }

@@ -1,27 +1,26 @@
-<fieldset class="kycIdentity hidden">
-    <legend>Identity</legend>
+<fieldset class="kycIdentity hidden" data-form="1">
     <div>
         <label for="given_name">Legal First name</label>
-        <input type="text" required id="given_name" name="given_name"
+        <input required id="given_name" name="given_name"
                placeholder="Ron"
-               value="">
+               value="" autocomplete="given-name">
     </div>
     <div>
         <label for="middle_name">Legal Middle name</label>
-        <input type="text" id="middle_name" name="middle_name"
+        <input id="middle_name" name="middle_name"
                placeholder=""
-               value="">
+               value="" autocomplete="additional-name">
     </div>
     <div>
         <label for="family_name">Legal Last name</label>
-        <input type="text" required id="family_name" name="family_name"
+        <input required id="family_name" name="family_name"
                placeholder="Swanson"
-               value="">
+               value="" autocomplete="family-name">
     </div>
     <div>
         <label for="date_of_birth">Date of birth</label>
         <input type="date" required id="date_of_birth" name="date_of_birth"
-               placeholder="1978-11-24" pattern="\d{4}-\d{2}-\d{2}" value="">
+               placeholder="1978-11-24" pattern="\d{4}-\d{2}-\d{2}" value="1978-08-02" autocomplete="bday">
     </div>
 
     <div id="citizen_of_usa_question" class="hidden">
@@ -29,11 +28,11 @@
         <fieldset>
             <label>
                 <input type="radio" id="citizen_yes"
-                       name="tax_id_type" value="USA_SSN"> Yes
+                       name="citizen" value="1"> Yes
             </label>
             <label>
                 <input type="radio" id="citizen_no"
-                       name="tax_id_type" value=""> No
+                       name="citizen" value="0"> No
             </label>
             <fieldset id="citizen_no_type_options" class="hidden">
                 <label>
@@ -85,16 +84,16 @@
             <option value="SWE_TAX_ID">Sweden Tax ID (Personnummer)</option>
             <option value="URY_RUT">Uruguay RUT</option>
             <option value="VEN_RIF">Venezuela RIF</option>
-            <option value="NOT_SPECIFIED">Other Tax IDs</option>
+            <option value="NOT_SPECIFIED" selected>Other Tax IDs</option>
         </select>
     </div>
     <div>
         <label id="tax_id_label" for="tax_id">Tax Id (SSN)</label>
-        <input type="text" required id="tax_id" name="tax_id"
+        <input required id="tax_id" name="tax_id"
                placeholder="666-55-4321"
-               value="">
+               value="0208785339">
     </div>
-    <div id="country_of_birth_option" class="hidden">
+    <div id="country_of_birth_option">
         <label for="country_of_birth">Country of birth</label>
         <select id="country_of_birth" name="country_of_birth">
             {{#each countries}}
@@ -102,9 +101,10 @@
             {{/each}}
         </select>
     </div>
-    <div id="country_of_citizenship_option" class="hidden">
+    <div id="country_of_citizenship_option">
         <label for="country_of_citizenship">Country of citizenship</label>
-        <select id="country_of_citizenship" name="country_of_citizenship">
+        <select required id="country_of_citizenship" name="country_of_citizenship">
+            <option value=""></option>
             {{#each countries}}
             <option value="{{code}}">{{name}}</option>
             {{/each}}
@@ -116,7 +116,7 @@
                     href="https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/all-visa-categories.html"
                     target="_blank">Visa
                 information</a></label>
-            <select type="text" id="visa_type" name="visa_type">
+            <select id="visa_type" name="visa_type">
                 <option value=""></option>
                 <option value="B1" selected>USA Visa Category B-1</option>
                 <option value="B2">USA Visa Category B-2</option>
@@ -172,7 +172,7 @@
         </div>
         <select name="liquid_net_worth" required id="liquid_net_worth">
             <option value=""></option>
-            <option value="1">0 - $20,000</option>
+            <option value="1" selected>0 - $20,000</option>
             <option value="2">$20,000 - $49,999</option>
             <option value="3">$50,000 - $99,999</option>
             <option value="4">$100,000 - $499,999</option>
@@ -185,7 +185,7 @@
         <label for="funding_source">Funding source</label>
         <select required id="funding_source" name="funding_source"
                 multiple size="4" aria-label="size 3 select">
-            <option value="employment_income">Employment income</option>
+            <option value="employment_income" selected>Employment income</option>
             <option value="investments">Investments</option>
             <option value="inheritance">Inheritance</option>
             <option value="business_income">Business income</option>
@@ -193,8 +193,8 @@
             <option value="family">Family</option>
         </select>
     </div>
-    <div class="grid">
-        <button type="button" class="showContact">Previous: Contact (1 of 4)</button>
-        <button type="button" class="showDisclosures">Next: Disclosures (3 of 4)</button>
+    <div class="grid buttons">
+        <button type="button" id="identity_prev">Previous: Contact</button>
+        <button type="button" id="identity_next">Next: Trusted contacts</button>
     </div>
 </fieldset>

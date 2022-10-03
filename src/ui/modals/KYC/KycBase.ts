@@ -1,8 +1,24 @@
 import StringHelper from "../../../util/StringHelper";
 import KycValidatorError from "../../../errors/cloud/KycValidatorError";
+import KYCForm from "../KYCForm";
+import FileUpload from "../../elements/FileUpload";
 
-export default class KycHelper {
+export default class KycBase {
+    kycForm: KYCForm;
 
+    constructor(kycForm: KYCForm) {
+        this.kycForm = kycForm;
+
+        FileUpload.registerHandler();
+    }
+
+    public showFieldset(selector: string, header: string) {
+        this.hideFieldsets();
+
+        document.querySelector(selector)?.classList.remove('hidden');
+        document.querySelector('#liminal_market_modal_div > article > header > span')!.innerHTML = header
+        document.querySelector('#liminal_market_modal_div > article')!.scrollTop = 0
+    }
 
     public showRequiredMarker() {
         let inputs = document.querySelectorAll('input, select');
@@ -41,6 +57,12 @@ export default class KycHelper {
         }
     }
 
+    public bindFileUploads() {
+        for (let i = 0; i < FileUpload.fileUploads.length; i++) {
+            FileUpload.fileUploads[i].bindEvents();
+        }
+    }
+
     public hideFieldsets() {
         let fieldsets = document.querySelectorAll('#kyc_wizard_form > fieldset');
         for (let i = 0; i < fieldsets.length; i++) {
@@ -49,11 +71,12 @@ export default class KycHelper {
     }
 
 
-    public validateRequiredFields(className: string) {
-        let inputs = document.querySelectorAll(className + ' input[required], ' + className + ' select[required]');
+    public validateRequiredFields(selector: string) {
+        let inputs = document.querySelectorAll(selector + ' input[required], ' + selector + ' select[required]');
         for (let i = 0; i < inputs.length; i++) {
             let input = inputs[i] as HTMLInputElement;
-            if (StringHelper.isNullOrEmpty(input.value)) {
+
+            if (this.isMissingInputFromUser(input)) {
                 let obj = {
                     message: 'You must fill into this field',
                     inputName: input.id,
@@ -61,7 +84,7 @@ export default class KycHelper {
                     pattern: input.pattern
                 }
 
-                let kycValidationError = new KycValidatorError(obj);
+                let kycValidationError = new KycValidatorError(obj, this.kycForm);
                 kycValidationError.handle();
                 return false;
             }
@@ -77,7 +100,7 @@ export default class KycHelper {
                         pattern: input.pattern
                     }
 
-                    let kycValidationError = new KycValidatorError(obj);
+                    let kycValidationError = new KycValidatorError(obj, this.kycForm);
                     kycValidationError.handle();
                     return false;
                 }
@@ -93,6 +116,39 @@ export default class KycHelper {
 
     public hideElement(elementId: string) {
         document.getElementById(elementId)!.classList.add('hidden');
+    }
+
+    private isMissingInputFromUser(input: HTMLInputElement) {
+        return ((input.type == 'checkbox' && !input.checked) || StringHelper.isNullOrEmpty(input.value));
+    }
+
+    protected removeMissingInfo(errorDivId: string, focusElementId?: string) {
+        let element = document.getElementById(errorDivId);
+        if (!element) return;
+        element.style.display = 'none';
+
+        if (!focusElementId) return;
+
+        let focusElement = document.getElementById(focusElementId);
+        if (focusElement) {
+            focusElement.removeAttribute('aria-invalid');
+        }
+    }
+
+    protected setMissingInfo(errorDivId: string, text: string, focusElementId?: string) {
+        let element = document.getElementById(errorDivId);
+        if (!element) return;
+
+        element.innerHTML = text;
+        if (text == '') {
+            element.style.display = 'none'
+        } else {
+            element.style.display = 'block'
+            if (focusElementId) {
+                document.getElementById(focusElementId)?.focus();
+                document.getElementById(focusElementId)?.setAttribute('aria-invalid', 'true');
+            }
+        }
     }
 
 

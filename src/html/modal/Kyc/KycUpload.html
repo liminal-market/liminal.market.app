@@ -1,39 +1,17 @@
-<fieldset>
-    <legend>Upload documents</legend>
-    <div>
-        <label for="photo_id_front">Photo ID Front</label>
-        <input type="file" id="photo_id_front" accept="image/*" capture="environment"/>
-    </div>
-    <div>
-        <label for="photo_id_back">Photo ID Back</label>
-        <input type="file" id="photo_id_back" accept="image/*" capture="environment"/>
-    </div>
-    <div>
-        <label for="proof_of_address">Proof of address</label>
-        <input type="file" id="proof_of_address" accept="image/*" capture="environment"/>
+<fieldset class="kycUpload hidden" data-form="1">
+    <div class="grid">
+        {{{fileUpload "identity_verification" "Photo ID Front (Front of passport)"}}}
     </div>
 
-    <div>
-        <label for="account_approval_letter_input">Account approval letter</label>
-        <div class="explain">
-            In accordance with applicable FINRA rules, user will need to obtain a letter written
-            and signed by a compliance officer on company letterhead explicitly granting permission for
-            the applicant to carry the account and explicitly stating whether or not the firm requires
-            access to duplicate account statements and/or trade confirmations.
+    <div class="grid">
+        {{{fileUpload "identity_verification_2" "Photo ID Back (Passport picture of ID) "}}}
+    </div>
+    <div class="grid">
+        {{{fileUpload "address_verification" "Picture of address verification"}}}
+    </div>
 
-            If the firm would like online access your duplicate account statements and/or trade confirmations,
-            include in the letter the applicant's full name and the following information for the interested
-            party:
-            First and last name, title, email address, telephone number.
-
-            A PDF version of the letter must be uploaded with the application.
-            For any affiliated person, you will also have to upload a
-            document separately via the Accounts API document upload endpoint with the following
-            information about the company: name, address, compliance email address and the ticker symbol
-            if it is a public company.
-        </div>
-        <input type="file" name="account_approval_letter_input" id="account_approval_letter_input"/>
-        <input type="hidden" name="account_approval_letter" id="account_approval_letter"/>
-        <div class="error" id="fileRelatedInfo"></div>
+    <div class="grid buttons">
+        <button type="button" id="upload_prev">Previous: Disclosures</button>
+        <button type="button" id="upload_next">Next: Agreements</button>
     </div>
 </fieldset>

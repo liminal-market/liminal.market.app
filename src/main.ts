@@ -20,9 +20,6 @@ const start = async function () {
         let userService = new UserService(Moralis);
         let loggedInUser = await userService.isLoggedIn(loadingMessage);
 
-        let routing = new Routing(Moralis);
-        await routing.loadRoutes();
-
 
         if (loggedInUser) {
             let userInfo = new UserInfo(Moralis, (loggedInUser as any).providerInfo, loggedInUser);
@@ -33,6 +30,10 @@ const start = async function () {
             let connectWallet = new ConnectWallet(Moralis);
             connectWallet.renderButton('user_header_info');
         }
+
+        let routing = new Routing(Moralis);
+        await routing.loadRoutes();
+
 
     }).catch((reason) => {
         ErrorInfo.report(new GeneralError("Server is down. Please try again later.<br /><br />" + reason));

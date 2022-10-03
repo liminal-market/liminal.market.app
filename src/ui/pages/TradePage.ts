@@ -17,7 +17,7 @@ export default class TradePage {
     }
 
     public async load(symbol?: string, name?: string, logo?: string, address?: string) {
-        history.pushState(null, 'Buy stocks', '/trade');
+
 
         let mark1 = 'start';
         let mark2 = 'template';

@@ -38,6 +38,6 @@ export default class CloudError extends GeneralError {
     }
 
     static Errors = [
-        KycValidatorError, HttpError
+        HttpError
     ]
 }

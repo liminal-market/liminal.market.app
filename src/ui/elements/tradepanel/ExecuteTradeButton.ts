@@ -4,7 +4,6 @@ import UserService from "../../../services/backend/UserService";
 import AuthenticateService from "../../../services/backend/AuthenticateService";
 import ConnectWallet from "../../modals/ConnectWallet";
 import KYCService from "../../../services/blockchain/KYCService";
-import KYCForm from "../../modals/KYCForm";
 import AUSDService from "../../../services/blockchain/AUSDService";
 import AUSDFund from "../../modals/AUSDFund";
 import SecurityTokenService from "../../../services/blockchain/SecurityTokenService";
@@ -21,6 +20,9 @@ import WalletHelper from "../../../util/WalletHelper";
 import BlockchainError from "../../../errors/BlockchainError";
 import NativeTokenNeeded from "../../modals/NativeTokenNeeded";
 import BigNumber from "bignumber.js";
+import KycStatusHandler from "../../modals/KYC/KycStatusHandler";
+import KycApprovedHtml from '../../../html/modal/Kyc/KycApproved.html';
+
 
 export default class ExecuteTradeButton {
     moralis: typeof Moralis;
@@ -28,6 +30,7 @@ export default class ExecuteTradeButton {
     sellTradeInput: TradePanelInput;
     buyTradeInput: TradePanelInput;
     template: any;
+    button: HTMLInputElement;
 
     constructor(moralis: typeof Moralis, sellTradeInput: TradePanelInput, buyTradeInput: TradePanelInput) {
         this.moralis = moralis;
@@ -35,58 +38,57 @@ export default class ExecuteTradeButton {
         this.buyTradeInput = buyTradeInput;
         this.authenticateService = new AuthenticateService(this.moralis);
         this.template = Handlebars.compile(ExecuteTradeButtonHtml);
+        let htmlButton = this.template();
+
+        this.button = document.getElementById('liminal_market_execute_trade') as HTMLInputElement;
+        //this.button.outerHTML = htmlButton;
     }
 
     public async renderButton() {
-        let htmlButton = this.template();
 
-        let button = document.getElementById('liminal_market_execute_trade')
-        if (!button) return;
-        button.outerHTML = htmlButton;
-        button = document.getElementById('liminal_market_execute_trade')!;
+        this.button = document.getElementById('liminal_market_execute_trade') as HTMLInputElement;
 
-        //this.removeClickEvent(button);
-        this.loadingButton(button);
+        this.loadingButton(this.button);
 
         //wallet connected
-        if (!this.walletIsConnected(button)) {
+        if (!this.walletIsConnected(this.button)) {
             return;
         }
         //user logged in
-        if (!this.userIsLoggedIn(button)) {
+        if (!this.userIsLoggedIn(this.button)) {
             return;
         }
         //chain id correct
-        if (!this.chainIdIsCorrect(button)) {
+        if (!this.chainIdIsCorrect(this.button)) {
             return;
         }
         //native token is available
-        if (!await this.userHasNativeToken(button)) {
+        if (!await this.userHasNativeToken(this.button)) {
             return;
         }
         //kyc is done
-        if (!await this.kycIsDone(button)) {
+        if (!await this.kycIsDone(this.button)) {
             return;
         }
         //ausd is setup
-        if (!await this.userHasAUSD(button)) {
+        if (!await this.userHasAUSD(this.button)) {
             return;
         }
 
         //ausd > buy amount
-        if (!await this.userHasEnoughQty(button)) {
+        if (!await this.userHasEnoughQty(this.button)) {
             return;
         }
 
-        if (!this.hasQuantityAndSymbol(button)) {
+        if (!this.hasQuantityAndSymbol(this.button)) {
             return;
         }
 
-        if (!await this.isMarketOpen(button)) {
+        if (!await this.isMarketOpen(this.button)) {
             return;
         }
 
-        this.enableExecuteTrade(button);
+        this.enableExecuteTrade(this.button);
     }
 
     private enableExecuteTrade(button: HTMLElement) {
@@ -151,7 +153,6 @@ export default class ExecuteTradeButton {
                 this.monitorExecuteTrade(transaction as Moralis.ExecuteFunctionResult, TradeType.Buy);
                 this.setProgressText('Sending to blockchain', transaction.hash)
 
-                console.log('THEN - aUsdService.transfer', transaction);
             }).finally(() => {
                 this.stopLoadingButton(button);
                 button.innerHTML = 'Execute trade';
@@ -164,7 +165,7 @@ export default class ExecuteTradeButton {
         let buyingQuantity = object.filled_qty;
         let sellingAmount = '$' + new BigNumber(object.amount).div(10 ** 18).toFixed();
 
-        let obj: any = {
+        return {
             sellingLogo: '/img/logos/aUSD.png',
             sellingSymbol: 'aUSD',
             sellingAmount: sellingAmount,
@@ -175,8 +176,6 @@ export default class ExecuteTradeButton {
             shortEthAddress: shortEth(ethAddress),
             tokenAddress: tokenAddress
         }
-
-        return obj;
     }
 
     public getSellSharesObj(object: any): any {
@@ -185,7 +184,7 @@ export default class ExecuteTradeButton {
         let buyingQuantity = new BigNumber(object.filled_avg_price).multipliedBy(new BigNumber(object.filled_qty))
         let sellingAmount = object.filled_qty;
 
-        let obj: any = {
+        return {
             sellingLogo: '/img/logos/' + object.symbol + '.png',
             sellingSymbol: object.symbol,
             sellingAmount: sellingAmount + ' shares',
@@ -196,7 +195,6 @@ export default class ExecuteTradeButton {
             shortEthAddress: shortEth(ethAddress),
             tokenAddress: tokenAddress
         }
-        return obj;
     }
 
     public async showTradeExecuted(object: any) {
@@ -251,9 +249,9 @@ export default class ExecuteTradeButton {
                 let modal = new Modal();
                 modal.showModal('Order failed', 'We could not finish your order.')
             } else if (!object.status) {
-                this.setProgressText('Received order sending to stock exchange', object.block_hash)
+                this.setProgressText('Received order sending to stock exchange', object.transaction_hash)
             } else if (object.status == 'order_requested') {
-                this.setProgressText('Sent to stock exchange', object.block_hash)
+                this.setProgressText('Sent to stock exchange', object.transaction_hash)
             }
         });
 
@@ -336,7 +334,9 @@ export default class ExecuteTradeButton {
 
     }
 
-    private async kycIsDone(button: HTMLElement) {
+    kycIdDoneTimeout: any;
+
+    private async kycIsDone(button: HTMLElement, intervalCheck = false) {
         let kycService = new KYCService(this.moralis);
         let ethAddress = this.authenticateService.getEthAddress();
         if (ethAddress === '') {
@@ -344,18 +344,44 @@ export default class ExecuteTradeButton {
             return false;
         }
 
-        let hasValidKYC = await kycService.hasValidKYC();
-        if (hasValidKYC) return true;
+        let kycResponse = await kycService.hasValidKYC();
+        if (kycResponse.isValidKyc) {
 
-        button.innerHTML = 'Finish KYC';
-        button.addEventListener('click', () => {
-            let kycForm = new KYCForm(() => {
-                this.renderButton();
-            });
-            kycForm.showKYCForm();
-        });
+            if (intervalCheck) {
+                clearInterval(this.kycIdDoneTimeout);
+
+                let template = Handlebars.compile(KycApprovedHtml);
+                let modal = new Modal();
+                modal.showModal('Account approved', template({}));
+
+                let fundAccount = document.getElementById('kycApprovedFund');
+                fundAccount?.addEventListener('click', (evt) => {
+                    modal.hideModal();
+
+                    let ausdFund = new AUSDFund(this.moralis);
+                    ausdFund.showAUSDFakeFund(() => {
+                        this.renderButton();
+                    })
+                })
+            }
+            return true;
+        }
+
+        let kycStatusHandler = new KycStatusHandler(kycResponse, this);
+
+        button.innerHTML = kycStatusHandler.getButtonText();
+        button.addEventListener('click', kycStatusHandler.getButtonClickEvent(this));
         this.stopLoadingButton(button);
+
         return false;
+    }
+
+    public checkKycIsDone() {
+        if (this.kycIdDoneTimeout) return;
+
+        this.kycIdDoneTimeout = setInterval(async () => {
+            await this.kycIsDone(this.button, true);
+        }, 1 * 1000);
     }
 
     private async userHasAUSD(button: HTMLElement): Promise<boolean> {
@@ -466,4 +492,5 @@ export default class ExecuteTradeButton {
             progressText.innerHTML = text + '<br /><a href="' + networkInfo.BlockExplorer + '/tx/' + hash + '" target="_blank" style="font-size:10px">View</a>';
         }
     }
+
 }

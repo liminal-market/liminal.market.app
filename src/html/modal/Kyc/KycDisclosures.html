@@ -1,5 +1,4 @@
-<fieldset class="kycDisclosures hidden">
-    <legend>Disclosures</legend>
+<fieldset class="kycDisclosures hidden" data-form="1">
     <div>
         <label for="employment_status">Employment status</label>
         <select id="employment_status" required name="employment_status">
@@ -20,65 +19,86 @@
     </div>
     <div>
         <label for="employment_position">Occupation / Job title</label>
-        <input name="employment_position" id="employment_position"/>
+        <input name="employment_position" id="employment_position" autocomplete="organization-title"/>
     </div>
 
-    <div>Are you holding a controlling position in a publicly traded company, member of the board of
-        directors or has policymaking abilities in a publicly traded company
-    </div>
-    <div>
-        <label class="form-check-label" for="is_control_person_yes">
-            <input class="form-check-input" type="radio" id="is_control_person_yes"
-                   name="is_control_person"
-                   value="true">Yes</label>
-    </div>
-    <div>
-        <label class="form-check-label" for="is_control_person_no">
-            <input class="form-check-input" type="radio" id="is_control_person_no"
-                   name="is_control_person"
-                   value="false" checked>No</label>
-    </div>
-    <div>Are you affiliated with exchange or financial regulator</div>
-    <div>
-        <input class="form-check-input" type="radio" id="is_affiliated_exchange_or_finra_yes"
-               name="is_affiliated_exchange_or_finra" value="1">
-        <label class="form-check-label" for="is_affiliated_exchange_or_finra_yes">Yes</label>
-    </div>
-    <div>
-        <input class="form-check-input" type="radio" id="is_affiliated_exchange_or_finra_no"
-               name="is_affiliated_exchange_or_finra" value="0" checked>
-        <label class="form-check-label" for="is_affiliated_exchange_or_finra_no">No</label>
-    </div>
-    <div>Are you affiliated with political connection</div>
-    <div>
-        <input class="form-check-input" type="radio" id="is_politically_exposed_yes"
-               name="is_politically_exposed" value="1">
-        <label class="form-check-label" for="is_politically_exposed_yes">Yes</label>
-    </div>
-    <div>
-        <input class="form-check-input" type="radio" id="is_politically_exposed_no"
-               name="is_politically_exposed" value="0" checked>
-        <label class="form-check-label" for="is_politically_exposed_no">No</label>
+    <div class="disclosure_selections">
+        Do any of the following apply to you or a member of your immediate family?
+        <div class="grid">
+            <div>
+                <label for="is_affiliated_exchange_or_finra">
+                    <input type="checkbox" id="is_affiliated_exchange_or_finra" name="is_affiliated_exchange_or_finra"
+                           role="switch">
+                </label>
+            </div>
+            <div>
+                Affiliated or work with a US registered broker-dealer or
+                FINRA.
+                <small class="explain">Are you or an immediate family member affiliated with or employed by a stock
+                    exchange, regulatory body, member firm of an exchange, FINRA or a municipal securities
+                    broker-dealer?</small>
+
+                <div id="is_affiliated_exchange_or_finra_extra"></div>
+            </div>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="is_control_person">
+                    <input type="checkbox" id="is_control_person" name="is_control_person" role="switch">
+                </label>
+            </div>
+            <div>
+
+                Senior executive at or a 10% or greater shareholder of a publicly traded company.
+                <small class="explain">Are you or an immediate family member an officer or 10% or greater shareholder of
+                    a publicly traded company, subject to the US Securities Exchange Act 1934?</small>
+                <div id="is_control_person_extra"></div>
+            </div>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="is_politically_exposed">
+                    <input type="checkbox" id="is_politically_exposed" name="is_politically_exposed" role="switch">
+                </label>
+            </div>
+            <div>
+                I am a senior political figure.
+                <small class="explain">Are you currently or formerly a Politically Exposed Person or Public Official
+                    (PEP)? <a href="https://www.google.com/search?q=%E2%80%9CPolitically+Exposed+Person%E2%80%9D+(PEP)"
+                              target="_blank">What is PEP?</a> </a></small>
+                <div id="is_politically_exposed_extra"></div>
+            </div>
+            </label>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="immediate_family_exposed">
+                    <input type="checkbox" id="immediate_family_exposed" name="immediate_family_exposed" role="switch">
+                </label>
+            </div>
+            <div>
+                I am a family member or relative of a senior political figure.
+                <small class="explain">Are you an immediate family member currently or formerly a Politically Exposed
+                    Person or Public Official (PEP)? <a
+                            href="https://www.google.com/search?q=%E2%80%9CPolitically+Exposed+Person%E2%80%9D+(PEP)"
+                            target="_blank">What is PEP?</a></small>
+                <div id="immediate_family_exposed_extra"></div>
+            </div>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="none_above">
+                    <input type="checkbox" id="none_above" name="none_above" role="switch"></label>
+            </div>
+            <div>
+                None of the above apply to me or my family.
+            </div>
+        </div>
+        <div class="input_error" id="none_above_error"></div>
     </div>
 
-    <div>Is your immediate family member (sibling, husband/wife, child, parent) either politically
-        exposed or holds a control position
-    </div>
-    <div>
-        <input class="form-check-input" type="radio" id="immediate_family_exposed_yes"
-               name="immediate_family_exposed" value="1">
-        <label class="form-check-label" for="immediate_family_exposed_yes">Yes</label>
-    </div>
-    <div>
-        <input class="form-check-input" type="radio" id="immediate_family_exposed_no"
-               name="immediate_family_exposed" value="0" checked>
-        <label class="form-check-label" for="immediate_family_exposed_no">No</label>
-    </div>
-    {{{ImmediateFamilyHtml}}}
-    {{{AffiliateOrControlledHtml}}}
-
-    <div class="grid">
-        <button type="button" class="showIdentity">Previous: Identity (2 of 4)</button>
-        <button type="button" class="showAgreements">Next: Agreements (4 of 4)</button>
+    <div class="grid buttons">
+        <button type="button" id="disclosures_prev">Previous: Trusted contact</button>
+        <button type="button" id="disclosures_next">Next: Agreements</button>
     </div>
 </fieldset>

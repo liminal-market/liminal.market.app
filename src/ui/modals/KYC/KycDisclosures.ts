@@ -1,124 +1,145 @@
-import KycHelper from "./KycHelper";
+import KycBase from "./KycBase";
 import KYCForm from "../KYCForm";
 import KycDisclosureHtml from "../../../html/modal/Kyc/KycDisclosures.html";
-import KycImmediateFamilyHtml from "../../../html/modal/Kyc/KycImmediateFamily.html";
-import KycAffiliateOrControlledHtml from "../../../html/modal/Kyc/KycAffiliateOrControlled.html";
-import KycTrustedContactHtml from "../../../html/modal/Kyc/KycTrustedContact.html";
-import CountryHelper from "../../../util/CountryHelper";
+import KycAffiliateOrControlled from "./KycAffiliateOrControlled";
+import KycImmediateFamily from "./KycImmediateFamily";
+import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 
-export default class KycDisclosures extends KycHelper {
-
-    kycForm: KYCForm;
+export default class KycDisclosures extends KycBase {
+    kycAffiliatedOrControlled: KycAffiliateOrControlled;
+    kycImmediateFamily: KycImmediateFamily;
 
     constructor(kycForm: KYCForm) {
-        super();
-        this.kycForm = kycForm;
+        super(kycForm);
+
+        this.kycAffiliatedOrControlled = new KycAffiliateOrControlled(this.kycForm);
+        this.kycImmediateFamily = new KycImmediateFamily(this.kycForm);
     }
 
     public render() {
-
         let template = Handlebars.compile(KycDisclosureHtml);
-        let kycImmediateFamilyTemplate = Handlebars.compile(KycImmediateFamilyHtml);
-        let kycAffiliateOrControlledTemplate = Handlebars.compile(KycAffiliateOrControlledHtml);
-        let kycTrustedContactTemplate = Handlebars.compile(KycTrustedContactHtml);
-        return template({
-            ImmediateFamilyHtml: kycImmediateFamilyTemplate({}),
-            AffiliateOrControlledHtml: kycAffiliateOrControlledTemplate({countries: CountryHelper.Countries}),
-            KycTrustedContactHtml: kycTrustedContactTemplate({})
-        });
+        return template({});
+    }
 
+    public show() {
+        if (this.kycForm.steps == 5) {
+            document.getElementById('disclosures_next')!.innerText = 'Next: Agreements';
+        } else {
+            document.getElementById('disclosures_next')!.innerText = 'Next: Upload documents';
+        }
+        this.showFieldset('.kycDisclosures', 'Disclosures');
     }
 
     public bindEvents() {
 
-        let immediate_family_exposed_yes = document.getElementById('immediate_family_exposed_yes') as HTMLInputElement;
-        immediate_family_exposed_yes.addEventListener('click', (evt) => {
-            this.discloseReaction(evt, 'immediate_family', true);
+        let is_affiliated_exchange_or_finra = document.getElementById('is_affiliated_exchange_or_finra') as HTMLInputElement;
+        is_affiliated_exchange_or_finra?.addEventListener('click', (evt) => {
+            this.loadAffiliatedOrControlComponent('is_affiliated_exchange_or_finra');
+        });
+
+        let is_control_person = document.getElementById('is_control_person') as HTMLInputElement;
+        is_control_person?.addEventListener('click', (evt) => {
+            this.loadAffiliatedOrControlComponent('is_control_person');
+        });
+
+        let immediate_family_exposed = document.getElementById('immediate_family_exposed') as HTMLInputElement;
+        immediate_family_exposed?.addEventListener('click', (evt) => {
+            this.loadPep('immediate_family_exposed')
+        });
+
+        let none_above = document.getElementById('none_above') as HTMLInputElement;
+        none_above?.addEventListener('click', (evt) => {
+            this.removeMissingInfo('none_above_error');
+            none_above.removeAttribute('aria-invalid');
         })
 
-        let immediate_family_exposed_no = document.getElementById('immediate_family_exposed_no') as HTMLInputElement;
-        immediate_family_exposed_no.addEventListener('click', (evt) => {
-            this.discloseReaction(evt, 'immediate_family', false);
-        })
+        let prev = document.getElementById('disclosures_prev');
+        prev?.addEventListener('click', (evt) => {
+            this.kycForm.kycTrustedContact.show();
+        });
 
-
-        let is_affiliated_exchange_or_finra_yes = document.getElementById('is_affiliated_exchange_or_finra_yes') as HTMLInputElement;
-        is_affiliated_exchange_or_finra_yes.addEventListener('click', (evt) => {
-            this.discloseReaction(evt, 'affiliate_or_controlled', true)
-        })
-
-        let is_affiliated_exchange_or_finra_no = document.getElementById('is_affiliated_exchange_or_finra_no') as HTMLInputElement;
-        is_affiliated_exchange_or_finra_no.addEventListener('click', (evt) => {
-            this.discloseReaction(evt, 'affiliate_or_controlled', false);
-        })
-
-        let is_control_person_yes = document.getElementById('is_control_person_yes') as HTMLInputElement;
-        is_control_person_yes.addEventListener('click', (evt) => {
-            this.discloseReaction(evt, 'affiliate_or_controlled', true)
-        })
-
-        let is_control_person_no = document.getElementById('is_control_person_no') as HTMLInputElement;
-        is_control_person_no.addEventListener('click', (evt) => {
-            this.discloseReaction(evt, 'affiliate_or_controlled', false);
-        })
-
-        let account_approval_letter_input = document.getElementById('account_approval_letter_input') as HTMLInputElement;
-        account_approval_letter_input.addEventListener('change', (evt) => {
-            evt.preventDefault();
-            this.hideFileRelatedInfo();
-
-            let files = account_approval_letter_input.files;
-            if (!files) return;
-
-            let file = files[0];
-            if (!file) {
-                this.showFileRelatedInfo('No file selected. Please select file.');
+        let next = document.getElementById('disclosures_next');
+        next?.addEventListener('click', (evt) => {
+            if (!this.validateFields()) return;
+            if (this.kycForm.steps == 5) {
+                this.kycForm.kycAccountAgreement.show();
+            } else {
+                this.kycForm.kycUpload.show();
             }
-
-            if (file.size > 8 * 1024 * 1024 * 10) {
-                this.showFileRelatedInfo('File ' + file.name + ' is to large. Files cannot be larger then 10MB. You need to make it smaller before submitting your application');
-                return;
-            }
-
-            let reader = new FileReader();
-            reader.addEventListener('load', () => {
-                let account_approval_letter = document.getElementById('account_approval_letter')! as HTMLInputElement;
-                account_approval_letter.value = reader.result as string;
-            });
-
-            reader.addEventListener('error', () => {
-                this.showFileRelatedInfo('Could not read file ' + file.name + '. Either the file is corrupt or your browser does not allow us to read it');
-            });
-            reader.readAsDataURL(file);
         })
+
     }
 
+    private loadAffiliatedOrControlComponent(elementId: string) {
+        if (elementId == 'is_affiliated_exchange_or_finra') {
+            this.uncheck('is_control_person')
+        } else {
+            this.uncheck('is_affiliated_exchange_or_finra')
+        }
 
-    private discloseReaction(event: MouseEvent, elementId: string, show: boolean) {
-        let input = event.target as HTMLInputElement;
-        if (input?.checked) {
-            let fieldset = document.getElementById(elementId) as HTMLElement;
-            if (!fieldset) return;
+        let element = document.getElementById(elementId) as HTMLInputElement;
+        let extra = document.getElementById(elementId + '_extra');
+        if (!extra) return;
 
-            if (show) {
-                fieldset.classList.remove('hidden')
-            } else {
-                fieldset.classList.add('hidden')
-            }
-
+        if (element.checked) {
+            extra.innerHTML = this.kycAffiliatedOrControlled.render();
+            this.kycAffiliatedOrControlled.bindEvents();
+        } else {
+            extra.innerHTML = '';
         }
     }
 
-    private showFileRelatedInfo(text: string) {
-        let fileRelatedInfo = document.getElementById('fileRelatedInfo')! as HTMLElement;
+    private loadPep(elementId: string) {
+        if (elementId == 'immediate_family_exposed') {
+            this.uncheck('is_politically_exposed')
+        } else {
+            this.uncheck('immediate_family_exposed')
+        }
 
-        fileRelatedInfo.innerHTML = text;
-        fileRelatedInfo.classList.remove('hidden')
+        let element = document.getElementById(elementId) as HTMLInputElement;
+        let extra = document.getElementById(elementId + '_extra');
+        if (!extra) return;
+
+        if (element.checked) {
+            extra.innerHTML = this.kycImmediateFamily.render();
+            this.kycImmediateFamily.bindEvents();
+        } else {
+            extra.innerHTML = '';
+        }
     }
 
-    private hideFileRelatedInfo() {
-        let fileRelatedInfo = document.getElementById('fileRelatedInfo')! as HTMLElement;
-        fileRelatedInfo.classList.add('hidden');
+    private uncheck(elementId: string) {
+        let element = document.getElementById(elementId) as HTMLInputElement;
+        element.checked = false;
+        let extra = document.getElementById(elementId + '_extra')!;
+        extra.innerHTML = '';
     }
 
+    private validateFields() {
+        if (!this.validateRequiredFields('.kycDisclosures')) return false;
+        if (!this.kycImmediateFamily.validate()) return false;
+        if (!this.kycAffiliatedOrControlled.validate()) return false;
+
+        let is_affiliated_exchange_or_finra = document.getElementById('is_affiliated_exchange_or_finra') as HTMLInputElement;
+        let is_control_person = document.getElementById('is_control_person') as HTMLInputElement;
+        let is_politically_exposed = document.getElementById('is_politically_exposed') as HTMLInputElement;
+        let immediate_family_exposed = document.getElementById('immediate_family_exposed') as HTMLInputElement;
+        let none_above = document.getElementById('none_above') as HTMLInputElement;
+
+        if (!none_above.checked && !is_affiliated_exchange_or_finra.checked && !is_control_person.checked
+            && !is_politically_exposed.checked && !immediate_family_exposed.checked
+        ) {
+            this.setMissingInfo('none_above_error', 'You must select, "None of the above apply to me or my family." if nothing is selected', 'none_above');
+            return false;
+        }
+
+        if (none_above.checked && (is_affiliated_exchange_or_finra.checked || is_control_person.checked
+            || is_politically_exposed.checked || immediate_family_exposed.checked
+        )) {
+            this.setMissingInfo('none_above_error', 'You cannot have "None of the above apply to me or my family." selected and other options selected. Please select only one', 'none_above');
+            return false;
+        }
+
+        return true;
+    }
 }

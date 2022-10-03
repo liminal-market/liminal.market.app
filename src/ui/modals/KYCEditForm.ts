@@ -3,11 +3,11 @@ import Modal from "./Modal";
 import Progress from "../elements/Progress";
 import KYCService from "../../services/blockchain/KYCService";
 import NetworkInfo from "../../networks/NetworkInfo";
-import {serialize} from "../../util/Helper";
 import LoadingHelper from "../../util/LoadingHelper";
 import CloudError from "../../errors/CloudError";
 import CountryHelper from "../../util/CountryHelper";
 import UserService from "../../services/backend/UserService";
+import FormHelper from "../../util/FormHelper";
 
 export default class KYCEditForm {
     modal: Modal;
@@ -49,9 +49,7 @@ export default class KYCEditForm {
             let progress = new Progress();
             progress.show('Register KYC with broker', 33, false, ['submitKYC']);
 
-            const form = document.getElementById('kyc_wizard_form') as HTMLFormElement;
-            let data = new FormData(form);
-            let params = serialize(data);
+            let params = FormHelper.getParams('#kyc_wizard_form')
 
             let networkInfo = NetworkInfo.getInstance();
             params.chainId = networkInfo.ChainId;

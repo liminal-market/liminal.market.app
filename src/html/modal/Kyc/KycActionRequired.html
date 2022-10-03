@@ -1,0 +1,23 @@
+<div id="kycActionRequiredDiv">
+
+    {{#if Other}}
+    <strong>This is the message from KYC processor we received</strong>
+    <blockquote>
+        {{Other}}
+    </blockquote>
+    {{/if}}
+    <form novalidate id="kycActionRequiredForm" name="kycActionRequiredForm" onsubmit="return false;">
+        {{{KycInfo}}}
+        {{#if SubmitData}}
+        <div class="input_error" id="kycActionRequiredError"></div>
+        <div class="buttons">
+            <button type="submit" id="kycActionRequiredSubmit">Send new information</button>
+        </div>
+        {{/if}}
+    </form>
+</div>
+
+<div id="kycActionRequiredSubmittedDiv" class="hidden center">
+    <h3>You documents have been submitted.<br/>We will email you when your account is ready.</h3>
+    You can close this window.
+</div>

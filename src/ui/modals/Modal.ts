@@ -12,12 +12,11 @@ export default class Modal {
         }
     }
 
-    public showModal(title : string, content: string, reuseModalIfSameTitle : boolean = false, onHide? : () => void) : boolean {
+    public showModal(title: string, content: string, reuseModalIfSameTitle: boolean = false, onHide?: () => void, hideOnOutsideClick = true): boolean {
         let modalDiv = document.getElementById(this.modalId);
         if (modalDiv) {
             let modalTitle = modalDiv.dataset.title;
             if (reuseModalIfSameTitle && modalTitle && modalTitle === title) {
-                //modalDiv.style.display = 'block';
                 modalDiv.setAttribute('open', '');
                 return false;
             }
@@ -33,15 +32,25 @@ export default class Modal {
         if (modalDiv) {
             document.body.removeChild(modalDiv);
         }
-        document.body.insertAdjacentHTML( 'beforeend',html);
+        document.body.insertAdjacentHTML('beforeend', html);
 
         modalDiv = document.getElementById(this.modalId)!;
-        modalDiv.addEventListener('mousedown', (evt) => {
-            if (evt.target  && (evt.target as HTMLElement).id === 'liminal_market_modal_div') {
-                this.hideModal();
-            }
-        });
         modalDiv.setAttribute('open', '');
+
+        if (hideOnOutsideClick) {
+            modalDiv.addEventListener('mousedown', (evt) => {
+                if (evt.target && (evt.target as HTMLElement).id === 'liminal_market_modal_div') {
+                    this.hideModal();
+                }
+            });
+        }
+        let liminal_market_modal_close = document.getElementById('liminal_market_modal_close')
+        if (liminal_market_modal_close) liminal_market_modal_close.style.display = 'block';
+
+        document.getElementById('liminal_market_modal_close')?.addEventListener('click', (evt) => {
+            evt.preventDefault();
+            this.hideModal();
+        })
         this.onHide = onHide;
 
         return true;

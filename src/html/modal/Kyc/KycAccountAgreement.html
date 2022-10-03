@@ -1,33 +1,80 @@
-<fieldset class="kycAccountAgreement hidden">
-    <label for="account_agreement">
-        <input required type="checkbox" name="account_agreement" id="account_agreement" value="1"/>
-        I agree to <a href="https://files.alpaca.markets/disclosures/library/AcctAppMarginAndCustAgmt.pdf"
-                      target="_blank">Alpaca Customer Agreement</a>
-    </label>
-    <label for="customer_agreement">
-        <input required type="checkbox" name="customer_agreement" id="customer_agreement" value="1"/>
-        Customer Agreement Acknowledgement
-        <div class="explain">
-            I have read, understood, and agree to be bound by Alpaca Securities LLC and Liminal.market Inc. account
-            terms,
-            and all other terms, disclosures and disclaimers applicable to me, as referenced in the Alpaca Customer
-            Agreement.
-            I also acknowledge that the Alpaca Customer Agreement contains a pre-dispute arbitration clause in Section
-            43.
+<fieldset class="kycAccountAgreement hidden" data-form="1">
+    <div class="kycAccountAgreementGrid">
+        <div id="account_agreement_error" class="input_error"></div>
+        <div class="grid">
+            <div>
+                <label for="account_agreement">
+                    <input required type="checkbox" name="account_agreement" id="account_agreement" value="1"/>
+                </label>
+            </div>
+            <div>
+                <label for="account_agreement">
+                    I agree to <a href="https://files.alpaca.markets/disclosures/library/AcctAppMarginAndCustAgmt.pdf"
+                                  target="_blank">Alpaca Customer Agreement</a>
+                </label>
+            </div>
         </div>
-    </label>
-    <label for="digital_signature">
-        <input required type="checkbox" name="digital_signature" id="digital_signature" value="1"/>
-        Digital Signature Acknowledgement<br/>
-        <div class="explain">
-            I understand I am signing this agreement electronically,
-            and that my electronic signature will have the same effect as physically signing and returning the
-            Application Agreement.
+        <div id="customer_agreement_error" class="input_error"></div>
+        <div class="grid">
+            <div>
+                <label for="customer_agreement">
+                    <input required type="checkbox" name="customer_agreement" id="customer_agreement" value="1"/>
+                </label>
+            </div>
+            <div>
+                <label for="customer_agreement">
+                    Customer Agreement Acknowledgement</label>
+                <div class="explain">
+                    I have read, understood, and agree to be bound by Alpaca Securities LLC and Liminal.market Inc.
+                    account
+                    terms,
+                    and all other terms, disclosures and disclaimers applicable to me, as referenced in the Alpaca
+                    Customer
+                    Agreement.
+                    I also acknowledge that the Alpaca Customer Agreement contains a pre-dispute arbitration clause
+                    in
+                    Section
+                    43.
+                </div>
+
+            </div>
+
         </div>
-    </label>
-    <div>
-        <div class="alert alert-danger" id="kycError" role="alert"></div>
-        <button type="submit" class="showTrustedContact" class="btn btn-primary mb-3">(5 of 6) Trusted contacts</button>
-        <button type="submit" id="submitKYC" class="btn btn-primary mb-3">Confirm identity</button>
+        <div id="digital_signature_error" class="input_error"></div>
+        <div class="grid">
+            <div>
+                <label for="digital_signature">
+                    <input required type="checkbox" name="digital_signature" id="digital_signature" value="1"/>
+                </label>
+            </div>
+            <div>
+                <label for="digital_signature">
+                    Digital Signature Acknowledgement</label>
+                <div class="explain">
+                    I understand I am signing this agreement electronically,
+                    and that my electronic signature will have the same effect as physically signing and returning
+                    the
+                    Application Agreement.
+                </div>
+
+            </div>
+        </div>
+        <div class="grid hidden" id="w8disclosure_div">
+            <div>
+                <label for="w8disclosure">
+                    <input required type="checkbox" name="w8disclosure" id="w8disclosure" value="1"/>
+                </label>
+            </div>
+            <div><label for="w8disclosure">
+                I certify that I am not a US citizen, US resident alien or other US person for US tax purposes,
+                and I am submitting the applicable Form W-8 BEN with this form to certify my foreign status and,
+                if applicable, claim tax treaty benefits. </label>
+            </div>
+        </div>
     </div>
+    <div class="grid buttons">
+        <button type="button" id="account_agreement_prev">Previous: Upload documents</button>
+        <button type="submit" id="submitKYC">Confirm identity</button>
+    </div>
+    <div class="alert alert-danger" id="kycError" role="alert"></div>
 </fieldset>

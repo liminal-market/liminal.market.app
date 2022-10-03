@@ -51,19 +51,3 @@ export const shortEth = function(ethAddress : string) {
 export const upperFirstLetter = function(text : string) {
 	return text[0].toUpperCase() + text.substring(1);
 }
-
-
-export const serialize = function(data : any) {
-	let obj : any = {};
-	for (let [key, value] of data) {
-		if (obj[key] !== undefined) {
-			if (!Array.isArray(obj[key])) {
-				obj[key] = [obj[key]];
-			}
-			obj[key].push(value);
-		} else {
-			obj[key] = value;
-		}
-	}
-	return obj;
-}
