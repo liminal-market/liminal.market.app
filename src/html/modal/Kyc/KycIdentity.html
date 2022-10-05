@@ -21,7 +21,7 @@
     <div>
         <label for="date_of_birth">Date of birth</label>
         <input type="date" required id="date_of_birth" name="date_of_birth"
-               placeholder="1978-11-24" pattern="\d{4}-\d{2}-\d{2}" value="1978-08-02" autocomplete="bday">
+               placeholder="1978-11-24" pattern="\d{4}-\d{2}-\d{2}" value="" autocomplete="bday">
     </div>
 
     <div id="citizen_of_usa_question" class="hidden">
@@ -85,14 +85,14 @@
             <option value="SWE_TAX_ID">Sweden Tax ID (Personnummer)</option>
             <option value="URY_RUT">Uruguay RUT</option>
             <option value="VEN_RIF">Venezuela RIF</option>
-            <option value="NOT_SPECIFIED" selected>Other Tax IDs</option>
+            <option value="NOT_SPECIFIED">Other Tax IDs</option>
         </select>
     </div>
     <div>
         <label id="tax_id_label" for="tax_id">Tax Id (SSN)</label>
         <input required id="tax_id" name="tax_id"
                placeholder="666-55-4321"
-               value="0208785339">
+               value="">
     </div>
     <div id="country_of_birth_option">
         <label for="country_of_birth">Country of birth</label>
@@ -173,7 +173,7 @@
         </div>
         <select name="liquid_net_worth" required id="liquid_net_worth">
             <option value=""></option>
-            <option value="1" selected>0 - $20,000</option>
+            <option value="1">0 - $20,000</option>
             <option value="2">$20,000 - $49,999</option>
             <option value="3">$50,000 - $99,999</option>
             <option value="4">$100,000 - $499,999</option>
@@ -186,7 +186,7 @@
         <label for="funding_source">Funding source</label>
         <select required id="funding_source" name="funding_source"
                 multiple size="4" aria-label="size 3 select">
-            <option value="employment_income" selected>Employment income</option>
+            <option value="employment_income">Employment income</option>
             <option value="investments">Investments</option>
             <option value="inheritance">Inheritance</option>
             <option value="business_income">Business income</option>

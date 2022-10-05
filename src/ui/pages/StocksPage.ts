@@ -22,12 +22,12 @@ export default class StocksPage {
 		await securitiesList.loadMore();
 
 		await securitiesList.bindEvents(async (symbol, name, logo) => {
-			console.log('onSelectSymbol is called')
 			let liminalMarketService = new LiminalMarketService(this.moralis);
 			let address = await liminalMarketService.getSymbolContractAddress(symbol);
 
 			let tradePage = new TradePage(this.moralis);
 			window.scrollTo(0, 0);
+			history.pushState(null, 'Buy stocks', '#/trade');
 			await tradePage.load(symbol, name, logo, address);
 		})
 	};
