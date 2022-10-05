@@ -1,0 +1,62 @@
+<fieldset class="kycTrustedContact">
+    <form id="kycTrustedContactForm" method="post">
+        <div class="explain">
+            A trusted contact is a person you authorize your financial firm to contact in limited circumstances,
+            such as if there is a concern about activity in your account and they have been unable to get in touch with
+            you.
+            <br/><br/>
+            A trusted contact may be a family member, attorney, accountant or another third-party who you believe would
+            respect your privacy and know how to handle the responsibility.
+            The trusted person should be 18 years old or older.
+        </div>
+        <div>
+            <label for="given_name">Legal given name of trusted contact</label>
+            <input required id="given_name" name="given_name"/>
+        </div>
+        <div>
+            <label for="family_name">Legal family name of trusted contact</label>
+            <input required id="family_name" name="family_name"/>
+        </div>
+        <div>
+            If you fill in name, you are required to fill in one of the following, email, phone or address
+        </div>
+        <div class="input_error" id="contact_missing_info"></div>
+        <div>
+            <label for="email_address">Email of trusted contact</label>
+            <input id="email_address" type="email" name="email_address"/>
+        </div>
+        <div>
+            <label for="phone_number">Phone of trusted contact</label>
+            <input id="phone_number" type="tel" name="phone_number"/>
+        </div>
+        <div>
+            <label for="street_address">Address of trusted contact</label>
+            <input id="street_address" name="street_address"/>
+        </div>
+        <div>
+            <label for="city">City of trusted contact</label>
+            <input id="city" name="city"/>
+        </div>
+        <div>
+            <label for="state">State of trusted contact</label>
+            <input id="state" name="state"/>
+        </div>
+        <div>
+            <label for="postal_code">Postal code of trusted contact</label>
+            <input id="postal_code" name="postal_code"/>
+        </div>
+        <div>
+            <label for="country">Country of trusted contact</label>
+            <select required id="country" required name="country">
+                <option value=""></option>
+                {{#each countries}}
+                <option value="{{code}}">{{name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="input_error" id="kycEditNameError"></div>
+        <div class="buttons">
+            <button type="submit" id="trustedContactSubmit">Submit</button>
+        </div>
+    </form>
+</fieldset>

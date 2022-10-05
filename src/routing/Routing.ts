@@ -1,14 +1,19 @@
 import StocksPage from "../ui/pages/StocksPage";
 import TradePage from "../ui/pages/TradePage";
 import PositionsPage from "../ui/pages/PositionsPage";
+import AUSDFund from "../ui/modals/AUSDFund";
+import NetworkInfo from "../networks/NetworkInfo";
 
 
 export default class Routing {
 
-    settings : any = {
+    settings: any = {
         show_trade: this.showTrade,
         show_positions: this.showPositions,
         show_stocks: this.showStocks,
+        show_kyc_action_required: this.showKycActionRequired,
+        show_funding: this.showFunding,
+        show_kyc: this.showKyc
     };
     moralis : typeof Moralis;
 
@@ -17,23 +22,70 @@ export default class Routing {
     }
 
     public async loadRoutes() {
-        let path = window.location.pathname.replace('/', '');
+        let path = window.location.hash.replace('#', '').replace('/', '');
         if (window.location.search !== '') path = window.location.search.replace('?', '');
         if (path === '') path = 'stocks';
 
         this.attachNavLinks();
 
-        const fn = this.settings['show_' + path];
+        let fn = this.settings['show_' + path] ?? this.settings['show_stocks'];
+
         if (typeof fn === 'function') {
             await fn(this);
         }
     }
 
-    public async showTrade(routing : Routing, evt : MouseEvent) {
+    public async showKycActionRequired(routing: Routing, evt: MouseEvent) {
         if (evt) evt.preventDefault();
 
         let page = new TradePage(routing.moralis);
         await page.load();
+
+        history.pushState(null, 'Buy stocks', '#/kyc_action_required');
+
+        let button = document.getElementById('liminal_market_execute_trade')
+        button?.dispatchEvent(new MouseEvent('click'));
+    }
+
+    public async showKyc(routing: Routing, evt: MouseEvent) {
+        if (evt) evt.preventDefault();
+
+        let page = new TradePage(routing.moralis);
+        await page.load();
+
+        history.pushState(null, 'Buy stocks', '#/kyc');
+
+        let button = document.getElementById('liminal_market_execute_trade')
+        button?.dispatchEvent(new MouseEvent('click'));
+    }
+
+    public async showFunding(routing: Routing, evt: MouseEvent) {
+        if (evt) evt.preventDefault();
+
+        let page = new TradePage(routing.moralis);
+        await page.load();
+
+        history.pushState(null, 'Buy stocks', '#/funding');
+
+        let aUSDFundingModal = new AUSDFund(this.moralis);
+        let networkInfo = NetworkInfo.getInstance();
+        if (networkInfo.TestNetwork) {
+            aUSDFundingModal.showAUSDFakeFund(() => {
+            })
+        } else {
+            aUSDFundingModal.showAUSDFund(() => {
+            })
+        }
+    }
+
+
+    public async showTrade(routing: Routing, evt: MouseEvent) {
+        if (evt) evt.preventDefault();
+
+        let page = new TradePage(routing.moralis);
+        await page.load();
+
+        history.pushState(null, 'Buy stocks', '#/trade');
     }
 
     public async showStocks(routing : Routing,evt : MouseEvent) {
@@ -41,12 +93,17 @@ export default class Routing {
 
         let page = new StocksPage(routing.moralis);
         await page.load();
+
+        history.pushState(null, 'Stocks', '#/stocks');
+
     }
     public async showPositions(routing : Routing,evt : MouseEvent) {
         if (evt) evt.preventDefault();
 
         let page = new PositionsPage(routing.moralis);
         await page.load();
+
+        history.pushState(null, 'Positions', '#/positions');
     }
 
     public attachNavLinks() {

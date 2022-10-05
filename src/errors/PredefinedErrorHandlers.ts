@@ -11,6 +11,8 @@ export default class PredefinedErrorHandlers {
 
     constructor() {
         this.errorMessageMapping.set('already processing eth_requestaccounts', this.SentLoginRequest);
+        this.errorMessageMapping.set('request of type \'wallet_requestPermissions\' already pending', this.SentLoginRequest);
+        this.errorMessageMapping.set('already has been called, but is not finished yet', this.SentLoginRequest);
         this.errorMessageMapping.set('request is already in progress', this.SentLoginRequest);
         this.errorMessageMapping.set('web3 instance', () => {
             let elements = document.querySelectorAll(".liminal_market_connect_wallet");

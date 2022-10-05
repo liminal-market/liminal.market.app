@@ -141,9 +141,9 @@ export default class ConnectWallet {
                 this.modal.hideModal();
 
                 let userInfo = new UserInfo(this.moralis, this.providerInfo, user);
-                await userInfo.renderUserInfo('user_header_info');
+                await userInfo.render('user_header_info');
 
-                if (location.pathname.indexOf('trade') != -1) {
+                if (document.getElementById('liminal_market_execute_trade')) {
                     let page = new TradePage(this.moralis);
                     await page.load();
                 }

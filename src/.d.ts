@@ -6,5 +6,7 @@ declare global {
     export const Moralis : Moralis;
     export const ExecuteFunctionCallResult: Moralis.ExecuteFunctionCallResult;
     export const ethereum: any;
+      // @ts-ignore
+    export const Handlebars: Handlebars;
 }
 

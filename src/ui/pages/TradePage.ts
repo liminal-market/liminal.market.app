@@ -17,7 +17,7 @@ export default class TradePage {
     }
 
     public async load(symbol?: string, name?: string, logo?: string, address?: string) {
-        history.pushState(null, 'Buy stocks', '/trade');
+
 
         let mark1 = 'start';
         let mark2 = 'template';
@@ -47,17 +47,18 @@ export default class TradePage {
         let aUSDService = new AUSDService(this.moralis);
         let ausdAmount = await aUSDService.getAUSDBalanceOf(user.getEthAddress());
         performance.mark(mark5)
+        let userWallet = document.getElementById('use_wallet_for_orders');
+        let userWalletLink = document.getElementById('use_wallet_for_orders_link');
         if (ausdAmount.eq(0)) {
-            let userWallet = document.getElementById('use_wallet_for_orders');
-            if (!userWallet) return;
-
-            userWallet.classList.add('d-none');
-            return;
+            userWallet?.classList.add('hidden');
+            userWalletLink?.classList.add('not_visible');
+        } else {
+            userWallet?.classList.remove('hidden');
+            userWalletLink?.classList.remove('not_visible');
         }
 
         let findSymbols = document.querySelectorAll('.findSymbol');
-        if (!findSymbols) return;
-        findSymbols.forEach(findSymbol => {
+        findSymbols?.forEach(findSymbol => {
             findSymbol.addEventListener('click', (evt) => {
                 evt.preventDefault();
 
@@ -69,9 +70,7 @@ export default class TradePage {
         });
 
         let addAUSDToWallet = document.getElementById('addAUSDToWallet');
-        if (!addAUSDToWallet) return;
-
-        addAUSDToWallet.addEventListener('click', (evt) => {
+        addAUSDToWallet?.addEventListener('click', (evt) => {
             evt.preventDefault();
 
             let walletHelper = new WalletHelper(this.moralis);

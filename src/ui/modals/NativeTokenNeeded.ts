@@ -7,11 +7,13 @@ import UserService from "../../services/backend/UserService";
 export default class NativeTokenNeeded {
     moralis : typeof Moralis;
     onNativeTokenArrived : () => void;
-    timeOut? : any = undefined;
+    timeOut?: any = undefined;
+    modal: Modal;
 
     constructor(moralis : typeof Moralis, onNativeTokenArrived : () => void) {
         this.moralis = moralis;
         this.onNativeTokenArrived = onNativeTokenArrived;
+        this.modal = new Modal();
     }
 
     public show() {
@@ -22,13 +24,15 @@ export default class NativeTokenNeeded {
         if (networkInfo.TestNetwork) {
             let template = Handlebars.compile(FakeNativeTokenNeededHtml);
             let content = template({symbol:networkInfo.NativeSymbol, faucetUrl:networkInfo.FaucetUrl, ethAddress:ethAddress})
-            let modal = new Modal();
-            modal.showModal('Get some ' + networkInfo.NativeSymbol, content, false, () => {this.cancelTimer() });
+            this.modal.showModal('Get some ' + networkInfo.NativeSymbol, content, false, () => {
+                this.cancelTimer()
+            });
         } else {
             let template = Handlebars.compile(NativeTokenNeededHtml);
             let content = template({symbol:networkInfo.NativeSymbol, buyUrl:networkInfo.BuyUrl, ethAddress:ethAddress})
-            let modal = new Modal();
-            modal.showModal('Get some ' + networkInfo.NativeSymbol, content, false, () => {this.cancelTimer() });
+            this.modal.showModal('Get some ' + networkInfo.NativeSymbol, content, false, () => {
+                this.cancelTimer()
+            });
         }
 
         let link = document.getElementById('getNativeTokens');
@@ -36,9 +40,8 @@ export default class NativeTokenNeeded {
 
         link.addEventListener('click', async () => {
             let waitingForNativeToken = document.getElementById('waitingForNativeToken');
-            if (!waitingForNativeToken) return;
+            waitingForNativeToken?.classList.remove('d-none');
 
-            waitingForNativeToken.classList.remove('d-none');
             await this.checkForNativeTokens();
 
         })
@@ -52,6 +55,7 @@ export default class NativeTokenNeeded {
         let networkInfo = NetworkInfo.getInstance();
         let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens(this.moralis);
         if (hasEnoughNativeTokens) {
+            this.modal.hideModal();
             this.onNativeTokenArrived();
         } else {
             this.timeOut = setTimeout(() => this.checkForNativeTokens(), 5 * 1000);

@@ -10,12 +10,10 @@
     "strict": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "typeRoots": ["node_modules/@types", "types"],
-    "paths": {
-      "Handlebars": [
-        "./app/node_modules/handlebars"
-      ]
-    }
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ]
   },
   "exclude": [
     "node_modules"

@@ -20,6 +20,7 @@
 		--primary-hover: #607d8b;
 		--primary-focus: rgba(84, 110, 122, 0.25);
 		--primary-inverse: #FFF;
+		--switch-checked-background-color: #02afff;
 	}
 }
 
@@ -32,6 +33,7 @@
 	--primary-inverse: #FFF;
 	--nav-background-color: #040633;
 	--highlight-background: #515100;
+	--switch-checked-background-color: #02afff;
 }
 
 /* Blue-grey (Common styles) */
@@ -51,7 +53,7 @@
 	--warning-bar-background-color: #ffc147;
 	--warning-bar-color: #000;
 
-	--error-bar-background-color: #f4511e;
+	--error-bar-background-color: #913a1f;
 	--error-bar-color: #ff;
 }
 
@@ -73,11 +75,15 @@ h3 {
 }
 
 .d-none, .hidden {
-	display: none;
+    display: none;
+}
+
+.not_visible {
+    visibility: hidden;
 }
 
 .center {
-	text-align: center;
+    text-align: center;
 }
 
 
@@ -148,14 +154,27 @@ body>footer {
 	background-color: var(--warning-bar-background-color);
 	color:var(--warning-bar-color);
 }
+
 .errorBar {
 	background-color: var(--error-bar-background-color);
 	color: var(--error-bar-color);
 }
 
 .input_error {
+	display: none;
 	font-size: small;
 	font-style: italic;
+	font-weight: bold;
+	background-color: var(--error-bar-background-color);
+
+	padding: 0.4rem 1.4rem;
+	border-radius: 5px;
+	margin: 8px 0;
+}
+
+.success {
+	background-color: seagreen;
+
 }
 
 dialog .infoBar {
@@ -164,7 +183,7 @@ dialog .infoBar {
 }
 
 .tag_line {
-	font-size:0.6rem;
+	font-size: 0.6rem;
 }
 #ul_user_info { margin-right: 0;}
 
@@ -423,9 +442,7 @@ progress.invalid {
 	margin:0 auto;
 }
 
-#submitKYC {
-	margin-bottom: 80px;
-}
+
 
 @media (min-width: 576px) {
 	.container {
@@ -448,13 +465,65 @@ progress.invalid {
 }
 @media (min-width: 992px) {
 	.container {
-		max-width: 920px;
-	}
+        max-width: 920px;
+    }
 }
 
 
 @media (min-width: 1200px) {
-	.container {
-		max-width: 1130px;
+    .container {
+        max-width: 1130px;
 	}
+}
+
+.explain {
+	font-size: 0.7rem;
+}
+
+#citizen_no_type_options {
+    margin-left: 1rem;
+}
+
+#kyc_reg {
+    min-width: 30rem;
+}
+
+#kyc_wizard_form .buttons {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+.disclosure_selections .grid {
+	grid-template-columns: 1fr 10fr;
+}
+
+.disclosure_selections .explain {
+	display: block;
+	line-height: 1rem;
+	font-style: italic;
+}
+
+.kycAccountAgreementGrid .grid {
+	grid-template-columns: 1fr 20fr;
+}
+
+.kycTrustedContact .explain {
+	margin-bottom: 1rem;
+}
+
+#kycActionRequiredForm fieldset p {
+    margin: 1rem 0;
+}
+
+#kycActionRequiredForm fieldset div {
+    margin: 1rem 0;
+}
+
+.kycUpload img {
+    padding: 1rem;
+}
+
+#liminal_market_execute_trade small {
+    font-size: 0.5rem;
+    display: block;
 }

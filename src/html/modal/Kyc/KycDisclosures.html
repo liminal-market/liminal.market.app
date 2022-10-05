@@ -1,0 +1,105 @@
+<fieldset class="kycDisclosures hidden" data-form="1">
+    {{#unless edit}}
+    <div>
+        <label for="employment_status">Employment status</label>
+        <select id="employment_status" required name="employment_status">
+            <option value=""></option>
+            <option value="employed">Employed</option>
+            <option value="unemployed">Unemployed</option>
+            <option value="retired">Retired</option>
+            <option value="student">Student</option>
+        </select>
+    </div>
+    <div>
+        <label for="employer_name">Employer name</label>
+        <input name="employer_name" id="employer_name"/>
+    </div>
+    <div>
+        <label for="employer_address">Employer address</label>
+        <input name="employer_address" id="employer_address"/>
+    </div>
+    <div>
+        <label for="employment_position">Occupation / Job title</label>
+        <input name="employment_position" id="employment_position" autocomplete="organization-title"/>
+    </div>
+    {{/unless}}
+    <div class="disclosure_selections">
+        Do any of the following apply to you or a member of your immediate family?
+        <div class="grid">
+            <div>
+                <label for="is_affiliated_exchange_or_finra">
+                    <input type="checkbox" id="is_affiliated_exchange_or_finra" name="is_affiliated_exchange_or_finra"
+                           role="switch">
+                </label>
+            </div>
+            <div>
+                Affiliated or work with a US registered broker-dealer or
+                FINRA.
+                <small class="explain">Are you or an immediate family member affiliated with or employed by a stock
+                    exchange, regulatory body, member firm of an exchange, FINRA or a municipal securities
+                    broker-dealer?</small>
+
+                <div id="is_affiliated_exchange_or_finra_extra"></div>
+            </div>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="is_control_person">
+                    <input type="checkbox" id="is_control_person" name="is_control_person" role="switch">
+                </label>
+            </div>
+            <div>
+
+                Senior executive at or a 10% or greater shareholder of a publicly traded company.
+                <small class="explain">Are you or an immediate family member an officer or 10% or greater shareholder of
+                    a publicly traded company, subject to the US Securities Exchange Act 1934?</small>
+                <div id="is_control_person_extra"></div>
+            </div>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="is_politically_exposed">
+                    <input type="checkbox" id="is_politically_exposed" name="is_politically_exposed" role="switch">
+                </label>
+            </div>
+            <div>
+                I am a senior political figure.
+                <small class="explain">Are you currently or formerly a Politically Exposed Person or Public Official
+                    (PEP)? <a href="https://www.google.com/search?q=%E2%80%9CPolitically+Exposed+Person%E2%80%9D+(PEP)"
+                              target="_blank">What is PEP?</a> </a></small>
+                <div id="is_politically_exposed_extra"></div>
+            </div>
+            </label>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="immediate_family_exposed">
+                    <input type="checkbox" id="immediate_family_exposed" name="immediate_family_exposed" role="switch">
+                </label>
+            </div>
+            <div>
+                I am a family member or relative of a senior political figure.
+                <small class="explain">Are you an immediate family member currently or formerly a Politically Exposed
+                    Person or Public Official (PEP)? <a
+                            href="https://www.google.com/search?q=%E2%80%9CPolitically+Exposed+Person%E2%80%9D+(PEP)"
+                            target="_blank">What is PEP?</a></small>
+                <div id="immediate_family_exposed_extra"></div>
+            </div>
+        </div>
+        <div class="grid">
+            <div>
+                <label for="none_above">
+                    <input type="checkbox" id="none_above" name="none_above" role="switch"></label>
+            </div>
+            <div>
+                None of the above apply to me or my family.
+            </div>
+        </div>
+        <div class="input_error" id="none_above_error"></div>
+    </div>
+
+    <div class="grid buttons">
+        <button type="button" id="disclosures_prev">Previous: Trusted contact</button>
+        <button type="button" id="disclosures_next">Next: Agreements</button>
+    </div>
+</fieldset>
