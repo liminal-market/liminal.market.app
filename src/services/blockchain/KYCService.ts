@@ -2,6 +2,7 @@ import ErrorInfo from "../../errors/ErrorInfo";
 import BlockchainError from "../../errors/BlockchainError";
 import GeneralError from "../../errors/GeneralError";
 import KycStatus from "../../dto/KycStatus";
+import AUsdBalance from "../../ui/elements/AUsdBalance";
 
 export default class KYCService {
     moralis: typeof Moralis;
@@ -34,9 +35,12 @@ export default class KYCService {
                 return false;
             }) as KycStatus;
 
-        if (KYCService.KycResponse.isValidKyc) {
+        if (KYCService.KycResponse.alpacaId) {
             let user = this.moralis.User.current();
             user?.set('alpacaId', KYCService.KycResponse.alpacaId);
+
+            let aUsdBalance = new AUsdBalance(this.moralis, user!);
+            await aUsdBalance.loadAUSDBalanceUI();
         }
         return KYCService.KycResponse;
     }

@@ -32,6 +32,7 @@ export default class ExecuteTradeButton {
     template: any;
     button: HTMLInputElement;
 
+    static Instance: ExecuteTradeButton;
     constructor(moralis: typeof Moralis, sellTradeInput: TradePanelInput, buyTradeInput: TradePanelInput) {
         this.moralis = moralis;
         this.sellTradeInput = sellTradeInput;
@@ -42,6 +43,8 @@ export default class ExecuteTradeButton {
 
         this.button = document.getElementById('liminal_market_execute_trade') as HTMLInputElement;
         //this.button.outerHTML = htmlButton;
+
+        ExecuteTradeButton.Instance = this;
     }
 
     public async renderButton() {
@@ -381,7 +384,7 @@ export default class ExecuteTradeButton {
 
         this.kycIdDoneTimeout = setInterval(async () => {
             await this.kycIsDone(this.button, true);
-        }, 1 * 1000);
+        }, 10 * 1000);
     }
 
     private async userHasAUSD(button: HTMLElement): Promise<boolean> {

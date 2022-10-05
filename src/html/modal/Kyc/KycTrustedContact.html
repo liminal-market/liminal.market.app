@@ -52,8 +52,17 @@
             {{/each}}
         </select>
     </div>
+    {{#unless edit}}
     <div class="grid buttons">
         <button type="button" id="trustedContact_prev">Previous: Identity</button>
         <button type="button" id="trustedContact_next">Next: Disclosures</button>
     </div>
+    {{/unless}}
+    {{#if edit}}
+    <div class="grid buttons">
+        <button type="button" id="trustedContact_prev">Previous: Identity</button>
+        <button type="submit" id="submitKYC">Update account</button>
+    </div>
+    <div class="alert alert-danger" id="kycError" role="alert"></div>
+    {{/if}}
 </fieldset>

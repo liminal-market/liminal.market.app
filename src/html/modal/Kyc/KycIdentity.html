@@ -17,6 +17,7 @@
                placeholder="Swanson"
                value="" autocomplete="family-name">
     </div>
+    {{#unless edit}}
     <div>
         <label for="date_of_birth">Date of birth</label>
         <input type="date" required id="date_of_birth" name="date_of_birth"
@@ -193,6 +194,7 @@
             <option value="family">Family</option>
         </select>
     </div>
+    {{/unless}}
     <div class="grid buttons">
         <button type="button" id="identity_prev">Previous: Contact</button>
         <button type="button" id="identity_next">Next: Trusted contacts</button>

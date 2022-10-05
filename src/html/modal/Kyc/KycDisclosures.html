@@ -1,4 +1,5 @@
 <fieldset class="kycDisclosures hidden" data-form="1">
+    {{#unless edit}}
     <div>
         <label for="employment_status">Employment status</label>
         <select id="employment_status" required name="employment_status">
@@ -21,7 +22,7 @@
         <label for="employment_position">Occupation / Job title</label>
         <input name="employment_position" id="employment_position" autocomplete="organization-title"/>
     </div>
-
+    {{/unless}}
     <div class="disclosure_selections">
         Do any of the following apply to you or a member of your immediate family?
         <div class="grid">

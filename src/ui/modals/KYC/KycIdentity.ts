@@ -4,28 +4,38 @@ import KycIdentityHtml from "../../../html/modal/Kyc/KycIdentity.html";
 import CountryHelper from "../../../util/CountryHelper";
 import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 
+
 export default class KycIdentity extends KycBase {
+    edit = false;
+
     constructor(kycForm: KYCForm) {
         super(kycForm);
     }
 
-    public render() {
+    public render(edit = false) {
+        this.edit = edit;
+
         let template = Handlebars.compile(KycIdentityHtml);
-        return template({countries: CountryHelper.Countries});
+        return template({edit: edit, countries: CountryHelper.Countries});
     }
 
     public show() {
 
         if (this.kycForm.kycContact.usTaxResidence) {
             this.showElement('citizen_of_usa_question');
+            this.hideElement('tax_id_type_options');
+            this.setLabel('tax_id_label', 'SSN');
         } else {
             this.hideElement('citizen_of_usa_question');
-            document.getElementById('tax_id_label')!.innerHTML = 'SSN'
+            this.setLabel('tax_id_label', 'National Tax Id (SSN)');
+            this.showElement('tax_id_type_options')
         }
         this.showFieldset('.kycIdentity', 'Identity');
         this.showElement('country_of_citizenship_option');
         let country_of_citizenship = document.getElementById('country_of_citizenship') as HTMLSelectElement;
-        country_of_citizenship.options[1].disabled = false;
+        if (country_of_citizenship) {
+            country_of_citizenship.options[1].disabled = false;
+        }
     }
 
     public bindEvents() {
@@ -40,7 +50,6 @@ export default class KycIdentity extends KycBase {
                 country_of_citizenship.options[1].disabled = false;
                 country_of_citizenship.value = 'USA';
 
-                this.hideElement('tax_id_type_options')
                 this.hideElement('citizen_no_type_options');
                 this.hideElement('visa_type_option');
                 this.hideElement('country_of_citizenship_option');
@@ -132,6 +141,8 @@ export default class KycIdentity extends KycBase {
     }
 
     private validateInputs() {
+        if (this.edit) return true;
+
         let citizen_yes = document.getElementById('citizen_yes') as HTMLInputElement;
         let citizen_no = document.getElementById('citizen_no') as HTMLInputElement;
 
@@ -166,10 +177,8 @@ export default class KycIdentity extends KycBase {
             kycValidationError.handle();
             return false;
         }
-
-
         return true;
-
-
     }
+
+
 }

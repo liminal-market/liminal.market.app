@@ -3,6 +3,7 @@ import KYCForm from "../KYCForm";
 import KycAffiliateOrControlledHtml from "../../../html/modal/Kyc/KycAffiliateOrControlled.html";
 import CountryHelper from "../../../util/CountryHelper";
 
+
 export default class KycAffiliateOrControlled extends KycBase {
 
     constructor(kycForm: KYCForm) {

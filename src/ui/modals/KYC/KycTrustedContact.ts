@@ -4,16 +4,21 @@ import KycTrustedContactHtml from '../../../html/modal/Kyc/KycTrustedContact.htm
 import StringHelper from "../../../util/StringHelper";
 import CountryHelper from "../../../util/CountryHelper";
 
+import KycAccountAgreement from "./KycAccountAgreement";
+
 
 export default class KycTrustedContact extends KycBase {
+    edit = false;
 
     constructor(kycForm: KYCForm) {
         super(kycForm);
     }
 
-    public render() {
+    public render(edit = false) {
+        this.edit = edit;
+
         let template = Handlebars.compile(KycTrustedContactHtml);
-        return template({countries: CountryHelper.Countries});
+        return template({edit: edit, countries: CountryHelper.Countries});
     }
 
     public show() {
@@ -32,7 +37,12 @@ export default class KycTrustedContact extends KycBase {
             this.kycForm.kycDisclosures.show();
         })
 
+        if (this.edit) {
+            let kycAccount = new KycAccountAgreement(this.kycForm);
+            if (!this.validate()) return;
 
+            kycAccount.bindSubmitKyc(this.edit);
+        }
     }
 
     private validate() {

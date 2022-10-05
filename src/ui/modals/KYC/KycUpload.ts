@@ -2,6 +2,7 @@ import KycBase from "./KycBase";
 import KycUploadHtml from '../../../html/modal/Kyc/KycUpload.html';
 import KYCForm from "../KYCForm";
 
+
 export default class KycUpload extends KycBase {
 
 

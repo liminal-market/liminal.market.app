@@ -28,4 +28,46 @@ export default class FormHelper {
     }
 
 
+    public static fillInputs(properties: string[], item: any) {
+        properties.forEach((value) => {
+
+            let input = document.querySelector('input[name=' + value + ']') as HTMLInputElement;
+            if (input) {
+                if (input.type == 'radio') {
+                    console.log('checkbox', input, item[value]);
+                    input.value = item[value]
+                } else {
+                    input.value = item[value];
+                }
+                input.dispatchEvent(new Event('change'))
+
+            } else {
+                let select = document.querySelector('select[name=' + value + ']') as HTMLSelectElement;
+                if (select) {
+                    select.value = item[value];
+                    select.dispatchEvent(new Event('change'))
+                }
+            }
+
+        })
+    }
+
+    public static validate(selector: string) {
+        let inputs = document.querySelectorAll(selector + ' input[required]');
+        for (let i = 0; i < inputs.length; i++) {
+            let input = inputs[i] as HTMLInputElement;
+            if (StringHelper.isNullOrEmpty(input.value)) {
+                input.setAttribute('aria-invalid', 'true')
+                input.focus();
+
+                input.addEventListener('change', (evt) => {
+                    if (!StringHelper.isNullOrEmpty(input.value)) {
+                        input.setAttribute('aria-invalid', 'false');
+                    }
+                })
+                return false;
+            }
+        }
+        return true;
+    }
 }

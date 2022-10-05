@@ -13,10 +13,10 @@ export default class KycContact extends KycBase {
 
     }
 
-    public render() {
+    public render(edit = false) {
         let template = Handlebars.compile(KycContactHtml);
 
-        return template({countries: CountryHelper.Countries});
+        return template({edit: edit, countries: CountryHelper.Countries});
     }
 
     public show() {
@@ -29,11 +29,12 @@ export default class KycContact extends KycBase {
             this.usTaxResidence = (input.value.toUpperCase() == 'USA');
 
             if (this.usTaxResidence) {
-                this.kycForm.steps = 5;
-                this.setRequired('state')
                 document.getElementById('state_div')?.classList.remove('hidden')
+                this.kycForm.setSteps(5)
+                this.setRequired('state')
+
             } else {
-                this.kycForm.steps = 6;
+                this.kycForm.setSteps(6)
                 this.removeRequired('state');
                 document.getElementById('state_div')?.classList.add('hidden')
             }

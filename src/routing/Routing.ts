@@ -28,7 +28,8 @@ export default class Routing {
 
         this.attachNavLinks();
 
-        const fn = this.settings['show_' + path];
+        let fn = this.settings['show_' + path] ?? this.settings['show_stocks'];
+
         if (typeof fn === 'function') {
             await fn(this);
         }

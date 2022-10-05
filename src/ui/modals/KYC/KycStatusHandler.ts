@@ -26,6 +26,7 @@ ACCOUNT_CLOSED	/fixtures/status=ACCOUNT_CLOSED/fixtures/
     }
 
     public getButtonText() {
+        let txt = 'Finish KYC';
         switch (this.kycResponse.status) {
             case 'SUBMITTED':
             case 'ONBOARDING':
@@ -33,19 +34,26 @@ ACCOUNT_CLOSED	/fixtures/status=ACCOUNT_CLOSED/fixtures/
             case 'APPROVED':
             case 'EDITED':
             case 'APPROVAL_PENDING':
-                return 'Submitted to KYC processor';
+                txt = 'Submitted to KYC processor';
+                break;
             case 'ACTION_REQUIRED':
-                return 'Action required. Click to continue';
+                txt = 'Action required. Click to continue';
+                break;
             case 'REJECTED':
-                return 'Your application was rejected';
+                txt = 'Your application was rejected';
+                break;
             case 'DISABLED':
-                return 'Your account has been disabled';
-            case 'ACCOUNT_CLOSED':
-                return 'Your account has been closed';
+                txt = 'Your account has been disabled';
+                break;
             case 'ACTIVE':
-                return 'You are approved. KYC is being sent to blockchain. Give it few minutes'
+            case 'ACCOUNT_UPDATED':
+                txt = 'You are approved. KYC is being sent to blockchain. Give it few minutes';
+                break;
+            case 'ACCOUNT_CLOSED':
+                txt = 'Your account has been closed';
+                break;
         }
-        return 'Finish KYC';
+        return txt + '<small>Click for more info</small>';
     }
 
     public getButtonClickEvent(executeTradeButton: ExecuteTradeButton) {
@@ -85,7 +93,7 @@ ACCOUNT_CLOSED	/fixtures/status=ACCOUNT_CLOSED/fixtures/
                     "We don't have the information on why that happened, but you can email us at " +
                     "<a target='_blank' href='mailto:info@liminal.market?subject=My application was closed&body=Hi, can you help me to find out what the problem is? My name is _______ and I used the email _______ to register at liminal.market'>info@liminal.market</a>" +
                     " and we can find out, and we should be able to solve it together.");
-
+            case 'ACCOUNT_UPDATED':
             case 'ACTIVE':
                 return this.showModal('Account soon ready', 'Your account has been approved...<br /><br/>' +
                     '..but, after we approve your account, we write the information to the blockchain.' +

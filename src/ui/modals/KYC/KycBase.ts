@@ -3,6 +3,7 @@ import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 import KYCForm from "../KYCForm";
 import FileUpload from "../../elements/FileUpload";
 
+
 export default class KycBase {
     kycForm: KYCForm;
 
@@ -18,6 +19,7 @@ export default class KycBase {
         document.querySelector(selector)?.classList.remove('hidden');
         document.querySelector('#liminal_market_modal_div > article > header > span')!.innerHTML = header
         document.querySelector('#liminal_market_modal_div > article')!.scrollTop = 0
+        this.kycForm.activeFieldsetSelector = selector;
     }
 
     public showRequiredMarker() {
@@ -41,11 +43,11 @@ export default class KycBase {
     }
 
     public setRequired(inputId: string) {
-        document.getElementById(inputId)!.setAttribute('required', 'required');
+        document.getElementById(inputId)?.setAttribute('required', 'required');
     }
 
     public removeRequired(inputId: string) {
-        document.getElementById(inputId)!.removeAttribute('required');
+        document.getElementById(inputId)?.removeAttribute('required');
     }
 
     public bind(selector: string, eventName: string, action: (evt: Event) => void) {
@@ -111,11 +113,18 @@ export default class KycBase {
 
 
     public showElement(elementId: string) {
-        document.getElementById(elementId)!.classList.remove('hidden');
+        document.getElementById(elementId)?.classList.remove('hidden');
     }
 
     public hideElement(elementId: string) {
-        document.getElementById(elementId)!.classList.add('hidden');
+        document.getElementById(elementId)?.classList.add('hidden');
+    }
+
+    protected setLabel(elementId: string, text: string) {
+        let element = document.getElementById('tax_id_label');
+        if (!element) return;
+
+        element.innerHTML = text;
     }
 
     private isMissingInputFromUser(input: HTMLInputElement) {

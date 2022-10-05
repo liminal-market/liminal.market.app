@@ -3,7 +3,7 @@ import KYCForm from "../KYCForm";
 import KycDisclosureHtml from "../../../html/modal/Kyc/KycDisclosures.html";
 import KycAffiliateOrControlled from "./KycAffiliateOrControlled";
 import KycImmediateFamily from "./KycImmediateFamily";
-import KycValidatorError from "../../../errors/cloud/KycValidatorError";
+
 
 export default class KycDisclosures extends KycBase {
     kycAffiliatedOrControlled: KycAffiliateOrControlled;
@@ -16,9 +16,9 @@ export default class KycDisclosures extends KycBase {
         this.kycImmediateFamily = new KycImmediateFamily(this.kycForm);
     }
 
-    public render() {
+    public render(edit = false) {
         let template = Handlebars.compile(KycDisclosureHtml);
-        return template({});
+        return template({edit: edit});
     }
 
     public show() {
@@ -46,7 +46,10 @@ export default class KycDisclosures extends KycBase {
         immediate_family_exposed?.addEventListener('click', (evt) => {
             this.loadPep('immediate_family_exposed')
         });
-
+        let is_politically_exposed = document.getElementById('is_politically_exposed') as HTMLInputElement;
+        is_politically_exposed?.addEventListener('click', (evt) => {
+            this.uncheck('immediate_family_exposed')
+        });
         let none_above = document.getElementById('none_above') as HTMLInputElement;
         none_above?.addEventListener('click', (evt) => {
             this.removeMissingInfo('none_above_error');

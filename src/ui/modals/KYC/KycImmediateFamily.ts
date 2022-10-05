@@ -2,6 +2,7 @@ import KycBase from "./KycBase";
 import KYCForm from "../KYCForm";
 import KycImmediateFamilyHtml from "../../../html/modal/Kyc/KycImmediateFamily.html";
 
+
 export default class KycImmediateFamily extends KycBase {
     constructor(kycForm: KYCForm) {
         super(kycForm);

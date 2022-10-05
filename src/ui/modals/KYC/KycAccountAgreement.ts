@@ -6,6 +6,7 @@ import NetworkInfo from "../../../networks/NetworkInfo";
 import KYCService from "../../../services/blockchain/KYCService";
 import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 import FormHelper from "../../../util/FormHelper";
+import ExecuteTradeButton from "../../elements/tradepanel/ExecuteTradeButton";
 
 export default class KycAccountAgreement extends KycBase {
 
@@ -14,9 +15,9 @@ export default class KycAccountAgreement extends KycBase {
         super(kycForm)
     }
 
-    public render() {
+    public render(edit = false) {
         let template = Handlebars.compile(KycAccountAgreementHtml);
-        return template({});
+        return template({edit: edit});
     }
 
     public show() {
@@ -45,13 +46,18 @@ export default class KycAccountAgreement extends KycBase {
             }
         })
 
+        this.bindSubmitKyc();
+    }
+
+
+    public bindSubmitKyc(edit = false) {
         let submitKYC = document.getElementById('submitKYC');
         if (!submitKYC) return;
 
         submitKYC.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            if (!this.validate()) return;
+            if (!edit && !this.validate()) return;
 
             let account_agreement_prev = document.getElementById('account_agreement_prev');
             //if (account_agreement_prev) account_agreement_prev.classList.add('hidden');
@@ -74,7 +80,7 @@ export default class KycAccountAgreement extends KycBase {
                     LoadingHelper.removeLoading();
 
                     if (reason.message) {
-                        let kycError = new KycValidatorError(JSON.parse(reason.message), this.kycForm);
+                        let kycError = new KycValidatorError(reason.message, this.kycForm);
                         kycError.handle();
                     } else {
                         console.log(reason);
@@ -83,6 +89,7 @@ export default class KycAccountAgreement extends KycBase {
 
             if (result) {
                 this.kycForm.kycWaiting.show();
+                ExecuteTradeButton.Instance.renderButton();
             } else {
                 if (account_agreement_prev) account_agreement_prev.classList.remove('hidden');
                 LoadingHelper.removeLoading();
@@ -90,7 +97,6 @@ export default class KycAccountAgreement extends KycBase {
 
         })
     }
-
 
     private validate() {
         let account_agreement = document.getElementById('account_agreement') as HTMLInputElement;

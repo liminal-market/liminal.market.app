@@ -75,11 +75,15 @@ h3 {
 }
 
 .d-none, .hidden {
-	display: none;
+    display: none;
+}
+
+.not_visible {
+    visibility: hidden;
 }
 
 .center {
-	text-align: center;
+    text-align: center;
 }
 
 
@@ -477,12 +481,16 @@ progress.invalid {
 }
 
 #citizen_no_type_options {
-	margin-left: 1rem;
+    margin-left: 1rem;
+}
+
+#kyc_reg {
+    min-width: 30rem;
 }
 
 #kyc_wizard_form .buttons {
-	margin-top: 2rem;
-	margin-bottom: 3rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
 }
 
 .disclosure_selections .grid {
@@ -504,13 +512,18 @@ progress.invalid {
 }
 
 #kycActionRequiredForm fieldset p {
-	margin: 1rem 0;
+    margin: 1rem 0;
 }
 
 #kycActionRequiredForm fieldset div {
-	margin: 1rem 0;
+    margin: 1rem 0;
 }
 
 .kycUpload img {
-	padding: 1rem;
+    padding: 1rem;
+}
+
+#liminal_market_execute_trade small {
+    font-size: 0.5rem;
+    display: block;
 }

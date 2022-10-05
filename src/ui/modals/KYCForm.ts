@@ -7,7 +7,8 @@ import KycAccountAgreement from "./KYC/KycAccountAgreement";
 import KycTrustedContact from "./KYC/KycTrustedContact";
 import KycUpload from "./KYC/KycUpload";
 import KycWaiting from "./KYC/KycWaiting";
-import KycBase from "./KYC/KycBase";
+import ExecuteTradeButton from "../elements/tradepanel/ExecuteTradeButton";
+import UserService from "../../services/backend/UserService";
 
 
 export default class KYCForm {
@@ -15,6 +16,7 @@ export default class KYCForm {
     modal: Modal;
     timeout?: any = undefined;
     onHide: () => void;
+    activeFieldsetSelector = '.kycContact';
 
     kycContact: KycContact;
     kycIdentity: KycIdentity;
@@ -44,9 +46,11 @@ export default class KYCForm {
         type ObjectKey = keyof typeof kycForm;
         const ble = className as ObjectKey;
         (this[ble] as any).show();
+
+        this.activeFieldsetSelector = className;
     }
 
-    public showKYCForm() {
+    public showKYCForm(edit = false) {
 
         let template = Handlebars.compile(KYCFormHtml);
         let obj = {
@@ -58,31 +62,40 @@ export default class KYCForm {
             KycUploadHtml: this.kycUpload.render()
         }
         let content = template(obj);
-        this.modal.showModal('KYC & AML', content, true, () => {
-            this.clearTimeout()
+        let newModal = this.modal.showModal('KYC & AML', content, true, () => {
+            this.clearTimeout();
+            this.onHide();
         }, false);
 
-        this.kycContact.bindEvents();
-        this.kycIdentity.bindEvents();
-        this.kycTrustedContact.bindEvents();
-        this.kycDisclosures.bindEvents();
-        this.kycUpload.bindEvents();
-        this.kycAccountAgreement.bindEvents();
+        let taxResidence = document.getElementById('country_of_tax_residence') as HTMLSelectElement;
+        if (taxResidence) {
+            this.steps = (taxResidence.value == 'USA') ? 5 : 6;
+        }
 
-        document.getElementById('kyc_wizard_form')!.addEventListener('keyup', (evt) => {
-            if (evt.key == 'Enter') {
-                evt.preventDefault();
-                evt.stopPropagation();
-            }
-        })
+        if (newModal) {
+            this.kycContact.bindEvents();
+            this.kycIdentity.bindEvents();
+            this.kycTrustedContact.bindEvents();
+            this.kycDisclosures.bindEvents();
+            this.kycUpload.bindEvents();
+            this.kycAccountAgreement.bindEvents();
 
+            document.getElementById('kyc_wizard_form')!.addEventListener('keyup', (evt) => {
+                if (evt.key == 'Enter') {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                }
+            })
+        }
         this.kycContact.show();
     }
 
+    public setSteps(steps: number) {
+        this.steps = steps;
+    }
 
     public clearTimeout() {
         if (this.timeout) clearTimeout(this.timeout);
     }
-
 
 }

@@ -1,4 +1,3 @@
-
 <div id="userMenuPanel">
     <a href="#" id="userInfoAction" aria-expanded="false">
         <img src="https://effigy.im/a/{{ethAddress}}.png" width="24">
@@ -11,8 +10,12 @@
             <a id="disconnectFromNetwork" href="#">Disconnect</a>
 
         </div>
+        <div class="edit_account grid">
+            <a id="editName" href="#">Edit name</a>
+            <a id="editContact" href="#">Edit contact info</a>
+        </div>
         <div class="edit_account">
-            <a id="editAccount" href="#">Edit account</a>
+            <a id="editTrustedContact" href="#">Edit trusted contact</a>
         </div>
         <hr/>
         <div class="grid">
@@ -24,16 +27,18 @@
                 <small>{{walletName}}</small>
             </div>
         </div>
-        <hr />
-        <div class="grid" id="userInfoAUsdBalance">
-            <div> <img src="https://app.liminal.market/img/ausd.png"></div>
-            <div>
-                <strong class="d-block">aUSD <span id="user_info_ausd_balance"></span></strong>
+        <hr/>
+        <div class="hidden" id="userInfoAUsdBalance">
+            <div class="grid">
+                <div><img src="https://app.liminal.market/img/ausd.png"></div>
+                <div>
+                    <strong class="d-block">aUSD <span id="user_info_ausd_balance"></span></strong>
 
-                <button class="fund_account"></button>
+                    <button class="fund_account"></button>
+                </div>
             </div>
+            <hr/>
         </div>
-        <hr />
         <div class="grid">
             <strong class="d-block">Network</strong>
             <small>{{networkName}}</small>
