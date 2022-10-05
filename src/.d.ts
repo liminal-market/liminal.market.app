@@ -3,9 +3,10 @@ import Moralis from 'Moralis';
 import Handlebars from "handlebars";
 
 declare global {
-    export const Moralis: Moralis;
+    export const Moralis : Moralis;
     export const ExecuteFunctionCallResult: Moralis.ExecuteFunctionCallResult;
-    // @ts-ignore
+    export const ethereum: any;
+      // @ts-ignore
     export const Handlebars: Handlebars;
 }
 
