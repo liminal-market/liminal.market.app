@@ -1,0 +1,39 @@
+<fieldset id="kycEditName">
+    <div class="infoBar">You can only change the name once. Be careful of what you change</div>
+    <div>
+        <label for="given_name">Legal First name</label>
+        <input required id="given_name" name="given_name"
+               placeholder="Ron"
+               value="{{given_name}}" autocomplete="given-name">
+    </div>
+    <div>
+        <label for="middle_name">Legal Middle name</label>
+        <input id="middle_name" name="middle_name"
+               placeholder=""
+               value="{{middle_name}}" autocomplete="additional-name">
+    </div>
+    <div>
+        <label for="family_name">Legal Last name</label>
+        <input required id="family_name" name="family_name"
+               placeholder="Swanson"
+               value="{{family_name}}" autocomplete="family-name">
+    </div>
+
+    <div class="buttons">
+        <button id="kycEditNameConfirm">Confirm</button>
+    </div>
+</fieldset>
+
+<fieldset class="hidden" id="confirmNameFieldset">
+    <div class="confirm_name">
+        <label for="confirm_name" id="label_confirm_name">Please type</label>
+        <input name="confirm_name" id="confirm_name"/>
+    </div>
+
+    <div class="input_error" id="kycEditNameError"></div>
+
+    <div class="buttons grid">
+        <button id="kycEditNameBack">Back</button>
+        <button type="submit" id="kycEditNameSave">Confirm</button>
+    </div>
+</fieldset>

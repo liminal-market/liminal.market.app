@@ -13,8 +13,6 @@ export default class StocksPage {
 		let mainContainer = document.getElementById('main_container');
 		if (!mainContainer) return;
 
-		history.pushState(null, 'Stocks', '/stocks');
-
 		let securitiesList = new SecuritiesList();
 		let securities = await securitiesList.render();
 

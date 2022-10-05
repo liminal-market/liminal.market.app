@@ -28,7 +28,7 @@ export default class ErrorInfo {
             return;
         }
         if (error) {
-            console.error(error);
+            console.error(error.toString());
         }
         //InfoBar.show(error.message, InfoBarType.Error);
     }

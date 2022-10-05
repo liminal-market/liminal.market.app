@@ -1,0 +1,47 @@
+<fieldset id="kycEditContactFieldset">
+    <form id="kycEditContactForm">
+        <div>
+            <label for="email_address">Email</label>
+            <input type="email" required class="form-control" id="email_address" name="email_address"
+                   placeholder="name@example.com" autocomplete="email"
+                   value="">
+        </div>
+        <div>
+            <label for="phone_number">Phone</label>
+            <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                   placeholder="+1-555-666-7788" autocomplete="tel" value="">
+        </div>
+        <div>
+            <label for="street_address">Permanent Residential Address</label>
+            <div class="explain">It must be a physical address, not a PO box.</div>
+            <input required id="street_address" name="street_address"
+                   placeholder="20 N San Mateo Dr" value="" autocomplete="address-line1">
+        </div>
+        <div>
+            <label for="unit">Unit / Apt #</label>
+            <input id="unit" name="unit" value="">
+        </div>
+        <div>
+            <label for="city">City</label>
+            <input id="city" name="city" placeholder="Pawnee"
+                   value="" autocomplete="address-level2">
+        </div>
+        <div>
+            <label for="postal_code">Postal code</label>
+            <input required id="postal_code" autocomplete="postal-code" name="postal_code"
+                   placeholder="94401"
+                   value="">
+        </div>
+        {{#if usa}}
+        <div id="state_div">
+            <label for="state">State (2 letters)</label>
+            <input required maxlength="2" id="state" name="state" placeholder="NY"
+                   value="" autocomplete="address-level1">
+        </div>
+        {{/if}}
+        <div class="input_error" id="kycEditContactError"></div>
+        <div class="buttons">
+            <button type="submit" id="kycEditContactSave">Save</button>
+        </div>
+    </form>
+</fieldset>

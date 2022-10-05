@@ -5,6 +5,7 @@ import AuthenticateService from "./AuthenticateService";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import WalletHelper from "../../util/WalletHelper";
 import ErrorInfo from "../../errors/ErrorInfo";
+import KycResult from "../../dto/KycResult";
 
 
 export default class UserService {
@@ -36,6 +37,7 @@ export default class UserService {
 
     public async isLoggedIn(loadingMessage : HTMLElement) {
         let user = this.moralis.User.current();
+
         if (user) {
             let cookieHelper = new CookieHelper(document);
             let providerName = cookieHelper.getCookieValue('provider');
@@ -111,5 +113,26 @@ export default class UserService {
 
     getEthAddress() {
         return this.getUser()?.get('ethAddress');
+    }
+
+    public async kycActionRequired(): Promise<KycResult> {
+        let kycResults = await this.moralis.Cloud.run('kycActionRequired') as KycResult;
+        return kycResults;
+    }
+
+    public async updateName(given_name: string, middle_name: string, family_name: string) {
+        return await this.moralis.Cloud.run('updateName', {
+            given_name: given_name,
+            middle_name: middle_name,
+            family_name: family_name
+        })
+    }
+
+    public async updateContact(data: any) {
+        return await this.moralis.Cloud.run('updateContact', data);
+    }
+
+    public async updateTrustedContact(data: any) {
+        return await this.moralis.Cloud.run('updateTrustedContact', data);
     }
 }

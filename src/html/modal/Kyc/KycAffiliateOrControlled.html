@@ -1,0 +1,46 @@
+<fieldset id="affiliate_or_controlled">
+    <div>You need to fill in the following information</div>
+    <div>
+        <label for="company_name">Company name</label>
+        <input name="company_name" required id="company_name" autocomplete="organization"/>
+    </div>
+    <div>
+        <label for="company_street_address">Company street address</label>
+        <input name="company_street_address" required id="company_street_address"/>
+    </div>
+    <div>
+        <label for="company_city">Company city</label>
+        <input name="company_city" required id="company_city"/>
+    </div>
+    <div>
+        <label for="company_state">Company state</label>
+        <input name="company_state" required id="company_state"/>
+    </div>
+    <div>
+        <label for="company_country">Company country</label>
+        <select required id="company_country" required name="company_country">
+            {{#each countries}}
+            <option value="{{code}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div>
+        <label for="company_compliance_email">Company compliance officer email</label>
+        <input name="company_compliance_email" required id="company_compliance_email"/>
+    </div>
+    <div>
+        <div class="explain">
+            In accordance with applicable FINRA rules, user will need to obtain a letter written
+            and signed by a compliance officer on company letterhead explicitly granting permission for
+            the applicant to carry the account and explicitly stating whether or not the firm requires
+            access to duplicate account statements and/or trade confirmations.
+
+            If the firm would like online access your duplicate account statements and/or trade confirmations,
+            include in the letter the applicant's full name and the following information for the interested
+            party: First and last name, title, email address, telephone number.
+
+        </div>
+        {{{fileUpload "account_approval_letter" "Account approval letter"}}}
+
+    </div>
+</fieldset>
