@@ -2,7 +2,6 @@
 
 import Network from './Network';
 
-//localhost
 export default class mumbaiNetwork extends Network {
 	constructor() {
 		super();
