@@ -1,0 +1,29 @@
+<hr/>
+<h3>{{Direction}} transfers</h3>
+{{#if transfers.length}}
+<p>Below is a list of transfers, confirmed and not confirmed.</p>
+<table>
+    <thead>
+    <tr>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Expires</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each transfers}}
+    <tr>
+        <td>${{amount}}</td>
+        <td id="status_{{id}}">{{status}}</td>
+        <td>{{dateTimeFormat created_at}}</td>
+        <td>{{dateTimeFormat expires_at}}</td>
+        <td id="delete_{{id}}" class="{{classByStatus status}}"><a href="#" class="deleteTransfer" data-id="{{id}}">Cancel</a>
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</table>
+{{else}}
+<p>No transfers registered</p>
+{{/if}}

@@ -6,6 +6,9 @@ import ProviderInfo from "../../wallet/ProviderInfo";
 import WalletHelper from "../../util/WalletHelper";
 import ErrorInfo from "../../errors/ErrorInfo";
 import KycResult from "../../dto/KycResult";
+import {BankRelationship} from "../../dto/alpaca/BankRelationship";
+import {Transfer} from "../../dto/alpaca/Transfer";
+import {TransferDirectionEnum} from "../../enums/TransferDirectionEnum";
 
 
 export default class UserService {
@@ -134,5 +137,37 @@ export default class UserService {
 
     public async updateTrustedContact(data: any) {
         return await this.moralis.Cloud.run('updateTrustedContact', data);
+    }
+
+    public async createAchRelationship(public_token: string, accountId: string) {
+        return await this.moralis.Cloud.run('createAchRelationship', {
+            public_token: public_token,
+            account_id: accountId
+        });
+    }
+
+    async getPlaidLinkToken() {
+        return await this.moralis.Cloud.run('createPlaidLinkToken')
+    }
+
+    public async getBankRelationships(): Promise<BankRelationship[]> {
+        return await this.moralis.Cloud.run('getBankRelationship') as BankRelationship[]
+    }
+
+    public async getLatestTransfers(direction: TransferDirectionEnum) {
+        return await this.moralis.Cloud.run('getTransfers', {direction: direction}) as Transfer[];
+    }
+
+    public async createTransfer(amount: string, direction: string, relationship_id: string, transfer_type: string) {
+        return await this.moralis.Cloud.run('createTransfer',
+            {amount: amount, direction: direction, relationship_id: relationship_id, transfer_type: transfer_type})
+    }
+
+    async deleteTransfer(id: string) {
+        return await this.moralis.Cloud.run('deleteTransfer', {id: id});
+    }
+
+    public async registerWireTransferRelationship(params: any) {
+        return await this.moralis.Cloud.run('createWireRelationship', params);
     }
 }

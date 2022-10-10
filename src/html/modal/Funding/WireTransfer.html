@@ -1,0 +1,49 @@
+<fieldset>
+    <p>Before you can transfer, you need to set up your bank information</p>
+    <form id="wireTransferForm">
+        <label>Name of bank
+            <input name="name" required id="name"/>
+        </label>
+        <div class="input_error" id="swift_error">BIC/SWIFT code should be 8 or 11 characters</div>
+        <label>
+            Bank code (BIC/SWIFT)
+            <input name="bank_code" maxlength="11" id="bank_code" required/>
+        </label>
+        <label>
+            Account number (IBAN)
+            <input name="account_number" id="account_number" required/>
+        </label>
+        <label>
+            Street address
+            <input name="street_address" id="street_address" required/>
+        </label>
+        <label>
+            Postal code
+            <input name="postal_code" id="postal_code" required/>
+        </label>
+        <label>
+            City
+            <input name="city" id="city" required/>
+        </label>
+
+        <label>State
+            <input name="state_province" id="state_province" required/>
+        </label>
+        <label>
+            Country where bank account is located
+            <select required id="country" required name="country">
+                <option value=""></option>
+                {{#each countries}}
+                <option value="{{code}}">{{name}}</option>
+                {{/each}}
+            </select>
+        </label>
+
+        <input type="hidden" name="bank_code_type" value="BIC"/>
+        <div id="writeTransferError" class="input_error"></div>
+        <div class="grid">
+            <button id="wire_transfer_previous">Previous: Funding type</button>
+            <button id="save_international_bank_information">Next: Transfer</button>
+        </div>
+    </form>
+</fieldset>

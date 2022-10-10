@@ -1,0 +1,32 @@
+<fieldset id="withdrawInput">
+
+    {{#if bank.bank_code_type}}
+    Your money will be sent to {{bank.name}} to account number {{bank.account_number}}.
+    <br/><br/>
+    Outgoing International Wire Transfers cost is ${{transferCost}}.<br/>
+    Fees will be deducted from the amount.
+    {{/if}}
+    {{#unless bank.bank_code_type}}
+    Your money will be sent to account number {{bank.bank_account_number}}.
+    <br/><br/>
+    ACH transfer costs is ${{transferCost}}. Fees will be deducted from the amount.
+    {{/unless}}
+    <form id="withdrawForm">
+        <label>Amount to withdraw
+            <input type="tel" name="amount" id="amount"/>
+        </label>
+        <div class="input_error" id="withdrawAmountError">The amount is lower than the cost of transfer</div>
+        <button id="confirmWithdraw">Confirm withdraw</button>
+    </form>
+    {{{Transfers}}}
+</fieldset>
+
+<fieldset id="withdrawConfirm" class="hidden">
+    You are about to withdraw $<span id="withdrawAmountText"></span> from your account
+    <div class="warningBar">
+        Warning: The fee of this transaction will be $<span id="feeWarning"></span>
+        and is <span id="feePercentage"></span>% of the amount.
+    </div>
+    <div class="input_error" id="withdrawError"></div>
+    <button id="confirmWithdrawButton">Execute transfer</button>
+</fieldset>

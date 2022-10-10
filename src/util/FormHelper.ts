@@ -56,6 +56,8 @@ export default class FormHelper {
         let inputs = document.querySelectorAll(selector + ' input[required]');
         for (let i = 0; i < inputs.length; i++) {
             let input = inputs[i] as HTMLInputElement;
+            input.setAttribute('aria-invalid', 'false');
+
             if (StringHelper.isNullOrEmpty(input.value)) {
                 input.setAttribute('aria-invalid', 'true')
                 input.focus();

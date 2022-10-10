@@ -1,20 +1,24 @@
-import FakeFundingHtml from '../../html/modal/FakeFunding.html';
-import Modal from "./Modal";
-import WalletHelper from "../../util/WalletHelper";
-import ContractInfo from "../../contracts/ContractInfo";
-import FundingService from "../../services/broker/FundingService";
-import AUSDService from "../../services/blockchain/AUSDService";
-import UserService from "../../services/backend/UserService";
-import {roundBigNumber} from "../../util/Helper";
+import FakeFundingHtml from '../../../html/modal/funding/FakeFunding.html';
+import Modal from "../Modal";
+import WalletHelper from "../../../util/WalletHelper";
+import ContractInfo from "../../../contracts/ContractInfo";
+import FundingService from "../../../services/broker/FundingService";
+import AUSDService from "../../../services/blockchain/AUSDService";
+import UserService from "../../../services/backend/UserService";
+import {roundBigNumber} from "../../../util/Helper";
 import BigNumber from "bignumber.js";
+import AUSDFund from "./AUSDFund";
 
 
-export default class AUSDFund {
-    moralis : typeof Moralis;
-    currentBalance : BigNumber;
-    constructor(moralis : typeof Moralis) {
+export default class FakeAUSDFund {
+    moralis: typeof Moralis;
+    currentBalance: BigNumber;
+    modal: Modal;
+
+    constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
-        this.currentBalance  = new BigNumber(-1);
+        this.currentBalance = new BigNumber(-1);
+        this.modal = new Modal();
     }
 
     public showAUSDFund(callback: () => void) {
@@ -27,10 +31,10 @@ export default class AUSDFund {
         let template = Handlebars.compile(FakeFundingHtml);
 
         let contractInfo = ContractInfo.getContractInfo();
-        let content = template({aUSDAddress:contractInfo.AUSD_ADDRESS});
+        let content = template({aUSDAddress: contractInfo.AUSD_ADDRESS});
 
-        let modal = new Modal();
-        modal.showModal('Fund my account (Fake money)', content);
+
+        this.modal.showModal('Fund my account (Fake money)', content);
 
         let addToWallet = document.getElementById('addTokenToWallet');
         if (!addToWallet) return;
@@ -46,10 +50,17 @@ export default class AUSDFund {
 
         })
 
-        let requestFakeAUSD = document.getElementById('requestFakeAUSD');
-        if (!requestFakeAUSD) return;
+        let registerBankInfo = document.getElementById('registerBankInfo');
+        registerBankInfo?.addEventListener('click', (evt) => {
+            this.modal.hideModal();
 
-        requestFakeAUSD.addEventListener('click', async (evt) => {
+            let aUsdFund = new AUSDFund(this.moralis);
+            aUsdFund.show();
+        })
+
+
+        let requestFakeAUSD = document.getElementById('requestFakeAUSD');
+        requestFakeAUSD?.addEventListener('click', async (evt) => {
             requestFakeAUSD!.setAttribute('aria-busy', 'true');
 
             let fundingService = new FundingService(this.moralis);
