@@ -1,8 +1,10 @@
 import AUSDService from "../../services/blockchain/AUSDService";
 import {roundBigNumber} from "../../util/Helper";
 import NetworkInfo from "../../networks/NetworkInfo";
-import AUSDFund from "../modals/AUSDFund";
+import FakeAUSDFund from "../modals/Funding/FakeAUSDFund";
 import Moralis from "moralis";
+import AUSDFund from "../modals/Funding/AUSDFund";
+import WithdrawModal from "../modals/Funding/WithdrawModal";
 
 export default class AUsdBalance {
     user: Moralis.Attributes;
@@ -18,6 +20,10 @@ export default class AUsdBalance {
 
         let userInfoAUsdBalance = document.getElementById('userInfoAUsdBalance');
         let frontpageAUsdBalance = document.getElementById('frontpageAUsdBalance');
+
+        if (userInfoAUsdBalance && !userInfoAUsdBalance.classList.contains('hidden')) {
+            return;
+        }
 
         if (!this.user.get('alpacaId')) {
             frontpageAUsdBalance?.classList.add('hidden');
@@ -35,14 +41,21 @@ export default class AUsdBalance {
         let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
         if (frontpageAUSDBalance) frontpageAUSDBalance.innerHTML = '$' + aUsdValue;
 
-        let userInfoAUSDBalance = document.getElementById('user_info_ausd_balance')
-        if (userInfoAUSDBalance) userInfoAUSDBalance.innerHTML = '$' + aUsdValue;
+        let user_info_ausd_balance = document.getElementById('user_info_ausd_balance')
+        if (user_info_ausd_balance) user_info_ausd_balance.innerHTML = '$' + aUsdValue;
+        this.bindEvents();
 
+        if (aUsdValue.isLessThan(10)) {
+            let frontpage_fund_account = document.getElementById('frontpage_fund_account');
+            frontpage_fund_account?.classList.remove('hidden');
+        }
+    }
 
+    private bindEvents() {
         let networkInfo = NetworkInfo.getInstance();
         let fund_accountButtons = document.querySelectorAll('.fund_account');
         fund_accountButtons.forEach(element => {
-            let aUSDFundingModal = new AUSDFund(this.moralis);
+            let aUSDFundingModal = new FakeAUSDFund(this.moralis);
             if (networkInfo.TestNetwork) {
                 element.innerHTML = 'Click for some aUSD';
                 element.addEventListener('click', (evt) => {
@@ -51,18 +64,20 @@ export default class AUsdBalance {
                     });
                 });
             } else {
-                element.innerHTML = 'Fund your account';
-                element.addEventListener('click', (evt) => {
+                element.addEventListener('click', async (evt) => {
                     evt.preventDefault();
-                    aUSDFundingModal.showAUSDFund(() => {
-                    });
+                    let aUsdFund = new AUSDFund(this.moralis);
+                    await aUsdFund.show();
                 })
             }
         })
-        if (aUsdValue.isLessThan(10)) {
-            let frontpage_fund_account = document.getElementById('frontpage_fund_account');
-            if (!frontpage_fund_account) return;
-            frontpage_fund_account.classList.remove('hidden');
-        }
+
+        let withdraw_from_account = document.getElementById('withdraw_from_account');
+        withdraw_from_account?.addEventListener('click', async (evt) => {
+            evt.preventDefault();
+
+            let withdrawModal = new WithdrawModal(this.moralis);
+            await withdrawModal.show()
+        })
     }
 }

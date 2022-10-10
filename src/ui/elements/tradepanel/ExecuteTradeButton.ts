@@ -5,7 +5,7 @@ import AuthenticateService from "../../../services/backend/AuthenticateService";
 import ConnectWallet from "../../modals/ConnectWallet";
 import KYCService from "../../../services/blockchain/KYCService";
 import AUSDService from "../../../services/blockchain/AUSDService";
-import AUSDFund from "../../modals/AUSDFund";
+import FakeAUSDFund from "../../modals/Funding/FakeAUSDFund";
 import SecurityTokenService from "../../../services/blockchain/SecurityTokenService";
 import LiminalMarketService from "../../../services/blockchain/LiminalMarketService";
 import {AddressZero, roundBigNumberDecimal, roundNumberDecimal, shortEth} from "../../../util/Helper";
@@ -361,7 +361,7 @@ export default class ExecuteTradeButton {
                 fundAccount?.addEventListener('click', (evt) => {
                     modal.hideModal();
 
-                    let ausdFund = new AUSDFund(this.moralis);
+                    let ausdFund = new FakeAUSDFund(this.moralis);
                     ausdFund.showAUSDFakeFund(() => {
                         this.renderButton();
                     })
@@ -396,7 +396,7 @@ export default class ExecuteTradeButton {
         if (networkInfo.TestNetwork) {
             button.innerHTML = 'You need aUSD. Click here to get some';
             button.addEventListener('click', () => {
-                let ausdFund = new AUSDFund(this.moralis);
+                let ausdFund = new FakeAUSDFund(this.moralis);
                 ausdFund.showAUSDFakeFund(() => {
                     this.renderButton();
                 })
@@ -404,7 +404,7 @@ export default class ExecuteTradeButton {
         } else {
             button.innerHTML = 'You need aUSD. Click here for instructions';
             button.addEventListener('click', () => {
-                let ausdFund = new AUSDFund(this.moralis);
+                let ausdFund = new FakeAUSDFund(this.moralis);
                 ausdFund.showAUSDFund(() => {
                     this.renderButton();
                 });
@@ -425,7 +425,7 @@ export default class ExecuteTradeButton {
             button.innerHTML = "You don't have enough aUSD. Click for more funding";
             button.addEventListener('click', () => {
                 let networkInfo = NetworkInfo.getInstance();
-                let ausdFund = new AUSDFund(this.moralis);
+                let ausdFund = new FakeAUSDFund(this.moralis);
                 if (networkInfo.TestNetwork) {
 
                     ausdFund.showAUSDFakeFund(() => {

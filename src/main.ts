@@ -7,6 +7,7 @@ import ErrorInfo from "./errors/ErrorInfo";
 import WalletHelper from "./util/WalletHelper";
 import GeneralError from "./errors/GeneralError";
 import Header from "./ui/elements/Header";
+import AUsdBalance from "./ui/elements/AUsdBalance";
 
 
 const start = async function () {
@@ -23,7 +24,8 @@ const start = async function () {
         if (loggedInUser) {
             let userInfo = new UserInfo(Moralis, (loggedInUser as any).providerInfo, loggedInUser);
             await userInfo.render('user_header_info');
-            //load user info into UI
+
+
         } else {
             //show Connect Wallet button
             let connectWallet = new ConnectWallet(Moralis);

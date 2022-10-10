@@ -1,14 +1,13 @@
 import UserService from "../../services/backend/UserService";
 import Moralis from "Moralis";
 import UserInfoElement from '../../html/elements/UserInfo.html'
-import {roundBigNumber, shortEth} from "../../util/Helper";
-import AUSDService from "../../services/blockchain/AUSDService";
+import {shortEth} from "../../util/Helper";
 import NetworkInfo from "../../networks/NetworkInfo";
 import ProviderInfo from "../../wallet/ProviderInfo";
-import AUSDFund from "../modals/AUSDFund";
 import KycEditNameForm from "../modals/KYC/KycEditNameForm";
 import KycEditContactForm from "../modals/KYC/KycEditContactForm";
 import KycEditTrustedContact from "../modals/KYC/KycEditTrustedContact";
+import AUsdBalance from "./AUsdBalance";
 
 
 export default class UserInfo {
@@ -30,6 +29,10 @@ export default class UserInfo {
         this.listenForWalletChanges();
 
         this.loadUserMenuUI(elementId);
+
+        let aUsdBalance = new AUsdBalance(this.moralis, this.user);
+        await aUsdBalance.loadAUSDBalanceUI();
+
     }
 
     private listenForWalletChanges() {

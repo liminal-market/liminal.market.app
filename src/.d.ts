@@ -8,5 +8,6 @@ declare global {
     export const ethereum: any;
       // @ts-ignore
     export const Handlebars: Handlebars;
+    export const Plaid: any;
 }
 

@@ -21,6 +21,7 @@
 		--primary-focus: rgba(84, 110, 122, 0.25);
 		--primary-inverse: #FFF;
 		--switch-checked-background-color: #02afff;
+
 	}
 }
 
@@ -34,6 +35,7 @@
 	--nav-background-color: #040633;
 	--highlight-background: #515100;
 	--switch-checked-background-color: #02afff;
+
 }
 
 /* Blue-grey (Common styles) */
@@ -45,16 +47,20 @@
 	--spacing: 0.4rem;
 	--form-element-spacing-vertical: 0.3rem;
 	--form-element-spacing-horizontal: 0.5rem;
-	--typography-spacing-vertical: 0.25rem;
+    --typography-spacing-vertical: 0.25rem;
 
-	--info-bar-background-color: var(--primary);
-	--info-bar-color: var(--primary-inverse);
+    --info-bar-background-color: var(--primary);
+    --info-bar-color: var(--primary-inverse);
 
-	--warning-bar-background-color: #ffc147;
-	--warning-bar-color: #000;
+    --warning-bar-background-color: #ffc147;
+    --warning-bar-color: #000;
 
-	--error-bar-background-color: #913a1f;
-	--error-bar-color: #ff;
+    --error-bar-background-color: #913a1f;
+    --error-bar-color: #ff;
+
+    --alert-background: var(--form-element-invalid-border-color);
+    --alert-color: #fff;
+
 }
 
 .kycFigure {
@@ -151,8 +157,11 @@ body>footer {
 	color: var(--info-bar-color);
 }
 .warningBar {
-	background-color: var(--warning-bar-background-color);
-	color:var(--warning-bar-color);
+    background-color: var(--warning-bar-background-color);
+    color: var(--warning-bar-color);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
 }
 
 .errorBar {

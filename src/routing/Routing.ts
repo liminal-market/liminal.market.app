@@ -1,7 +1,7 @@
 import StocksPage from "../ui/pages/StocksPage";
 import TradePage from "../ui/pages/TradePage";
 import PositionsPage from "../ui/pages/PositionsPage";
-import AUSDFund from "../ui/modals/AUSDFund";
+import FakeAUSDFund from "../ui/modals/Funding/FakeAUSDFund";
 import NetworkInfo from "../networks/NetworkInfo";
 
 
@@ -67,7 +67,7 @@ export default class Routing {
 
         history.pushState(null, 'Buy stocks', '#/funding');
 
-        let aUSDFundingModal = new AUSDFund(this.moralis);
+        let aUSDFundingModal = new FakeAUSDFund(this.moralis);
         let networkInfo = NetworkInfo.getInstance();
         if (networkInfo.TestNetwork) {
             aUSDFundingModal.showAUSDFakeFund(() => {

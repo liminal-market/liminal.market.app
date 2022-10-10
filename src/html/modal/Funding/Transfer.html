@@ -1,0 +1,24 @@
+<fieldset>
+
+    <form>
+        <p>
+            To fill up your broker account, you need to notify Liminal.market first about your transfer,
+            we can then match it with your account.
+            <br/><br/>
+            Type in the amount you would like to transfer to you broker account.
+        </p>
+        <br/>
+        <label>
+            Amount in US dollars ($)
+            <input name="amount" class="amount" type="tel" id="amount" minlength="1" required/>
+        </label>
+        <input type="hidden" name="transfer_type" id="transfer_type" value="{{transfer_type}}"/>
+        <input type="hidden" name="relationship_id" id="relationship_id" value="{{relationshipId}}"/>
+        <input type="hidden" name="direction" id="direction" value="INCOMING"/>
+        <div class="input_error" id="transferError"></div>
+        <div class="grid">
+            <button id="notifyTransfer">Notify Liminal.market of incoming transfer</button>
+        </div>
+    </form>
+    {{{transfers}}}
+</fieldset>
