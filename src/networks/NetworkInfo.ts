@@ -20,7 +20,7 @@ export default class NetworkInfo {
     public static getInstance(): Network {
         if (NetworkInfo.instance) return NetworkInfo.instance;
 
-        if (ethereum && ethereum.chainId) {
+        if (typeof ethereum != 'undefined' && ethereum && ethereum.chainId) {
             let networkInfo = this.getNetworkInfoByChainId(ethereum.chainId);
             if (networkInfo) {
                 NetworkInfo.instance = networkInfo;
