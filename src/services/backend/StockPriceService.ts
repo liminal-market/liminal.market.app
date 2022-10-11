@@ -17,7 +17,7 @@ export default class StockPriceService {
             .catch((e: any) => {
                 throw new CloudError(e);
             });
-        let quote = result.quotes[result.quotes.length - 1];
+        let quote = result.quote;
         let price = (tradeType == TradeType.Sell) ? quote.ap : quote.bp;
         let tradeInfo = new TradeInfo(price, quote.t);
         return tradeInfo;
