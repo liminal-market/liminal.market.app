@@ -22,7 +22,9 @@ export default class ACHRelationship {
 
     private bindEvent() {
         let connectPlaid = document.getElementById('connectPlaid');
-        connectPlaid?.addEventListener('click', async () => {
+        connectPlaid?.addEventListener('click', async (evt) => {
+            evt.preventDefault();
+
             await this.connectPlaidAction()
         });
 
@@ -43,6 +45,7 @@ export default class ACHRelationship {
         await userService.getPlaidLinkToken()
             .catch((reason) => {
                 this.aUsdFund.showError('achError', reason)
+                LoadingHelper.removeLoading();
             }).then((response) => {
                 console.log('response', response);
                 let plaidToken = JSON.parse(response);
@@ -56,8 +59,6 @@ export default class ACHRelationship {
                 let achForm = document.getElementById('achForm');
                 achForm!.append(script);
 
-            }).finally(() => {
-                LoadingHelper.removeLoading();
             })
     }
 
@@ -66,6 +67,7 @@ export default class ACHRelationship {
             token: plaidToken.link_token,
             onSuccess: async (public_token: any, metadata: any) => {
                 if (!metadata.account) {
+                    LoadingHelper.removeLoading();
                     this.aUsdFund.showError('achError', "Didn't receive any information from Plaid. Please try again. If it doesn't work. Please contact us at info@liminal.market")
                 }
 
@@ -77,6 +79,7 @@ export default class ACHRelationship {
                             await this.aUsdFund.transfer.show(bankRelationships[0]);
                         } else {
                             this.aUsdFund.showError('achError', reason);
+                            LoadingHelper.removeLoading();
                         }
                     }).then((response) => {
                         console.log('createAchRelationship', response)
@@ -86,6 +89,7 @@ export default class ACHRelationship {
             },
             onExit: (err: any, metadata: any) => {
                 console.log(err, metadata);
+                LoadingHelper.removeLoading();
             },
         });
         linkHandler.open();

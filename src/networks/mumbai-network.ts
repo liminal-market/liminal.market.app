@@ -6,10 +6,6 @@ export default class mumbaiNetwork extends Network {
 	constructor() {
             super();
 
-            //this.ServerUrl = "https://dqet8dfymvzj.usemoralis.com:2053/server";
-            //this.AppId = "TXR6YesK99VgRCxSecnySRMp1KI5rLnCfIetQuuU";
-            this.ServerUrl = "https://f8t1vrrwtboa.usemoralis.com:2053/server";
-            this.AppId = "XZhp3wQobrKiCib0Bf4FPVKAUhbHM9SvTLKOKvBb";
             this.ChainId = 80001;
             this.Name = "mumbai";
             this.ChainName = 'Polygon Mumbai';

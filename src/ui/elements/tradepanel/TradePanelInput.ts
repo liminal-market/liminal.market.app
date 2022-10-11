@@ -103,7 +103,7 @@ export default class TradePanelInput {
 
                 this.render();
                 this.loadBalance().then();
-                this.loadLastTrade();
+                await this.loadLastTrade();
 
                 if (this.onUpdate) this.onUpdate();
             });
@@ -188,7 +188,8 @@ export default class TradePanelInput {
         pricePerShare.setAttribute('aria-busy', 'true');
 
         let stockPriceService = new StockPriceService(this.moralis);
-        let tradeInfo = await stockPriceService.getSymbolPrice(this.symbol);
+        let tradeInfo = await stockPriceService.getSymbolPrice(this.symbol, this.otherTradePanelInput.tradeType);
+
         this.lastPrice = tradeInfo.price;
         this.lastTraded = tradeInfo.lastTrade.toString();
         this.qtyPerDollar = 1 / this.lastPrice;
@@ -204,6 +205,7 @@ export default class TradePanelInput {
             text: '1 aUSD ≈ ' + roundNumberDecimal(this.qtyPerDollar, 6) + ' ' + this.symbol
         };
         aUsdPricePerShare.innerHTML = this.pricePerShareTemplate(pricePerAUsdHtml);
+        this.updateQuantity();
 
         aUsdPricePerShare.removeAttribute('aria-busy');
         pricePerShare.removeAttribute('aria-busy');
@@ -242,18 +244,18 @@ export default class TradePanelInput {
         }
     }
 
-    public static switchPanels(sellTradePanelInput : TradePanelInput, buyTradePanelInput : TradePanelInput) : [TradePanelInput, TradePanelInput] {
+    public static async switchPanels(sellTradePanelInput: TradePanelInput, buyTradePanelInput: TradePanelInput): Promise<[TradePanelInput, TradePanelInput]> {
         let sellSymbol = sellTradePanelInput.symbol;
         let sellName = sellTradePanelInput.name;
         let sellLogo = sellTradePanelInput.logo;
         let sellQuantity = sellTradePanelInput.quantity;
         sellTradePanelInput.setSymbol(buyTradePanelInput.symbol, buyTradePanelInput.name, buyTradePanelInput.logo)
         sellTradePanelInput.quantity = buyTradePanelInput.quantity;
-
         buyTradePanelInput.setSymbol(sellSymbol, sellName, sellLogo)
         buyTradePanelInput.quantity = sellQuantity;
-        sellTradePanelInput.updatePanel();
-        buyTradePanelInput.updatePanel();
+
+        await sellTradePanelInput.updatePanel();
+        await buyTradePanelInput.updatePanel();
 
         return [sellTradePanelInput, buyTradePanelInput];
     }

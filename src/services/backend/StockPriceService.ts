@@ -1,15 +1,15 @@
-
 import TradeInfo from "./TradeInfo";
 import CloudError from "../../errors/CloudError";
+import {TradeType} from "../../enums/TradeType";
 
 export default class StockPriceService {
-    moralis : typeof Moralis;
+    moralis: typeof Moralis;
 
-    constructor(moralis : typeof Moralis) {
+    constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
     }
 
-    public async getSymbolPrice(symbol : string) : Promise<TradeInfo> {
+    public async getSymbolPrice(symbol: string, tradeType: TradeType): Promise<TradeInfo> {
         const params = {
             symbol: symbol
         };
@@ -17,8 +17,9 @@ export default class StockPriceService {
             .catch(e => {
                 throw new CloudError(e);
             });
-        ;
-        let tradeInfo = new TradeInfo(result.trade.p, result.trade.t);
+        let quote = result.quotes[result.quotes.length - 1];
+        let price = (tradeType == TradeType.Sell) ? quote.ap : quote.bp;
+        let tradeInfo = new TradeInfo(price, quote.t);
         return tradeInfo;
 
     }

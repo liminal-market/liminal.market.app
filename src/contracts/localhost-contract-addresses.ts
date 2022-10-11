@@ -1,6 +1,7 @@
 import ContractAddresses from "./ContractAddresses";
+import mumbaiContractAddresses from "./mumbai-contract-addresses";
 
-export default class localhostContractAddresses implements ContractAddresses {
+export default class localhostContractAddresses implements mumbaiContractAddresses {
 
     NetworkName = "localhost"
     KYC_ADDRESS = "0x2856a0C8034bF887928845D05179847e0ADC2209";

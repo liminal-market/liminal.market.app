@@ -31,7 +31,7 @@ export default class Transfer {
         let template = Handlebars.compile(TransferHtml);
         let transfersListHtml = await this.transfersList.render(TransferDirectionEnum.Incoming);
 
-        let transfer_type = (StringHelper.isNullOrEmpty(bankRelationship.bank_account_number)) ? 'wire' : 'ach';
+        let transfer_type = (StringHelper.isNullOrEmpty(bankRelationship.bank_account_number) && bankRelationship.bank_account_type != '') ? 'wire' : 'ach';
         this.aUsdFund.modal.showModal('Create transfer notification', template({
             transfers: transfersListHtml,
             transfer_type: transfer_type,

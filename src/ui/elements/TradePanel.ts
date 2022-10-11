@@ -68,24 +68,5 @@ export default class TradePanel {
         document.getElementById('liminal_market_select_symbol')!.innerHTML = symbol;
     }
 
-    public getSellAmount() : number {
-        let sellInput = document.getElementById('liminal_market_sell_quantity') as HTMLInputElement;
-        if (!sellInput) return 0;
-
-        return parseFloat(sellInput.value);
-    }
-
-    public async updateBuyInfo(Symbol : string) {
-        let buyQuantityInput = document.getElementById('liminal_market_buy_quantity') as HTMLInputElement;
-        if (!buyQuantityInput) return;
-
-        let stockPriceService = new StockPriceService(this.moralis);
-        let tradeInfo = await stockPriceService.getSymbolPrice(Symbol);
-        let sellAmount = this.getSellAmount();
-
-        let buyQuantity = sellAmount / tradeInfo.price;
-
-        buyQuantityInput.value = buyQuantity.toString();
-    }
 
 }

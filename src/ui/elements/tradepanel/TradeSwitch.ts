@@ -23,27 +23,14 @@ export default class TradeSwitch {
     }
 
     public bindEvents(sellTradePanelInput : TradePanelInput, buyTradePanelInput : TradePanelInput, executeTradeButton : ExecuteTradeButton) {
-        let dom = document.querySelector('.swithBtn');
+        let dom = document.querySelector('.switchBtn');
         if (!dom) return;
 
         dom.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            [sellTradePanelInput, buyTradePanelInput] = TradePanelInput.switchPanels(sellTradePanelInput, buyTradePanelInput);
+            [sellTradePanelInput, buyTradePanelInput] = await TradePanelInput.switchPanels(sellTradePanelInput, buyTradePanelInput);
 
-            /*
-            await sellTradePanelInput.loadBalance();
-            await buyTradePanelInput.loadBalance();
-
-            sellTradePanelInput.updateQuantity();
-            buyTradePanelInput.updateQuantity();
-
-            if (sellTradePanelInput.symbol == 'aUSD') {
-                await buyTradePanelInput.loadLastTrade();
-            } else {
-                await sellTradePanelInput.loadLastTrade();
-            }
-*/
 
         })
     }

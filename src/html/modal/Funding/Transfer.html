@@ -6,6 +6,10 @@
             we can then match it with your account.
             <br/><br/>
             Type in the amount you would like to transfer to you broker account.
+            {{#if bank_account_number}}
+            <br/><br/>
+            The money should come from <strong>{{bank_account_number}}</strong>
+            {{/if}}
         </p>
         <br/>
         <label>

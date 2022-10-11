@@ -4,8 +4,6 @@ export default class fujiNetwork extends Network {
 	constructor() {
 		super();
 
-		this.ServerUrl = "https://f8t1vrrwtboa.usemoralis.com:2053/server";
-		this.AppId = "XZhp3wQobrKiCib0Bf4FPVKAUhbHM9SvTLKOKvBb";
 		this.ChainId = 43113;
 		this.Name = "fuji";
 		this.ChainName = 'Avax test';
