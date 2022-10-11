@@ -14,7 +14,7 @@ export default class StockPriceService {
             symbol: symbol
         };
         let result = await this.moralis.Cloud.run("getSymbolPrice", params)
-            .catch(e => {
+            .catch((e: any) => {
                 throw new CloudError(e);
             });
         let quote = result.quotes[result.quotes.length - 1];
