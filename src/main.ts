@@ -20,7 +20,7 @@ const start = async function () {
         let loadingMessage = document.querySelector('.loading') as HTMLElement;
         let userService = new UserService(Moralis);
         let loggedInUser = await userService.isLoggedIn(loadingMessage);
-
+console.log('loggedInUser', loggedInUser);
         if (loggedInUser) {
             let userInfo = new UserInfo(Moralis, (loggedInUser as any).providerInfo, loggedInUser);
             await userInfo.render('user_header_info');

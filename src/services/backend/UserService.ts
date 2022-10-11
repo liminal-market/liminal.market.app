@@ -39,7 +39,7 @@ export default class UserService {
     }
 
     public async isLoggedIn(loadingMessage : HTMLElement) {
-        let user = this.moralis.User.current();
+        let user = await this.moralis.User.currentAsync();
 
         if (user) {
             let cookieHelper = new CookieHelper(document);
