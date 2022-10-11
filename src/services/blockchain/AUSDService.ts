@@ -3,18 +3,18 @@ import ErrorInfo from "../../errors/ErrorInfo";
 import BigNumber from "bignumber.js";
 import BlockchainError from "../../errors/BlockchainError";
 import DateHelper from '../../util/DateHelper';
+import BlockchainService from "./BlockchainService";
 
-export default class AUSDService {
-    private static AUSDInfo : any;
-    private static lastUpdate? : Date;
-    private static aUSDAmount? : BigNumber;
-    moralis : typeof Moralis;
+export default class AUSDService extends BlockchainService {
+    private static AUSDInfo: any;
+    private static lastUpdate?: Date;
+    private static aUSDAmount?: BigNumber;
 
-    constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
+    constructor(moralis: typeof Moralis) {
+        super(moralis)
     }
 
-    public async getAUSDBalanceOf(ethAddress : string) : Promise<BigNumber> {
+    public async getAUSDBalanceOf(ethAddress: string): Promise<BigNumber> {
         if (AUSDService.lastUpdate && AUSDService.aUSDAmount &&
                 DateHelper.isOlderThen(AUSDService.lastUpdate, 5)) {
             return AUSDService.aUSDAmount;
@@ -24,7 +24,7 @@ export default class AUSDService {
             account: ethAddress
         });
 
-        return await this.moralis.executeFunction(options).then(balanceOf => {
+        return await this.executeFunction(options).then(balanceOf => {
             let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
             AUSDService.aUSDAmount = new BigNumber(amount);
             AUSDService.lastUpdate = new Date();
@@ -51,8 +51,10 @@ export default class AUSDService {
             amount: Moralis.Units.Token(qty.toString(), 18)
         });
 
-        let result = await Moralis.executeFunction(options)
-            .then(result => {return result;})
+        let result = await this.executeFunction(options)
+            .then(result => {
+                return result;
+            })
             .catch(reason => {
                 let blockchainError = new BlockchainError(reason);
                 throw ErrorInfo.report(blockchainError);

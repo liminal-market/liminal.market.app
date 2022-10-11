@@ -1,21 +1,21 @@
 import ContractInfo from "../../contracts/ContractInfo";
 import ErrorInfo from "../../errors/ErrorInfo";
 import BlockchainError from "../../errors/BlockchainError";
+import BlockchainService from "./BlockchainService";
 
-export default class LiminalMarketService {
-    moralis: typeof Moralis;
+export default class LiminalMarketService extends BlockchainService {
 
     private static LiminalMarketInfo: any;
 
     constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+        super(moralis);
     }
 
     public async getSymbolContractAddress(symbol: string): Promise<string> {
         const options = await this.getOptions("getSecurityToken", {
             symbol: symbol
         })
-        let result = await this.moralis.executeFunction(options)
+        let result = await this.executeFunction(options)
             .then((value) => {
                 return value.toString();
             }).catch((reason) => {
@@ -55,7 +55,7 @@ export default class LiminalMarketService {
             salt : salt
         });
 
-        let result = await this.moralis.executeFunction(liminalOptions)
+        let result = await this.executeFunction(liminalOptions)
             .then(result => {
                 return result as typeof ExecuteFunctionCallResult;
             }).catch(reason => {

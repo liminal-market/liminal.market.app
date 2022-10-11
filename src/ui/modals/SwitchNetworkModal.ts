@@ -47,11 +47,11 @@ export default class SwitchNetworkModal {
                         switchNetworkInfo.classList.add('d-none');
 
                         (document.getElementById('switchChainId') as HTMLInputElement).value = dataset.chainid! + ' or it might be: ' + '0x' + parseInt(dataset.chainid!).toString(16);
-                        (document.getElementById('switchChainName')! as HTMLInputElement).value = dataset.chainname!;
-                        (document.getElementById('switchCurrencyName')! as HTMLInputElement).value = dataset.currencyname!;
-                        (document.getElementById('switchSymbol')! as HTMLInputElement).value = dataset.symbol!;
-                        (document.getElementById('switchDecimal') !as HTMLInputElement).value = dataset.decimal!;
-                        (document.getElementById('switchRpcUrl')! as HTMLInputElement).value = dataset.rpcurl!;
+                        (document.getElementById('switchChainName')! as HTMLInputElement).value = this.selectedNetwork!.Name;
+                        (document.getElementById('switchCurrencyName')! as HTMLInputElement).value = this.selectedNetwork!.NativeCurrencyName;
+                        (document.getElementById('switchSymbol')! as HTMLInputElement).value = this.selectedNetwork!.NativeSymbol;
+                        (document.getElementById('switchDecimal') ! as HTMLInputElement).value = this.selectedNetwork!.NativeDecimal.toString();
+                        (document.getElementById('switchRpcUrl')! as HTMLInputElement).value = this.selectedNetwork!.RpcUrl;
 
                     });
 

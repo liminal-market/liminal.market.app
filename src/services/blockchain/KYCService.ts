@@ -3,14 +3,14 @@ import BlockchainError from "../../errors/BlockchainError";
 import GeneralError from "../../errors/GeneralError";
 import KycStatus from "../../dto/KycStatus";
 import AUsdBalance from "../../ui/elements/AUsdBalance";
+import BlockchainService from "./BlockchainService";
 
-export default class KYCService {
-    moralis: typeof Moralis;
+export default class KYCService extends BlockchainService {
     private static KYCInfo: any;
     private static KycResponse: KycStatus;
 
     constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+        super(moralis)
     }
 
     public async getKYCAbi() {

@@ -1,12 +1,13 @@
 <div id="switchNetworkInfo">
     You are using wrong network in your wallet.
     You can choose any of these networks.
-    <ul>
+    <div class="grid">
         {{#each networks}}
-        <li><a href="" class="setNetwork"
-               data-chainid="{{ChainId}}">{{ChainName}}</a></li>
+        <button href="" class="setNetwork"
+                data-chainid="{{ChainId}}">{{ChainName}}
+        </button>
         {{/each}}
-    </ul>
+    </div>
 </div>
 <div id="jsSwitchNetworkNotWorking" class="d-none">
     It seem as we can't add the network automatically for your, so you need to add it your self.

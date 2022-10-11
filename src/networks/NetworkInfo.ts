@@ -4,9 +4,10 @@ import Network from "./Network";
 import CookieHelper from "../util/CookieHelper";
 import fujiNetwork from "./fuji-network";
 import Moralis from "moralis";
+import GeneralError from "../errors/GeneralError";
 
 
-const networkInfos = [localhostNetwork, mumbaiNetwork, fujiNetwork];
+const networkInfos = [localhostNetwork, mumbaiNetwork];
 
 
 export default class NetworkInfo {

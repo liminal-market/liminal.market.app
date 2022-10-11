@@ -155,13 +155,15 @@ body>footer {
 .infoBar {
 	background-color: var(--info-bar-background-color);
 	color: var(--info-bar-color);
+
 }
 .warningBar {
-    background-color: var(--warning-bar-background-color);
-    color: var(--warning-bar-color);
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 1rem;
+	background-color: var(--warning-bar-background-color);
+	color: var(--warning-bar-color);
+	padding: 1rem;
+	border-radius: 5px;
+	margin-bottom: 1rem;
+	position: relative;;
 }
 
 .errorBar {

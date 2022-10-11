@@ -7,18 +7,19 @@ export default class InfoBar {
         if (!infoBar) {
             infoBar = document.createElement('div');
             infoBar.classList.add('notificationBar');
-            document.body.insertAdjacentElement('beforeend', infoBar);
+            infoBar.id = 'infoBar';
+            document.body.insertAdjacentElement('afterbegin', infoBar);
         };
 
         infoBar.innerHTML = message;
-        infoBar.classList.remove('d-none');
+        infoBar.classList.remove('hidden');
         infoBar.classList.remove(InfoBarType.Info);
         infoBar.classList.remove(InfoBarType.Warning);
         infoBar.classList.remove(InfoBarType.Error);
         infoBar.classList.add(type)
         if (timeoutInSeconds > 0) {
             setTimeout(() => {
-                infoBar?.classList.add('d-none');
+                infoBar?.classList.add('hidden');
             }, timeoutInSeconds * 1000);
         }
     }

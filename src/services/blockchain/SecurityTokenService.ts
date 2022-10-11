@@ -4,14 +4,15 @@ import ErrorInfo from "../../errors/ErrorInfo";
 import {AddressZero} from "../../util/Helper";
 import BigNumber from "bignumber.js";
 import BlockchainError from "../../errors/BlockchainError";
+import BlockchainService from "./BlockchainService";
 
-export default class SecurityTokenService {
-    moralis: typeof Moralis;
+export default class SecurityTokenService extends BlockchainService {
+
 
     private static SecurityTokenInfo: any;
 
     constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+        super(moralis);
     }
 
 
@@ -24,7 +25,7 @@ export default class SecurityTokenService {
             account: ethAddress
         });
 
-        return await this.moralis.executeFunction(options)
+        return await this.executeFunction(options)
             .then(balanceOf => {
                 let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
                 return new BigNumber(amount);
@@ -42,7 +43,7 @@ export default class SecurityTokenService {
             amount: Moralis.Units.Token(qty.toString(), 18)
         });
 
-        let result = await this.moralis.executeFunction(options)
+        let result = await this.executeFunction(options)
             .then(result => {
                 return result
             })

@@ -1,15 +1,28 @@
 import InfoBar from "../ui/elements/InfoBar";
 import {InfoBarType} from "../ui/elements/InfoBarType";
 import WalletMissingHtml from '../html/modal/WalletMissing.html';
-import MarketIsClosedHtml from '../html/modal/MarketIsClosed.html';
 import Modal from "../ui/modals/Modal";
+import SwitchNetworkModal from "../ui/modals/SwitchNetworkModal";
 
 export default class PredefinedErrorHandlers {
 
     errorMessageMapping = new Map<string, any>();
     SentLoginRequest = "We have sent request to you wallet to login. Open your wallet to login";
 
+
     constructor() {
+        this.errorMessageMapping.set('chain not supported', () => {
+            let div = 'Network is not supported. <a href="" id="switchNetworkLink">Click me to switch to supported network</a>';
+
+            InfoBar.show(div, InfoBarType.Warning, 120)
+
+            let switchNetworkLink = document.getElementById('switchNetworkLink');
+            switchNetworkLink?.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                let modal = new SwitchNetworkModal(Moralis);
+                modal.show();
+            })
+        });
         this.errorMessageMapping.set('already processing eth_requestaccounts', this.SentLoginRequest);
         this.errorMessageMapping.set('request of type \'wallet_requestPermissions\' already pending', this.SentLoginRequest);
         this.errorMessageMapping.set('already has been called, but is not finished yet', this.SentLoginRequest);

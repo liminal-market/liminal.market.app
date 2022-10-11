@@ -39,10 +39,7 @@ export default class ExecuteTradeButton {
         this.buyTradeInput = buyTradeInput;
         this.authenticateService = new AuthenticateService(this.moralis);
         this.template = Handlebars.compile(ExecuteTradeButtonHtml);
-        let htmlButton = this.template();
-
         this.button = document.getElementById('liminal_market_execute_trade') as HTMLInputElement;
-        //this.button.outerHTML = htmlButton;
 
         ExecuteTradeButton.Instance = this;
     }
