@@ -33,9 +33,9 @@ export default class AUSDFund {
 
     public async show() {
         let userService = new UserService(this.moralis);
-        let bankRelationship = await userService.getBankRelationships();
-        if (bankRelationship.length > 0) {
-            await this.transfer.show(bankRelationship[0]);
+        let bankRelationship = await userService.getBankRelationship();
+        if (bankRelationship) {
+            await this.transfer.show(bankRelationship);
         } else {
             this.selectFundingType.show();
         }

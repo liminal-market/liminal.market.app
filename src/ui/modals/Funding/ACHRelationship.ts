@@ -75,8 +75,8 @@ export default class ACHRelationship {
                 await userService.createAchRelationship(public_token, metadata.account.id)
                     .catch(async (reason) => {
                         if (reason.error.indexOf('only one active ach relationship') != -1) {
-                            let bankRelationships = await userService.getBankRelationships();
-                            await this.aUsdFund.transfer.show(bankRelationships[0]);
+                            let bankRelationship = await userService.getBankRelationship();
+                            await this.aUsdFund.transfer.show(bankRelationship);
                         } else {
                             this.aUsdFund.showError('achError', reason);
                             LoadingHelper.removeLoading();
