@@ -38,7 +38,7 @@ export default class UserService {
         return this.moralis.User.logOut();
     }
 
-    public async isLoggedIn(loadingMessage : HTMLElement) {
+    public async isLoggedIn(loadingMessage: HTMLElement) {
         let user = await this.moralis.User.currentAsync();
 
         if (user) {
@@ -64,18 +64,18 @@ export default class UserService {
                     })
                 }
 
-                let result = await this.moralis.enableWeb3({provider:providerName as any})
+                let result = await this.moralis.enableWeb3({provider: providerName as any})
                     .catch(async reason => {
                         ErrorInfo.report(reason);
                     });
                 if (!result) return;
             }
 
-            let providerInfo : ProviderInfo = new ProviderInfo(null);
+            let providerInfo: ProviderInfo = new ProviderInfo(null);
             let authenticationService = new AuthenticateService(this.moralis);
             await authenticationService.authenticateUser(providerName, (walletConnectionInfo) => {
                 providerInfo = new ProviderInfo(walletConnectionInfo);
-            } );
+            });
             (user as any).providerInfo = providerInfo;
 
             return user;
@@ -85,12 +85,13 @@ export default class UserService {
     }
 
 
-    public async isMarketOpenOrUserOffHours() : Promise<boolean> {
+    public async isMarketOpenOrUserOffHours(): Promise<boolean> {
         let marketService = new MarketService(this.moralis);
         let isOpen = await marketService.isMarketOpen();
         if (isOpen) return true;
 
         let networkInfo = NetworkInfo.getInstance();
+        //TODO: Remove on mainnet launch
         if (!networkInfo.TestNetwork) return false;
 
         return false;
@@ -114,7 +115,7 @@ export default class UserService {
         return await this.moralis.Cloud.run('account');
     }
 
-    getEthAddress() {
+    getEthAddress(): string | undefined {
         return this.getUser()?.get('ethAddress');
     }
 
@@ -150,17 +151,17 @@ export default class UserService {
         return await this.moralis.Cloud.run('createPlaidLinkToken')
     }
 
-    public async getBankRelationships(): Promise<BankRelationship[]> {
-        return await this.moralis.Cloud.run('getBankRelationship') as BankRelationship[]
+    public async getBankRelationship(): Promise<BankRelationship> {
+        return await this.moralis.Cloud.run('getBankRelationship') as BankRelationship
     }
 
     public async getLatestTransfers(direction: TransferDirectionEnum) {
         return await this.moralis.Cloud.run('getTransfers', {direction: direction}) as Transfer[];
     }
 
-    public async createTransfer(amount: string, direction: string, relationship_id: string, transfer_type: string) {
+    public async createTransfer(amount: string, direction: string) {
         return await this.moralis.Cloud.run('createTransfer',
-            {amount: amount, direction: direction, relationship_id: relationship_id, transfer_type: transfer_type})
+            {amount: amount, direction: direction})
     }
 
     async deleteTransfer(id: string) {

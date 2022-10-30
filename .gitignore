@@ -3,3 +3,4 @@ node_modules
 /app/js/main.*.js
 /app/js/main.*.json
 .idea
+/app/js/*.js

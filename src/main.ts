@@ -9,7 +9,6 @@ import GeneralError from "./errors/GeneralError";
 import Header from "./ui/elements/Header";
 import AUsdBalance from "./ui/elements/AUsdBalance";
 
-
 const start = async function () {
     let slowServerTimer = setTimeout(slowServer, 5 * 1000);
 
@@ -71,5 +70,3 @@ console.log('loggedInUser', loggedInUser);
 }
 
 start().then();
-
-

@@ -56,13 +56,9 @@ export default class Transfer {
             }
             LoadingHelper.setLoading(notifyTransfer);
 
-            let relationship_id = document.getElementById('relationship_id') as HTMLInputElement;
-            let transfer_type = document.getElementById('transfer_type') as HTMLInputElement;
-
             let userService = new UserService(this.moralis);
-            await userService.createTransfer(amount.value, 'INCOMING', relationship_id.value, transfer_type.value)
-                .then((response) => {
-                    console.log(response);
+            await userService.createTransfer(amount.value, 'INCOMING')
+                .then(() => {
                     if (StringHelper.isNullOrEmpty(this.bankRelationship!.processor_token)) {
                         this.aUsdFund.wireTransferInfo.show(amount.value);
                     } else {

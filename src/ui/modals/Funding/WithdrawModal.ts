@@ -8,6 +8,7 @@ import StringHelper from "../../../util/StringHelper";
 import {isJSON, roundNumber} from "../../../util/Helper";
 import TransfersList from "./TransfersList";
 import {TransferDirectionEnum} from "../../../enums/TransferDirectionEnum";
+import BigNumber from "bignumber.js";
 
 export default class WithdrawModal {
 
@@ -17,7 +18,7 @@ export default class WithdrawModal {
     private wireTransferCost = 50;
     private achTransferCost = 25;
     private transferCost: number;
-    private currentBalance?: number;
+    private currentBalance?: BigNumber;
     private transfersList: TransfersList;
 
     constructor(moralis: typeof Moralis) {
@@ -30,25 +31,29 @@ export default class WithdrawModal {
 
     public async show() {
         let modal = new Modal();
-        let bankRelationships = await this.userService.getBankRelationships();
-        if (bankRelationships.length == 0) {
+        let bankRelationships = await this.userService.getBankRelationship();
+        if (!bankRelationships) {
             modal.showModal('Withdraw information', "You haven't setup bank connection. You cannot withdraw from without bank connection");
             return;
         }
 
         let transfersHtml = await this.transfersList.render(TransferDirectionEnum.Outgoing);
+        let ethAddress = this.userService.getEthAddress();
 
         let ausdService = new AUSDService(this.moralis);
-        this.currentBalance = (await ausdService.getAUSDBalanceOf(this.userService.getEthAddress())).toNumber();
+        this.currentBalance = new BigNumber(0);
+        if (ethAddress) {
+            this.currentBalance = await ausdService.getAUSDBalanceOf(ethAddress);
+        }
 
-        if (this.currentBalance == 0) {
+        if (this.currentBalance.eq(0)) {
             let tmp = Handlebars.compile("Your current balance is $0. There is nothing to withdraw. {{{transfers}}}");
             modal.showModal('Withdraw information', tmp({transfers: transfersHtml}));
             return;
         }
         let withdrawTemplate = Handlebars.compile(WithdrawModalHtml);
 
-        this.bankInfo = bankRelationships[0];
+        this.bankInfo = bankRelationships;
         this.transferCost = (this.bankInfo.bank_code_type) ? this.wireTransferCost : this.achTransferCost;
 
         let obj: any = {
@@ -107,15 +112,12 @@ export default class WithdrawModal {
         feeWarning!.innerText = this.transferCost.toString();
         feePercentage!.innerText = roundNumber((this.transferCost / parseFloat(amount.value)) * 100).toString();
 
-        let relationship_id = this.bankInfo.id;
-        let transfer_type = (this.bankInfo.bank_code_type) ? 'wire' : 'ach';
-
 
         let confirmWithdrawButton = document.getElementById('confirmWithdrawButton');
         confirmWithdrawButton?.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            await this.userService.createTransfer(amount.value, TransferDirectionEnum.Outgoing, relationship_id, transfer_type)
+            await this.userService.createTransfer(amount.value, TransferDirectionEnum.Outgoing)
                 .then(async (response) => {
                     withdrawConfirm!.innerHTML = await this.transfersList.render(TransferDirectionEnum.Outgoing);
                     this.transfersList.bindEvents();

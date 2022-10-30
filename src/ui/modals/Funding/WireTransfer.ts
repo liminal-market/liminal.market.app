@@ -43,13 +43,13 @@ export default class WireTransfer {
                     let writeTransferError = document.getElementById('writeTransferError');
                     if (writeTransferError) {
                         if (obj.serverError.message.indexOf('only one bank association') != -1) {
-                            let bankRelationships = await userService.getBankRelationships();
+                            let bankRelationship = await userService.getBankRelationship();
 
-                            if (bankRelationships.length == 0) {
+                            if (!bankRelationship) {
                                 writeTransferError.innerText = 'We cannot create the bank connection. Something is not working as it should. Please contact us at <a href="mailto:info@liminal.market">info@liminal.market</a>';
                                 writeTransferError.style.display = 'block'
                             } else {
-                                await this.aUsdFund.transfer.show(bankRelationships[0]);
+                                await this.aUsdFund.transfer.show(bankRelationship);
                             }
                         } else {
                             writeTransferError.innerText = obj.serverError.message;

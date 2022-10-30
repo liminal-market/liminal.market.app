@@ -27,7 +27,7 @@ export default class FakeAUSDFund {
         callback();
     }
 
-    public showAUSDFakeFund(callback : () => void) {
+    public showAUSDFakeFund(callback: () => void) {
         let template = Handlebars.compile(FakeFundingHtml);
 
         let contractInfo = ContractInfo.getContractInfo();
@@ -104,7 +104,10 @@ export default class FakeAUSDFund {
         let userService = new UserService(this.moralis);
         let ethAddress = userService.getEthAddress();
 
-        let amount = await aUSDService.getAUSDBalanceOf(ethAddress);
+        let amount = new BigNumber(0);
+        if (ethAddress) {
+            amount = await aUSDService.getAUSDBalanceOf(ethAddress);
+        }
         currentAUSDBalance.innerHTML = '$' + roundBigNumber(amount).toString();
 
         if (this.currentBalance.eq(-1)) {

@@ -148,6 +148,8 @@ export default class TradePanelInput {
     }
 
     public async loadBalance() {
+        this.balance = new BigNumber(0);
+
         let userService = new UserService(this.moralis);
         let ethAddress = userService.getEthAddress();
 
@@ -155,12 +157,17 @@ export default class TradePanelInput {
         if (!balanceDom) return;
 
         if (this.symbol === 'aUSD') {
-            let aUsdService = new AUSDService(this.moralis);
-            this.balance = await aUsdService.getAUSDBalanceOf(ethAddress);
+            if (ethAddress) {
+                let aUsdService = new AUSDService(this.moralis);
+                this.balance = await aUsdService.getAUSDBalanceOf(ethAddress);
+            }
             balanceDom.innerHTML = '$' + roundBigNumber(this.balance).toString();
         } else if (this.name !== '') {
-            let securityTokenService = new SecurityTokenService(this.moralis);
-            this.balance = await securityTokenService.getQuantityByAddress(this.symbol, ethAddress);
+            this.balance = new BigNumber(0);
+            if (ethAddress) {
+                let securityTokenService = new SecurityTokenService(this.moralis);
+                this.balance = await securityTokenService.getQuantityByAddress(this.symbol, ethAddress);
+            }
             balanceDom.innerHTML = roundBigNumberDecimal(this.balance, 6).toString();
         }
         balanceDom.dataset.tooltip = this.balance.toString();
