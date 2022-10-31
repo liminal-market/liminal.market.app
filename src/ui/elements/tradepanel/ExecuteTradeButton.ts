@@ -352,7 +352,7 @@ export default class ExecuteTradeButton {
                     clearInterval(this.kycIdDoneTimeout);
                     await this.renderButton()
                 }
-            }, 5 * 1000)
+            }, 10 * 1000)
         }
 
         if (kycResponse.isValidKyc) {
