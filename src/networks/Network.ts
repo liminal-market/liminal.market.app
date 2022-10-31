@@ -14,14 +14,16 @@ export default class Network {
 	BuyUrl ='';
 
 	constructor() {
-        if (window.location.host.indexOf('localhost') != -1) {
-            this.ServerUrl = "https://dqet8dfymvzj.usemoralis.com:2053/server";
-            this.AppId = "TXR6YesK99VgRCxSecnySRMp1KI5rLnCfIetQuuU";
-        } else {
-            this.ServerUrl = "https://f8t1vrrwtboa.usemoralis.com:2053/server";
-            this.AppId = "XZhp3wQobrKiCib0Bf4FPVKAUhbHM9SvTLKOKvBb";
-        }
-    }
+		if (window.location.host.indexOf('localhost') != -1) {
+			this.ServerUrl = "https://dqet8dfymvzj.usemoralis.com:2053/server";
+			this.AppId = "TXR6YesK99VgRCxSecnySRMp1KI5rLnCfIetQuuU";
+		}
+		//else
+		{
+			this.ServerUrl = "https://f8t1vrrwtboa.usemoralis.com:2053/server";
+			this.AppId = "XZhp3wQobrKiCib0Bf4FPVKAUhbHM9SvTLKOKvBb";
+		}
+	}
 
 	public async addNetworkToWallet(moralis : typeof Moralis) {
 		const web3 = await moralis.enableWeb3();

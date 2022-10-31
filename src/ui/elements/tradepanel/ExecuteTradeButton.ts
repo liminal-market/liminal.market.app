@@ -345,6 +345,16 @@ export default class ExecuteTradeButton {
         }
 
         let kycResponse = await kycService.hasValidKYC();
+        if (!kycResponse.isValidKyc && kycResponse.status == 'ACTIVE') {
+            this.kycIdDoneTimeout = setInterval(async () => {
+                kycResponse = await kycService.hasValidKYC();
+                if (kycResponse.isValidKyc) {
+                    clearInterval(this.kycIdDoneTimeout);
+                    await this.renderButton()
+                }
+            }, 5 * 1000)
+        }
+
         if (kycResponse.isValidKyc) {
 
             if (intervalCheck) {
