@@ -2,17 +2,25 @@ import AUSDService from "../../services/blockchain/AUSDService";
 import {roundBigNumber} from "../../util/Helper";
 import NetworkInfo from "../../networks/NetworkInfo";
 import FakeAUSDFund from "../modals/Funding/FakeAUSDFund";
-import Moralis from "moralis";
 import AUSDFund from "../modals/Funding/AUSDFund";
 import WithdrawModal from "../modals/Funding/WithdrawModal";
+import UserService from "../../services/backend/UserService";
 
 export default class AUsdBalance {
-    user: Moralis.Attributes;
+    user: any;
     moralis: typeof Moralis;
 
-    constructor(moralis: typeof Moralis, user: Moralis.Attributes) {
+    constructor(moralis: typeof Moralis, user: any) {
         this.user = user;
         this.moralis = moralis;
+    }
+
+    public static async forceLoadAUSDBalanceUI() {
+        let userService = new UserService(Moralis);
+        let user = userService.getUser();
+        let ui = new AUsdBalance(Moralis, user)
+        AUSDService.lastUpdate = undefined;
+        await ui.loadAUSDBalanceUI();
     }
 
     public async loadAUSDBalanceUI() {
@@ -21,9 +29,7 @@ export default class AUsdBalance {
         let userInfoAUsdBalance = document.getElementById('userInfoAUsdBalance');
         let frontpageAUsdBalance = document.getElementById('frontpageAUsdBalance');
 
-        if (userInfoAUsdBalance && !userInfoAUsdBalance.classList.contains('hidden')) {
-            return;
-        }
+        if (!userInfoAUsdBalance) return;
 
         if (!this.user.get('alpacaId')) {
             frontpageAUsdBalance?.classList.add('hidden');
@@ -35,8 +41,8 @@ export default class AUsdBalance {
         }
 
         let aUSDService = new AUSDService(this.moralis);
-        let aUsdValue = await aUSDService.getAUSDBalanceOf(this.user.get('ethAddress'));
-        aUsdValue = roundBigNumber(aUsdValue);
+        let aUsdValueWei = await aUSDService.getAUSDBalanceOf(this.user.get('ethAddress'));
+        let aUsdValue = roundBigNumber(aUsdValueWei);
 
         let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
         if (frontpageAUSDBalance) frontpageAUSDBalance.innerHTML = '$' + aUsdValue;
@@ -44,6 +50,13 @@ export default class AUsdBalance {
         let user_info_ausd_balance = document.getElementById('user_info_ausd_balance')
         if (user_info_ausd_balance) user_info_ausd_balance.innerHTML = '$' + aUsdValue;
         this.bindEvents();
+
+        let balance_value = document.querySelector('.balance_value') as HTMLElement;
+        if (balance_value) {
+            balance_value.innerHTML = '$' + aUsdValue;
+            balance_value.title = aUsdValueWei.toString();
+            balance_value.dataset['tooltip'] = aUsdValueWei.toString();
+        }
 
         if (aUsdValue.isLessThan(10)) {
             let frontpage_fund_account = document.getElementById('frontpage_fund_account');

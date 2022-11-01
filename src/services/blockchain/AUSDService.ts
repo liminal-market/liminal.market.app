@@ -7,7 +7,7 @@ import BlockchainService from "./BlockchainService";
 
 export default class AUSDService extends BlockchainService {
     private static AUSDInfo: any;
-    private static lastUpdate?: Date;
+    public static lastUpdate?: Date;
     private static aUSDAmount?: BigNumber;
 
     constructor(moralis: typeof Moralis) {
@@ -16,7 +16,7 @@ export default class AUSDService extends BlockchainService {
 
     public async getAUSDBalanceOf(ethAddress: string): Promise<BigNumber> {
         if (AUSDService.lastUpdate && AUSDService.aUSDAmount &&
-                DateHelper.isOlderThen(AUSDService.lastUpdate, 5)) {
+            !DateHelper.isOlderThen(AUSDService.lastUpdate, 5)) {
             return AUSDService.aUSDAmount;
         }
 

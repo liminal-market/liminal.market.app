@@ -22,6 +22,7 @@ import NativeTokenNeeded from "../../modals/NativeTokenNeeded";
 import BigNumber from "bignumber.js";
 import KycStatusHandler from "../../modals/KYC/KycStatusHandler";
 import KycApprovedHtml from '../../../html/modal/Kyc/KycApproved.html';
+import AUsdBalance from "../AUsdBalance";
 
 
 export default class ExecuteTradeButton {
@@ -232,7 +233,7 @@ export default class ExecuteTradeButton {
     public async monitorExecuteTrade(transaction: Moralis.ExecuteFunctionResult, tradeType: TradeType) {
         let subscription = new Subscription(this.moralis);
 
-        await subscription.subscribeToTable(tradeType, (object) => {
+        await subscription.subscribeToTable(tradeType, async (object) => {
             let user = this.moralis.User.current();
             if (!user) return;
             if (object.walletAddress != user.get('ethAddress')) {
@@ -241,7 +242,8 @@ export default class ExecuteTradeButton {
             }
 
             if (object.status == 'order_filled') {
-                this.showTradeExecuted(object);
+                await this.showTradeExecuted(object);
+                await AUsdBalance.forceLoadAUSDBalanceUI();
 
                 let executingTrade = document.getElementById('executing-trade-progress');
                 if (!executingTrade) return;
@@ -253,7 +255,8 @@ export default class ExecuteTradeButton {
             } else if (!object.status) {
                 this.setProgressText('Received order sending to stock exchange', object.transaction_hash)
             } else if (object.status == 'order_requested') {
-                this.setProgressText('Sent to stock exchange', object.transaction_hash)
+                this.setProgressText('Sent to stock exchange', object.transaction_hash);
+                await AUsdBalance.forceLoadAUSDBalanceUI();
             }
         });
 
@@ -408,8 +411,12 @@ export default class ExecuteTradeButton {
         if (this.hasBuyingPower) {
             button.innerHTML = 'We are funding you aUSD token';
             this.checkBalanceInterval = setInterval(async () => {
+                AUSDService.lastUpdate = undefined;
+
                 let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
                 if (balance.isGreaterThan(0)) {
+                    await AUsdBalance.forceLoadAUSDBalanceUI();
+
                     clearInterval(this.checkBalanceInterval);
                     await this.renderButton();
                 }
