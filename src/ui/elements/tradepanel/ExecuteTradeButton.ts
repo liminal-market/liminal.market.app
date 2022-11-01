@@ -351,6 +351,7 @@ export default class ExecuteTradeButton {
             this.kycIdDoneTimeout = setInterval(async () => {
                 kycResponse = await kycService.hasValidKYC();
                 if (kycResponse.isValidKyc) {
+                    this.hasBuyingPower = kycResponse.hasBuyingPower;
                     clearInterval(this.kycIdDoneTimeout);
                     await this.renderButton()
                 }
@@ -396,11 +397,26 @@ export default class ExecuteTradeButton {
         }, 10 * 1000);
     }
 
+    checkBalanceInterval: any;
+    hasBuyingPower = false;
+
     private async userHasAUSD(button: HTMLElement): Promise<boolean> {
         let ausdService = new AUSDService(this.moralis);
         let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
         if (balance.isGreaterThan(0)) return true;
 
+        if (this.hasBuyingPower) {
+            button.innerHTML = 'We are funding you aUSD token';
+            this.checkBalanceInterval = setInterval(async () => {
+                let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
+                if (balance.isGreaterThan(0)) {
+                    clearInterval(this.checkBalanceInterval);
+                    await this.renderButton();
+                }
+            }, 10 * 1000);
+
+            return false;
+        }
         let networkInfo = NetworkInfo.getInstance();
         if (networkInfo.TestNetwork) {
             button.innerHTML = 'You need aUSD. Click here to get some';
