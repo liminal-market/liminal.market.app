@@ -37,19 +37,12 @@ export default class AUSDService extends BlockchainService {
         });
     }
 
-    public async getAUsdAbi() {
-        if (AUSDService.AUSDInfo) return AUSDService.AUSDInfo.abi;
-
-        let response = await fetch('../abi/aUSD.json');
-        AUSDService.AUSDInfo = await response.json();
-        return AUSDService.AUSDInfo.abi;
-    }
-
     public async transfer(symbolAddress : string, qty : BigNumber) {
         const options = await this.getOptions('transfer', {
-            recipient: symbolAddress,
+            to: symbolAddress,
             amount: Moralis.Units.Token(qty.toString(), 18)
         });
+
 
         let result = await this.executeFunction(options)
             .then(result => {
@@ -77,5 +70,13 @@ export default class AUSDService extends BlockchainService {
             params: params,
         };
         return options;
+    }
+
+    public async getAUsdAbi() {
+        if (AUSDService.AUSDInfo) return AUSDService.AUSDInfo.abi;
+
+        let response = await fetch('../abi/aUSD.json');
+        AUSDService.AUSDInfo = await response.json();
+        return AUSDService.AUSDInfo.abi;
     }
 }

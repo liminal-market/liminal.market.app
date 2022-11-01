@@ -45,8 +45,9 @@ export default class ExecuteTradeButton {
     }
 
     public async renderButton() {
-
         this.button = document.getElementById('liminal_market_execute_trade') as HTMLInputElement;
+        //this.button.replaceWith(this.button.cloneNode(true));
+        // document.getElementById('liminal_market_execute_trade')!.outerHTML = this.button.outerHTML;
 
         this.loadingButton(this.button);
 
@@ -92,6 +93,7 @@ export default class ExecuteTradeButton {
     }
 
     private enableExecuteTrade(button: HTMLElement) {
+
         //if (this.sellTradeInput.quantity.eq(0)) return;
 
         //execute trade can be done
@@ -160,7 +162,7 @@ export default class ExecuteTradeButton {
     }
 
     public getBuyingSharesObj(object: any): any {
-        let ethAddress = object.userAddress;
+        let ethAddress = object.walletAddress;
         let tokenAddress = object.tokenAddress;
         let buyingQuantity = object.filled_qty;
         let sellingAmount = '$' + new BigNumber(object.amount).div(10 ** 18).toFixed();
@@ -233,8 +235,8 @@ export default class ExecuteTradeButton {
         await subscription.subscribeToTable(tradeType, (object) => {
             let user = this.moralis.User.current();
             if (!user) return;
-            if (object.userAddress != user.get('ethAddress')) {
-                console.log('obj.userAddress:' + object.userAddress + ' user:' + user.get('ethAddress'));
+            if (object.walletAddress != user.get('ethAddress')) {
+                console.log('obj.walletAddress:' + object.walletAddress + ' user:' + user.get('ethAddress'));
                 return;
             }
 
