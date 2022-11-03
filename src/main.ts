@@ -10,7 +10,7 @@ import Header from "./ui/elements/Header";
 import AUsdBalance from "./ui/elements/AUsdBalance";
 
 const start = async function () {
-    let slowServerTimer = setTimeout(slowServer, 5 * 1000);
+    let slowServerTimer = setTimeout(slowServer, 10 * 1000);
 
     let connectionService = new ConnectionService();
     connectionService.start().then(async function () {
@@ -62,7 +62,7 @@ console.log('loggedInUser', loggedInUser);
             return;
         }
 
-        loading.innerHTML = 'Hmmm.... our servers are slow and might be down. Give it few minutes.'
+        loading.innerHTML = 'Hmmm.... our servers are slow. Give it few seconds.'
 
     }
     Header.loadImage();

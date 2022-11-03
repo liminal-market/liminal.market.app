@@ -53,9 +53,9 @@ export default class AUsdBalance {
 
         let balance_value = document.querySelector('.balance_value') as HTMLElement;
         if (balance_value) {
-            balance_value.innerHTML = '$' + aUsdValue;
-            balance_value.title = aUsdValueWei.toString();
-            balance_value.dataset['tooltip'] = aUsdValueWei.toString();
+            balance_value.innerHTML = '$' + aUsdValue.toFixed();
+            balance_value.title = aUsdValueWei.toFixed();
+            balance_value.dataset['tooltip'] = aUsdValueWei.toFixed();
         }
 
         if (aUsdValue.isLessThan(10)) {

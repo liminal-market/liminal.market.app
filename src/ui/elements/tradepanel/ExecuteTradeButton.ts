@@ -46,9 +46,8 @@ export default class ExecuteTradeButton {
     }
 
     public async renderButton() {
+        this.button.outerHTML = this.button.outerHTML;
         this.button = document.getElementById('liminal_market_execute_trade') as HTMLInputElement;
-        //this.button.replaceWith(this.button.cloneNode(true));
-        // document.getElementById('liminal_market_execute_trade')!.outerHTML = this.button.outerHTML;
 
         this.loadingButton(this.button);
 
@@ -237,7 +236,6 @@ export default class ExecuteTradeButton {
             let user = this.moralis.User.current();
             if (!user) return;
             if (object.walletAddress != user.get('ethAddress')) {
-                console.log('obj.walletAddress:' + object.walletAddress + ' user:' + user.get('ethAddress'));
                 return;
             }
 
@@ -277,7 +275,7 @@ export default class ExecuteTradeButton {
     private walletIsConnected(button: HTMLElement) {
         let walletConnected = this.authenticateService.isWalletConnected();
         if (walletConnected) return true;
-        this.removeClickEvent(button);
+
         button.innerHTML = 'Connect wallet';
         button.addEventListener('click', () => {
             let connectWallet = new ConnectWallet(this.moralis);
@@ -411,7 +409,7 @@ export default class ExecuteTradeButton {
         if (balance.isGreaterThan(0)) return true;
 
         if (this.hasBuyingPower) {
-            button.innerHTML = 'We are funding you aUSD token';
+            button.innerHTML = 'We are funding your aUSD token';
             this.checkBalanceInterval = setInterval(async () => {
                 AUSDService.lastUpdate = undefined;
 
@@ -497,14 +495,6 @@ export default class ExecuteTradeButton {
         this.stopLoadingButton(button);
 
         return false;
-    }
-
-    private removeClickEvent(button: HTMLElement) {
-        let f = (event: any) => button.onclick ? (event) : undefined;
-
-        if (f) {
-            button.removeEventListener('click', f);
-        }
     }
 
     private hasQuantityAndSymbol(button: HTMLElement) {
