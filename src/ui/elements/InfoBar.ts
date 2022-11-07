@@ -9,7 +9,7 @@ export default class InfoBar {
             infoBar.classList.add('notificationBar');
             infoBar.id = 'infoBar';
             document.body.insertAdjacentElement('afterbegin', infoBar);
-        };
+        }
 
         infoBar.innerHTML = message;
         infoBar.classList.remove('hidden');

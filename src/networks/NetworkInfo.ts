@@ -2,12 +2,11 @@ import localhostNetwork from './localhost-network';
 import mumbaiNetwork from './mumbai-network';
 import Network from "./Network";
 import CookieHelper from "../util/CookieHelper";
-import fujiNetwork from "./fuji-network";
 import Moralis from "moralis";
-import GeneralError from "../errors/GeneralError";
+import polygonNetwork from "./polygon-network";
 
 
-const networkInfos = [localhostNetwork, mumbaiNetwork];
+const networkInfos = [localhostNetwork, mumbaiNetwork, polygonNetwork];
 
 
 export default class NetworkInfo {
