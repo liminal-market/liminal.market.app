@@ -27,11 +27,14 @@ export default class UserService {
     }
 
 
-
     public async isLoggedIn(loadingMessage: HTMLElement) {
         let user = await this.moralis.User.currentAsync();
-        showBar('ethereumInstalled:' + ethereumInstalled());
+        let walletHelper = new WalletHelper(this.moralis);
+
         if (!ethereumInstalled()) {
+            if (walletHelper.isWebview(window.navigator.userAgent)) {
+                showBar('If you are using Metamask, you need to close this tab and open new tab to connect.');
+            }
             if (user) this.logOut();
             return;
         }
@@ -39,13 +42,10 @@ export default class UserService {
         let cookieHelper = new CookieHelper(document);
         let providerName = cookieHelper.getCookieValue('provider');
 
-        let walletHelper = new WalletHelper(this.moralis);
         if (walletHelper.isWebview(window.navigator.userAgent)) providerName = ' ';
-
         if (!providerName) {
             return undefined;
         }
-
 
         if (!this.moralis.isWeb3Enabled()) {
             let str = 'We are sending login request to your wallet. If you cancel we will simply log you out. You can always log again in.';
@@ -53,28 +53,22 @@ export default class UserService {
             loadingMessage.innerHTML = str;
 
             let logoutButton = document.getElementById('logoutButton');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', () => {
-                    this.moralis.User.logOut();
-                })
-            }
+            logoutButton?.addEventListener('click', () => {
+                this.moralis.User.logOut();
+                location.reload();
+            })
 
             let result = await this.moralis.enableWeb3({
                 provider: providerName as any,
                 appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
             })
                 .catch(async reason => {
-                    if (reason.message.indexOf('Non ethereum enabled browser') != -1) {
-                        await this.moralis.User.logOut();
-                        location.reload();
-                    } else {
-                        ErrorInfo.report(reason);
-                    }
+                    ErrorInfo.report(reason);
                 });
             if (!result) return;
         }
 
-        let providerInfo: ProviderInfo = new ProviderInfo(null);
+        let providerInfo = new ProviderInfo(null);
         let authenticationService = new AuthenticateService(this.moralis);
         await authenticationService.authenticateUser(providerName, (walletConnectionInfo) => {
             providerInfo = new ProviderInfo(walletConnectionInfo);
