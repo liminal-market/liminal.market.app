@@ -42,12 +42,19 @@ export const isJSON = function(str : string) {
 }
 
 
-export const shortEth = function(ethAddress : string) {
+export const shortEth = function (ethAddress: string) {
 	if (!ethAddress) return '';
 
 	return ethAddress.substring(0, 6) + "..." + ethAddress.substring(ethAddress.length - 4);
 };
 
-export const upperFirstLetter = function(text : string) {
+export const upperFirstLetter = function (text: string) {
 	return text[0].toUpperCase() + text.substring(1);
+}
+
+export const showBar = function (text: string) {
+	let header = document.querySelector('header');
+	if (!header) return;
+	let warningHtml = '<div class="errorBar">' + text + '</div>';
+	header.insertAdjacentHTML('beforebegin', warningHtml);
 }
