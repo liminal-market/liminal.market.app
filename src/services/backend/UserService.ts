@@ -25,69 +25,69 @@ export default class UserService {
         return this.moralis.User.logOut();
     }
 
+    public ethereumInstalled() {
+        try {
+            return (typeof ethereum !== 'undefined');
+        } catch (e: any) {
+            return false;
+        }
+    }
+
     public async isLoggedIn(loadingMessage: HTMLElement) {
         let user = await this.moralis.User.currentAsync();
 
-        if (user) {
-            let cookieHelper = new CookieHelper(document);
-            let providerName = cookieHelper.getCookieValue('provider');
-
-            let walletHelper = new WalletHelper(this.moralis);
-            if (walletHelper.isWebview(window.navigator.userAgent)) providerName = ' ';
-
-            if (!providerName) {
-                return undefined;
-            }
-
-            if (!this.moralis.isWeb3Enabled()) {
-                let str = 'We are sending login request to your wallet. If you cancel we will simply log you out. You can always log again in.';
-                str += '<button id="logoutButton">Logout</button>'
-                loadingMessage.innerHTML = str;
-
-                let logoutButton = document.getElementById('logoutButton');
-                if (logoutButton) {
-                    logoutButton.addEventListener('click', () => {
-                        this.moralis.User.logOut();
-                    })
-                }
-
-                let result = await this.moralis.enableWeb3({
-                    provider: providerName as any,
-                    appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
-                })
-                    .catch(async reason => {
-                        if (reason.message.indexOf('Non ethereum enabled browser') != -1) {
-                            //await this.moralis.User.logOut();
-                            //location.reload();
-                        }
-
-                        let html = 'Moralis.isWeb3Enabled():' + Moralis.isWeb3Enabled();
-                        // @ts-ignore
-                        html += '<br />Moralis.isEnablingWeb3():' + Moralis.isEnablingWeb3;
-                        // @ts-ignore
-                        html += '<br />Moralis.ensureWeb3IsInstalled():' + Moralis.ensureWeb3IsInstalled();
-                        html += '<br />Moralis.isMetaMaskInstalled():' + await Moralis.isMetaMaskInstalled();
-                        html += '<br />ethereum:' + typeof ethereum != 'undefined';
-                        if (ethereum) {
-                            html += '<br />ethereum.chainId:' + ethereum.chainId
-                        }
-                        document.getElementById('main_container')!.innerHTML = html;
-                        //ErrorInfo.report(reason);
-                    });
-                if (!result) return;
-            }
-
-            let providerInfo: ProviderInfo = new ProviderInfo(null);
-            let authenticationService = new AuthenticateService(this.moralis);
-            await authenticationService.authenticateUser(providerName, (walletConnectionInfo) => {
-                providerInfo = new ProviderInfo(walletConnectionInfo);
-            });
-            (user as any).providerInfo = providerInfo;
-
-            return user;
+        if (!this.ethereumInstalled()) {
+            if (user) this.logOut();
+            return;
         }
 
-        return undefined;
+        let cookieHelper = new CookieHelper(document);
+        let providerName = cookieHelper.getCookieValue('provider');
+
+        let walletHelper = new WalletHelper(this.moralis);
+        if (walletHelper.isWebview(window.navigator.userAgent)) providerName = ' ';
+
+        if (!providerName) {
+            return undefined;
+        }
+
+
+        if (!this.moralis.isWeb3Enabled()) {
+            let str = 'We are sending login request to your wallet. If you cancel we will simply log you out. You can always log again in.';
+            str += '<button id="logoutButton">Logout</button>'
+            loadingMessage.innerHTML = str;
+
+            let logoutButton = document.getElementById('logoutButton');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', () => {
+                    this.moralis.User.logOut();
+                })
+            }
+
+            let result = await this.moralis.enableWeb3({
+                provider: providerName as any,
+                appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
+            })
+                .catch(async reason => {
+                    if (reason.message.indexOf('Non ethereum enabled browser') != -1) {
+                        await this.moralis.User.logOut();
+                        location.reload();
+                    } else {
+                        ErrorInfo.report(reason);
+                    }
+                });
+            if (!result) return;
+        }
+
+        let providerInfo: ProviderInfo = new ProviderInfo(null);
+        let authenticationService = new AuthenticateService(this.moralis);
+        await authenticationService.authenticateUser(providerName, (walletConnectionInfo) => {
+            providerInfo = new ProviderInfo(walletConnectionInfo);
+        });
+        (user as any).providerInfo = providerInfo;
+
+        return user;
+
     }
 
 
