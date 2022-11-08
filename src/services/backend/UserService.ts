@@ -71,7 +71,7 @@ export default class UserService {
                         if (ethereum) {
                             html += '<br />ethereum.chainId:' + ethereum.chainId
                         }
-                        alert(html);
+                        document.getElementById('main_container')!.innerHTML = html;
                         //ErrorInfo.report(reason);
                     });
                 if (!result) return;
