@@ -23,7 +23,7 @@ export default class Routing {
 
     public async loadRoutes() {
         let path = window.location.hash.replace('#', '').replace('/', '');
-        if (window.location.search !== '') path = window.location.search.replace('?', '');
+        console.log(path);
         if (path === '') path = 'stocks';
 
         this.attachNavLinks();
@@ -32,6 +32,8 @@ export default class Routing {
 
         if (typeof fn === 'function') {
             await fn(this);
+        } else {
+            await fn(this.settings['show_stocks']);
         }
     }
 
