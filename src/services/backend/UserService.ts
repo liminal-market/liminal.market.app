@@ -20,20 +20,6 @@ export default class UserService {
         this.moralis = moralis;
     }
 
-    async logIn() {
-        try {
-
-            await this.moralis.enableWeb3();
-
-            let user = this.moralis.User.current();
-            if (user) return Promise.resolve(user);
-
-            return this.moralis.authenticate();
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
     public logOut() {
         return this.moralis.User.logOut();
     }
@@ -64,8 +50,12 @@ export default class UserService {
                     })
                 }
 
-                let result = await this.moralis.enableWeb3({provider: providerName as any})
+                let result = await this.moralis.enableWeb3({
+                    provider: providerName as any,
+                    appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
+                })
                     .catch(async reason => {
+                        alert(1);
                         ErrorInfo.report(reason);
                     });
                 if (!result) return;

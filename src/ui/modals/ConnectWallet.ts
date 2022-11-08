@@ -12,12 +12,11 @@ import ErrorInfo from "../../errors/ErrorInfo";
 import TradePage from "../pages/TradePage";
 
 
-
 export default class ConnectWallet {
     moralis: typeof Moralis;
     public static Provider: string;
-    modal : Modal;
-    providerInfo : ProviderInfo;
+    modal: Modal;
+    providerInfo: ProviderInfo;
 
     public constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
@@ -45,19 +44,17 @@ export default class ConnectWallet {
     }
 
     private setupCheckboxes() {
-        let checkboxes: any = {all:false, tos: false, pp: false, cookie: false};
+        let checkboxes: any = {all: false, tos: false, pp: false, cookie: false};
 
         let cookieHelper = new CookieHelper(document);
         let tosConfirmed = cookieHelper.getCookieValue('tos');
         if (tosConfirmed) {
-
-                checkboxes = {tos: true, pp: true}
-                this.toggleProviders(checkboxes);
-                document.getElementById('tos_pp_cookie_panel')!.classList.add('d-none');
+            checkboxes = {tos: true, pp: true}
+            this.toggleProviders(checkboxes);
+            document.getElementById('tos_pp_cookie_panel')!.classList.add('d-none');
 
             return;
         }
-
 
         let inputs = document.querySelectorAll('#tos_pp_cookie_panel input');
         inputs.forEach(input => {
@@ -91,7 +88,7 @@ export default class ConnectWallet {
 
                 let provider = (evt.currentTarget as HTMLAnchorElement).dataset.provider!;
                 this.connectWallet(provider)
-            }, {capture:true})
+            }, {capture: true})
         })
 
     }
@@ -115,18 +112,18 @@ export default class ConnectWallet {
         }
     }
 
-    private showUnsupportedNetworkMessage(connectionInfo : HTMLElement) {
+    private showUnsupportedNetworkMessage(connectionInfo: HTMLElement) {
         let str = 'The network you are connecting to is not supported.';
         str += 'Following networks are supported. '
         let networks = NetworkInfo.getNetworks();
-        for (let i=0;i<networks.length;i++) {
+        for (let i = 0; i < networks.length; i++) {
             if (i != 0) str += ', ';
             str += networks[i].Name;
         }
         connectionInfo.innerHTML = str;
     }
 
-    private connectWallet(providerName : string) {
+    private connectWallet(providerName: string) {
         let authenticationService = new AuthenticateService(this.moralis);
 
         let cookieHelper = new CookieHelper(document);
@@ -134,7 +131,7 @@ export default class ConnectWallet {
 
         authenticationService.authenticateUser(
             providerName,
-            (walletConnectionInfo : any) => {
+            (walletConnectionInfo: any) => {
                 this.web3EnabledResult(providerName, walletConnectionInfo);
             },
             async (user) => {
@@ -153,7 +150,7 @@ export default class ConnectWallet {
             });
     }
 
-    private web3EnabledResult(providerName : string, walletConnectionInfo : any) {
+    private web3EnabledResult(providerName: string, walletConnectionInfo: any) {
         this.providerInfo = new ProviderInfo(walletConnectionInfo);
 
         let connectionInfo = document.getElementById(providerName + 'ConnectionInfo');

@@ -167,8 +167,9 @@ body>footer {
 }
 
 .errorBar {
-	background-color: var(--error-bar-background-color);
-	color: var(--error-bar-color);
+    background-color: var(--error-bar-background-color);
+    color: var(--error-bar-color);
+    padding: 0.4rem 1rem;
 }
 
 .input_error {

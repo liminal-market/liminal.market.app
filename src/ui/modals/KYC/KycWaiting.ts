@@ -21,7 +21,7 @@ export default class KycWaiting extends KycBase {
         let kycService = new KYCService(Moralis);
         let kycResponse = await kycService.hasValidKYC()
 
-        if (kycResponse.isValidKyc) {
+        if (kycResponse.isValidKyc || kycResponse.status == "ACTION_REQUIRED") {
             clearTimeout(this.kycForm.timeout);
 
             this.kycForm.modal.hideModal();
@@ -29,6 +29,7 @@ export default class KycWaiting extends KycBase {
             this.kycForm.timeout = setTimeout(() => {
                 this.checkKycStatus()
             }, 5 * 1000)
+
         }
     }
 

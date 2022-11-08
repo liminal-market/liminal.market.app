@@ -42,7 +42,7 @@ export default class PredefinedErrorHandlers {
             let modal = new Modal();
             let template = Handlebars.compile(WalletMissingHtml);
             modal.showModal('New to blockchain?', template(null), false, () => {
-                window.location.reload();
+                //window.location.reload();
             })
         });
     }

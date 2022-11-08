@@ -23,7 +23,7 @@ export default class AuthenticateService {
             chainId: chainId, appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
         })
             .catch(async (reason) => {
-
+                alert(2);
                 throw new GeneralError(reason);
             });
 

@@ -8,6 +8,7 @@ import WalletHelper from "./util/WalletHelper";
 import GeneralError from "./errors/GeneralError";
 import Header from "./ui/elements/Header";
 import AUsdBalance from "./ui/elements/AUsdBalance";
+import NetworkInfo from "./networks/NetworkInfo";
 
 const start = async function () {
     let slowServerTimer = setTimeout(slowServer, 10 * 1000);
@@ -34,7 +35,12 @@ console.log('loggedInUser', loggedInUser);
         let routing = new Routing(Moralis);
         await routing.loadRoutes();
 
-
+        if (Moralis.isWeb3Enabled() && NetworkInfo.getInstance().TestNetwork) {
+            let header = document.querySelector('header');
+            if (!header) return;
+            let warningHtml = '<div class="errorBar">You are running on testnet. No real trades will be executed</div>';
+            header.insertAdjacentHTML('beforebegin', warningHtml);
+        }
     }).catch((reason) => {
         ErrorInfo.report(new GeneralError("Server is down. Please try again later.<br /><br />" + reason));
     });

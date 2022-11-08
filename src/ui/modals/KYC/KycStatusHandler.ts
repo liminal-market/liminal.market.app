@@ -66,7 +66,8 @@ ACCOUNT_CLOSED	/fixtures/status=ACCOUNT_CLOSED/fixtures/
             case 'APPROVAL_PENDING':
                 return this.showModal('Application is being processed',
                     "You need to wait for KYC to be approved. Then you'll be able to do trades. " +
-                    "This usually takes few minutes. We will email you when you are approved or if there are problems<br /><br />" +
+                    "This usually takes few minutes for the first submission, but can take longer for second submission. " +
+                    "We will email you when you are approved or if there are problems<br /><br />" +
                     "If this status has been for more than 1 day, and you haven't gotten any email from us. Please email us at " +
                     "<a target='_blank' href='mailto:info@liminal.market?subject=My application is being processed for to long&body=Hi, can you help me to find out what the problem is, the KYC process has not changed for some time? My name is _______ and I used the email _______ to register at liminal.market'>info@liminal.market</a>");
             case 'ACTION_REQUIRED':
