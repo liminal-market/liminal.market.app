@@ -56,6 +56,10 @@ export default class UserService {
                     appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
                 })
                     .catch(async reason => {
+                        if (reason.message.indexOf('Non ethereum enabled browser') != -1) {
+                            //await this.moralis.User.logOut();
+                            //location.reload();
+                        }
 
                         let html = 'Moralis.isWeb3Enabled():' + Moralis.isWeb3Enabled();
                         // @ts-ignore
@@ -67,8 +71,7 @@ export default class UserService {
                         if (ethereum) {
                             html += '<br />ethereum.chainId:' + ethereum.chainId
                         }
-                        let modal = new Modal();
-                        modal.showModal('', html);
+                        alert(html);
                         //ErrorInfo.report(reason);
                     });
                 if (!result) return;
