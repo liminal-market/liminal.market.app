@@ -9,6 +9,7 @@ import KycResult from "../../dto/KycResult";
 import {BankRelationship} from "../../dto/alpaca/BankRelationship";
 import {Transfer} from "../../dto/alpaca/Transfer";
 import {TransferDirectionEnum} from "../../enums/TransferDirectionEnum";
+import Modal from "../../ui/modals/Modal";
 
 
 export default class UserService {
@@ -55,8 +56,20 @@ export default class UserService {
                     appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
                 })
                     .catch(async reason => {
-                        alert(1);
-                        ErrorInfo.report(reason);
+
+                        let html = 'Moralis.isWeb3Enabled():' + Moralis.isWeb3Enabled();
+                        // @ts-ignore
+                        html += '<br />Moralis.isEnablingWeb3():' + Moralis.isEnablingWeb3;
+                        // @ts-ignore
+                        html += '<br />Moralis.ensureWeb3IsInstalled():' + Moralis.ensureWeb3IsInstalled();
+                        html += '<br />Moralis.isMetaMaskInstalled():' + await Moralis.isMetaMaskInstalled();
+                        html += '<br />ethereum:' + typeof ethereum != 'undefined';
+                        if (ethereum) {
+                            html += '<br />ethereum.chainId:' + ethereum.chainId
+                        }
+                        let modal = new Modal();
+                        modal.showModal('', html);
+                        //ErrorInfo.report(reason);
                     });
                 if (!result) return;
             }
