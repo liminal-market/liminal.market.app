@@ -43,10 +43,12 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'app')
     },
-    liveReload:false,
-    hot:false,
-    devMiddleware : {
+    liveReload: false,
+    hot: false,
+    devMiddleware: {
       writeToDisk: true,
-    }
+    },
+    compress: true,
+    allowedHosts: ['localhost', '192.168.1.215.sslip.io']
   },
 };

@@ -10,7 +10,7 @@ import {BankRelationship} from "../../dto/alpaca/BankRelationship";
 import {Transfer} from "../../dto/alpaca/Transfer";
 import {TransferDirectionEnum} from "../../enums/TransferDirectionEnum";
 import Modal from "../../ui/modals/Modal";
-import {showBar} from "../../util/Helper";
+import {ethereumInstalled, showBar} from "../../util/Helper";
 
 
 export default class UserService {
@@ -26,18 +26,12 @@ export default class UserService {
         return this.moralis.User.logOut();
     }
 
-    public ethereumInstalled() {
-        try {
-            return (typeof ethereum !== 'undefined');
-        } catch (e: any) {
-            return false;
-        }
-    }
+
 
     public async isLoggedIn(loadingMessage: HTMLElement) {
         let user = await this.moralis.User.currentAsync();
-        showBar('ethereumInstalled:' + this.ethereumInstalled());
-        if (!this.ethereumInstalled()) {
+        showBar('ethereumInstalled:' + ethereumInstalled());
+        if (!ethereumInstalled()) {
             if (user) this.logOut();
             return;
         }

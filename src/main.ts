@@ -9,6 +9,7 @@ import GeneralError from "./errors/GeneralError";
 import Header from "./ui/elements/Header";
 import AUsdBalance from "./ui/elements/AUsdBalance";
 import NetworkInfo from "./networks/NetworkInfo";
+import {ethereumInstalled, showBar} from "./util/Helper";
 
 const start = async function () {
     let slowServerTimer = setTimeout(slowServer, 10 * 1000);
@@ -41,6 +42,10 @@ console.log('loggedInUser', loggedInUser);
             let warningHtml = '<div class="errorBar">You are running on testnet. No real trades will be executed</div>';
             header.insertAdjacentHTML('beforebegin', warningHtml);
         }
+
+        setTimeout(() => {
+            showBar('ethereumInstalled2:' + ethereumInstalled());
+        }, 10 * 1000)
     }).catch((reason) => {
         ErrorInfo.report(new GeneralError("Server is down. Please try again later.<br /><br />" + reason));
     });
