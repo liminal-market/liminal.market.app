@@ -1,6 +1,6 @@
 {
 	"name": "liminal-app",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"private": true,
 	"type": "module",
 	"sideEffects": false,
@@ -27,7 +27,8 @@
 	"scripts": {
 		"test": "mocha",
 		"server": "webpack-dev-server",
-		"build": "webpack --watch"
+		"build": "webpack --watch",
+		"build-prod": "webpack --watch --config webpack.config.prod.cjs"
 	},
 	"jshintConfig": {
 		"esversion": 11
