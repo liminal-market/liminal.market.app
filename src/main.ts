@@ -13,7 +13,7 @@ import {ethereumInstalled, showBar} from "./util/Helper";
 
 const start = async function () {
     let slowServerTimer = setTimeout(slowServer, 10 * 1000);
-
+    showBar('ethereumInstalled0:' + ethereumInstalled());
     let connectionService = new ConnectionService();
     connectionService.start().then(async function () {
         clearTimeout(slowServerTimer);
