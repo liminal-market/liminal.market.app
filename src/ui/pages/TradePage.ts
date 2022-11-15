@@ -59,7 +59,7 @@ export default class TradePage {
             findSymbol.addEventListener('click', (evt) => {
                 evt.preventDefault();
 
-                let securitiesModal = new SecuritiesListModal();
+                let securitiesModal = new SecuritiesListModal(this.moralis);
                 securitiesModal.showModal(() => {
                     securitiesModal.hideModal();
                 })

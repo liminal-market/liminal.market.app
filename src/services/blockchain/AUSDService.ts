@@ -23,7 +23,9 @@ export default class AUSDService extends BlockchainService {
         let options = await this.getOptions("balanceOf", {
             account: ethAddress
         });
-
+if (!this.moralis.isWeb3Enabled()) {
+    //await this.moralis.enableWeb3();
+}
         return await this.executeFunction(options).then(balanceOf => {
             let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
             AUSDService.aUSDAmount = new BigNumber(amount);

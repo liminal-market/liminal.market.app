@@ -1,0 +1,36 @@
+<fieldset>
+    <p>Before you can transfer, you need to set up your bank information</p>
+
+    <form id="achForm">
+        <div class="grid">
+            <label>
+                Account owner name
+                <input name="account_owner_name" required id="account_owner_name"/>
+            </label>
+            <label>Bank Account Type
+                <select name="bank_account_type" id="bank_account_type" required>
+                    <option value=""></option>
+                    <option value="CHECKING">Checking</option>
+                    <option value="SAVINGS">Savings</option>
+                </select>
+            </label>
+        </div>
+        <div class="grid">
+            <label>
+                Bank account number
+                <input name="bank_account_number" id="bank_account_number" required/>
+            </label>
+            <label>
+                Bank routing number
+                <input name="bank_routing_number" id="bank_routing_number" required/>
+            </label>
+        </div>
+        <div class="input_error" id="relationshipError"></div>
+        <div class="grid">
+            <button id="ach_previous">Previous: Funding type</button>
+            <button id="ach_next">Next: Save bank information</button>
+        </div>
+
+    </form>
+
+</fieldset>

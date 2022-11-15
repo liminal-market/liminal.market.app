@@ -1,4 +1,6 @@
 export interface BankRelationship {
+    alpaca_account_number: string;
+
     id: string;
     account_id: string;
     created_at: Date;
@@ -20,6 +22,8 @@ export interface BankRelationship {
     account_number: string;
     bank_code: string;
     bank_code_type: string;
+
+    transfer_type: string;
 }
 
 

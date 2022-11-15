@@ -1,0 +1,11 @@
+<form>
+    <label>Type in the amount in US Dollars ($) that you transferred
+        <input name="amount" class="amount" type="tel" id="amount" minlength="1" required/>
+    </label>
+    <div class="input_error" id="transferError"></div>
+    <button id="notifyTransfer">Notify Liminal.market of incoming transfer</button>
+
+    <input type="hidden" name="transfer_type" id="transfer_type" value="{{transfer_type}}"/>
+    <input type="hidden" name="relationship_id" id="relationship_id" value="{{relationshipId}}"/>
+    <input type="hidden" name="direction" id="direction" value="INCOMING"/>
+</form>

@@ -37,7 +37,8 @@ export default class WithdrawModal {
             return;
         }
 
-        let transfersHtml = await this.transfersList.render(TransferDirectionEnum.Outgoing);
+        let transfers = await this.userService.getLatestTransfers(TransferDirectionEnum.Outgoing)
+        let transfersHtml = await this.transfersList.render(TransferDirectionEnum.Outgoing, transfers);
         let ethAddress = this.userService.getEthAddress();
 
         let ausdService = new AUSDService(this.moralis);
@@ -119,7 +120,8 @@ export default class WithdrawModal {
 
             await this.userService.createTransfer(amount.value, TransferDirectionEnum.Outgoing)
                 .then(async (response) => {
-                    withdrawConfirm!.innerHTML = await this.transfersList.render(TransferDirectionEnum.Outgoing);
+                    let transfers = await this.userService.getLatestTransfers(TransferDirectionEnum.Outgoing);
+                    withdrawConfirm!.innerHTML = await this.transfersList.render(TransferDirectionEnum.Outgoing, transfers);
                     this.transfersList.bindEvents();
                 })
                 .catch(reason => {

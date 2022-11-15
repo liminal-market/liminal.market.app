@@ -1,79 +1,55 @@
 import NetworkInfo from "../../networks/NetworkInfo";
 import MarketService from "../broker/MarketService";
-import CookieHelper from "../../util/CookieHelper";
 import AuthenticateService from "./AuthenticateService";
 import ProviderInfo from "../../wallet/ProviderInfo";
-import WalletHelper from "../../util/WalletHelper";
-import ErrorInfo from "../../errors/ErrorInfo";
 import KycResult from "../../dto/KycResult";
 import {BankRelationship} from "../../dto/alpaca/BankRelationship";
 import {Transfer} from "../../dto/alpaca/Transfer";
 import {TransferDirectionEnum} from "../../enums/TransferDirectionEnum";
-import Modal from "../../ui/modals/Modal";
-import {ethereumInstalled, showBar} from "../../util/Helper";
 
 
 export default class UserService {
     moralis: typeof Moralis;
 
-    constructor(moralis?: typeof Moralis) {
-        if (!moralis) moralis = Moralis
-
+    constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
     }
 
-    public logOut() {
-        return this.moralis.User.logOut();
+    public async logOut() {
+        try {
+            await this.moralis.connector.magicUser.connect.disconnect();
+        } catch (e: any) {
+            console.error('logout magicUser', e);
+        }
+        try {
+            return await this.moralis.User.logOut();
+        } catch (e: any) {
+            console.error('logout moralisUser', e);
+        }
     }
 
-
-    public async isLoggedIn(loadingMessage: HTMLElement) {
+    public async isLoggedIn() {
         let user = await this.moralis.User.currentAsync();
-        let walletHelper = new WalletHelper(this.moralis);
-
-        if (!ethereumInstalled()) {
-            if (walletHelper.isWebview(window.navigator.userAgent)) {
-                showBar('If you are using Metamask, you need to close this tab and open new tab to connect.');
-            }
-            if (user) this.logOut();
+        console.log('user', user);
+        if (!user) {
             return;
         }
 
-        let cookieHelper = new CookieHelper(document);
-        let providerName = cookieHelper.getCookieValue('provider');
-
-        if (walletHelper.isWebview(window.navigator.userAgent)) providerName = ' ';
-        if (!providerName) {
-            return undefined;
-        }
-
         if (!this.moralis.isWeb3Enabled()) {
-            let str = 'We are sending login request to your wallet. If you cancel we will simply log you out. You can always log again in.';
-            str += '<button id="logoutButton">Logout</button>'
-            loadingMessage.innerHTML = str;
+            let result = await AuthenticateService.enableWeb3(this.moralis)
+                .catch(reason => {
+                    this.logOut();
+                })
 
-            let logoutButton = document.getElementById('logoutButton');
-            logoutButton?.addEventListener('click', () => {
-                this.moralis.User.logOut();
-                location.reload();
-            })
-
-            let result = await this.moralis.enableWeb3({
-                provider: providerName as any,
-                appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
-            })
-                .catch(async reason => {
-                    ErrorInfo.report(reason);
-                });
             if (!result) return;
         }
 
-        let providerInfo = new ProviderInfo(null);
         let authenticationService = new AuthenticateService(this.moralis);
-        await authenticationService.authenticateUser(providerName, (walletConnectionInfo) => {
-            providerInfo = new ProviderInfo(walletConnectionInfo);
+        await authenticationService.authenticateUser((web3Provider) => {
+            (user as any).providerInfo = new ProviderInfo(web3Provider)
+        }, (loggedInUser) => {
+            user = loggedInUser;
         });
-        (user as any).providerInfo = providerInfo;
 
         return user;
 
@@ -135,15 +111,10 @@ export default class UserService {
         return await this.moralis.Cloud.run('updateTrustedContact', data);
     }
 
-    public async createAchRelationship(public_token: string, accountId: string) {
+    public async createAchRelationship(account_owner_name: string, bank_account_type: string, bank_account_number: string, bank_routing_number: string) {
         return await this.moralis.Cloud.run('createAchRelationship', {
-            public_token: public_token,
-            account_id: accountId
+            account_owner_name, bank_account_type, bank_account_number, bank_routing_number
         });
-    }
-
-    async getPlaidLinkToken() {
-        return await this.moralis.Cloud.run('createPlaidLinkToken')
     }
 
     public async getBankRelationship(): Promise<BankRelationship> {

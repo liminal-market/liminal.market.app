@@ -1,5 +1,5 @@
-import AUSDFund from "./AUSDFund";
-import SelectFundingTypeHtml from '../../../html/modal/Funding/SelectFundingType.html';
+import AUSDFund from "../AUSDFund";
+import SelectFundingTypeHtml from '../../../../html/modal/Funding/Relationship/SelectFundingType.html';
 
 export default class SelectFundingType {
 
@@ -28,7 +28,7 @@ export default class SelectFundingType {
             }
             let wire_transfer = document.getElementById('wire_transfer') as HTMLInputElement;
             if (wire_transfer?.checked) {
-                this.aUsdFund.wireTransfer.show();
+                this.aUsdFund.wireTransferRelationship.show();
             }
 
             this.aUsdFund.showError('selectFundingTypeError', 'Please select funding type')

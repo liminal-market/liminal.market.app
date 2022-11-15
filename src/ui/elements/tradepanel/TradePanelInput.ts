@@ -86,7 +86,7 @@ export default class TradePanelInput {
         selectStock.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            let securityList = new SecuritiesListModal();
+            let securityList = new SecuritiesListModal(this.moralis);
             await securityList.showModal(async (symbol: string, name: string, logo: string) => {
                 securityList.hideModal();
 

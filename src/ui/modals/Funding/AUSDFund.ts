@@ -1,11 +1,12 @@
 import Modal from "../Modal";
-import SelectFundingType from "./SelectFundingType";
-import ACHRelationship from "./ACHRelationship";
-import Transfer from "./Transfer";
-import WireTransfer from "./WireTransfer";
+import SelectFundingType from "./Relationship/SelectFundingType";
+import ACHRelationship from "./Relationship/ACHRelationship";
+import TransferNotification from "./TransferNotification";
+import WireTransferRelationship from "./Relationship/WireTransferRelationship";
 import UserService from "../../../services/backend/UserService";
-import ACHTransferInfo from "./ACHTransferInfo";
-import WireTransferInfo from "./WireTransferInfo";
+import TransferNotified from "./TransferNotified";
+import {TransferDirectionEnum} from "../../../enums/TransferDirectionEnum";
+import FirstTransferSetup from "./FirstTransferSetup/FirstTransferSetup";
 
 export default class AUSDFund {
 
@@ -14,10 +15,11 @@ export default class AUSDFund {
 
     selectFundingType: SelectFundingType;
     achRelationship: ACHRelationship;
-    wireTransfer: WireTransfer;
-    transfer: Transfer;
-    achTransferInfo: ACHTransferInfo;
-    wireTransferInfo: WireTransferInfo;
+    wireTransferRelationship: WireTransferRelationship;
+
+    firstTransferSetup: FirstTransferSetup;
+    transferNotification: TransferNotification;
+    transferNotified: TransferNotified;
 
     constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
@@ -25,17 +27,23 @@ export default class AUSDFund {
 
         this.selectFundingType = new SelectFundingType(this);
         this.achRelationship = new ACHRelationship(this);
-        this.transfer = new Transfer(moralis, this);
-        this.wireTransfer = new WireTransfer(this);
-        this.achTransferInfo = new ACHTransferInfo(this);
-        this.wireTransferInfo = new WireTransferInfo(this);
+        this.wireTransferRelationship = new WireTransferRelationship(this);
+
+        this.firstTransferSetup = new FirstTransferSetup(moralis, this);
+        this.transferNotification = new TransferNotification(moralis, this);
+        this.transferNotified = new TransferNotified(this);
     }
 
     public async show() {
         let userService = new UserService(this.moralis);
         let bankRelationship = await userService.getBankRelationship();
         if (bankRelationship) {
-            await this.transfer.show(bankRelationship);
+            let transfers = await userService.getLatestTransfers(TransferDirectionEnum.Incoming);
+            if (transfers.length > 0) {
+                await this.transferNotification.show(bankRelationship, transfers);
+            } else {
+                this.firstTransferSetup.show(bankRelationship);
+            }
         } else {
             this.selectFundingType.show();
         }

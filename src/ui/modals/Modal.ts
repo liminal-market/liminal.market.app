@@ -5,8 +5,8 @@ export default class Modal {
     onHide? : () => void;
 
     public hideModal() {
-        let modalDiv = document.getElementById(this.modalId)!;
-        modalDiv.removeAttribute('open');
+        let modalDiv = document.getElementById(this.modalId);
+        modalDiv?.removeAttribute('open');
         if (this.onHide) {
             this.onHide();
         }

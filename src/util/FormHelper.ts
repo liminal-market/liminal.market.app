@@ -53,7 +53,7 @@ export default class FormHelper {
     }
 
     public static validate(selector: string) {
-        let inputs = document.querySelectorAll(selector + ' input[required]');
+        let inputs = document.querySelectorAll(selector + ' input[required], ' + selector + ' select[required]');
         for (let i = 0; i < inputs.length; i++) {
             let input = inputs[i] as HTMLInputElement;
             input.setAttribute('aria-invalid', 'false');

@@ -8,14 +8,16 @@ import {AccountInfo} from "../../../dto/alpaca/AccountInfo";
 import LoadingHelper from "../../../util/LoadingHelper";
 
 export default class KycEditContactForm {
+    moralis: typeof Moralis;
     modal: Modal;
 
-    constructor() {
+    constructor(moralis: typeof Moralis) {
+        this.moralis = moralis;
         this.modal = new Modal();
     }
 
     public async show() {
-        let userService = new UserService(Moralis);
+        let userService = new UserService(this.moralis);
         let account = await userService.getAccount();
         let usa = account.identity.country_of_tax_residence == 'USA'
         let template = Handlebars.compile(KycEditContactFormHtml);

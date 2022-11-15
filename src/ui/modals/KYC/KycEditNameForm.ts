@@ -5,9 +5,11 @@ import StringHelper from "../../../util/StringHelper";
 import LoadingHelper from "../../../util/LoadingHelper";
 
 export default class KycEditNameForm {
+    moralis: typeof Moralis;
     modal: Modal;
 
-    constructor() {
+    constructor(moralis: typeof Moralis) {
+        this.moralis = moralis;
         this.modal = new Modal();
     }
 

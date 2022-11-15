@@ -1,6 +1,7 @@
 import ErrorInfo from "../../errors/ErrorInfo";
 import GeneralError from "../../errors/GeneralError";
 import NetworkInfo from "../../networks/NetworkInfo";
+import AuthenticateService from "../backend/AuthenticateService";
 
 export default class BlockchainService {
     moralis: typeof Moralis;

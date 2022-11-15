@@ -4,6 +4,7 @@ import Network from "./Network";
 import CookieHelper from "../util/CookieHelper";
 import Moralis from "moralis";
 import polygonNetwork from "./polygon-network";
+import {WalletType} from "../enums/WalletType";
 
 
 const networkInfos = [localhostNetwork, mumbaiNetwork, polygonNetwork];
@@ -20,11 +21,15 @@ export default class NetworkInfo {
     public static getInstance(): Network {
         if (NetworkInfo.instance) return NetworkInfo.instance;
 
-        if (typeof ethereum != 'undefined' && ethereum && ethereum.chainId) {
-            let networkInfo = this.getNetworkInfoByChainId(ethereum.chainId);
-            if (networkInfo) {
-                NetworkInfo.instance = networkInfo;
-                return NetworkInfo.instance;
+        let cookieHelper = new CookieHelper(document);
+        let walletType = cookieHelper.getCookieValue('wallet');
+        if (!walletType && walletType != WalletType.MagicLink) {
+            if (typeof ethereum != 'undefined' && ethereum && ethereum.chainId) {
+                let networkInfo = this.getNetworkInfoByChainId(ethereum.chainId);
+                if (networkInfo) {
+                    NetworkInfo.instance = networkInfo;
+                    return NetworkInfo.instance;
+                }
             }
         }
 
@@ -36,10 +41,14 @@ export default class NetworkInfo {
         NetworkInfo.instance = this.getNetworkInfo(networkName);
     }
 
-    public static setNetworkByChainId(chainId: number): void {
+    public static setNetworkByChainId(chainId: number, walletType: WalletType): void {
         let network = this.getNetworkInfoByChainId(chainId);
         if (network) {
             NetworkInfo.instance = network;
+
+            let cookieHelper = new CookieHelper(document);
+            cookieHelper.setCookie('network', network.Name);
+            cookieHelper.setCookie('wallet', walletType);
         }
     }
 
@@ -71,7 +80,7 @@ export default class NetworkInfo {
 
     private static getNetworkInfo(networkName?: string): Network {
         let cookieHelper = new CookieHelper(document);
-        //if (window.location.host.indexOf('localhost')) networkName = 'localhost'
+
         if (!networkName) networkName = cookieHelper.getCookieValue('network');
         if (!networkName) networkName = 'mumbai';
 
