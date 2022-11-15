@@ -168,12 +168,29 @@ export default class UserInfo {
         wallet?.addEventListener('click', async (evt) => {
             evt.preventDefault();
             LoadingHelper.setLoading(evt.target as HTMLElement);
-            console.log(this.moralis.connector);
+
             this.moralis.connector.magicUser.connect.showWallet()
+                .catch(async (e: any) => {
+                    if (e.message.indexOf('User denied account access') != -1) {
+                        await this.userService.logOut()
+                        alert('You have been logged out of you wallet and need to log back in. We will now reload the page and you can log in.');
+                        location.reload();
+                        return;
+                    }
+                    throw e;
+                })
                 .finally(() => {
                     LoadingHelper.removeLoading();
                     userInfoDropdown?.classList.add('d-none');
                 });
+        })
+
+        let switch_network = document.getElementById('switch_network');
+        switch_network?.addEventListener('click', (evt) => {
+            evt.preventDefault();
+
+            let switchNetworkModal = new SwitchNetworkModal(this.moralis);
+            switchNetworkModal.show();
         })
 
     }

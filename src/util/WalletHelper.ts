@@ -87,15 +87,15 @@ export default class WalletHelper {
     }
 
     public async switchNetwork(network: Network) : Promise<boolean> {
-        let web3 = this.moralis.web3 as any;
 
         let providerInfo = new ProviderInfo(this.moralis);
+        console.log('ProviderInfo', providerInfo, this.moralis.provider);
         if (providerInfo.WalletType == WalletType.MagicLink) {
             NetworkInfo.setNetworkByChainId(network.ChainId, providerInfo.WalletType);
             return true;
         }
 
-
+        let web3 = this.moralis.web3 as any;
         return await web3.provider.request({
             method: 'wallet_switchEthereumChain',
             params: [{chainId: '0x' + network.ChainId.toString(16)}]

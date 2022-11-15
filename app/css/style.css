@@ -207,6 +207,11 @@ dialog .infoBar {
 	position: relative;
 }
 
+#userMenuPanel a {
+	padding: 2px;
+	margin: 2px;
+}
+
 #user_info_ethAddress {
 	color:var(--primary-inverse);
 }
