@@ -13,8 +13,8 @@ export default class StocksPage {
 		let mainContainer = document.getElementById('main_container');
 		if (!mainContainer) return;
 
-		let securitiesList = new SecuritiesList();
-		let securities = await securitiesList.render();
+		let securitiesList = new SecuritiesList(this.moralis);
+        let securities = await securitiesList.render();
 
 		let template = Handlebars.compile(StocksPageHtml);
 		mainContainer.innerHTML = template({securities:securities});

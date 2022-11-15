@@ -241,7 +241,7 @@ export default class ExecuteTradeButton {
 
             if (object.status == 'order_filled') {
                 await this.showTradeExecuted(object);
-                await AUsdBalance.forceLoadAUSDBalanceUI();
+                await AUsdBalance.forceLoadAUSDBalanceUI(this.moralis);
 
                 let executingTrade = document.getElementById('executing-trade-progress');
                 if (!executingTrade) return;
@@ -254,7 +254,7 @@ export default class ExecuteTradeButton {
                 this.setProgressText('Received order sending to stock exchange', object.transaction_hash)
             } else if (object.status == 'order_requested') {
                 this.setProgressText('Sent to stock exchange', object.transaction_hash);
-                await AUsdBalance.forceLoadAUSDBalanceUI();
+                await AUsdBalance.forceLoadAUSDBalanceUI(this.moralis);
             }
         });
 
@@ -277,9 +277,9 @@ export default class ExecuteTradeButton {
         if (walletConnected) return true;
 
         button.innerHTML = 'Connect wallet';
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async (evt) => {
             let connectWallet = new ConnectWallet(this.moralis);
-            connectWallet.chooseWalletProvider();
+            await connectWallet.connectWallet(evt.target as HTMLElement)
         });
         this.stopLoadingButton(button);
         return false;
@@ -291,7 +291,7 @@ export default class ExecuteTradeButton {
 
         button.innerHTML = 'Login';
         button.addEventListener('click', async () => {
-            await this.authenticateService.authenticateUser(ConnectWallet.Provider);
+            await this.authenticateService.authenticateUser();
         });
         this.stopLoadingButton(button);
         return false;
@@ -301,10 +301,10 @@ export default class ExecuteTradeButton {
         let chainId = this.authenticateService.getChainId();
         let networkInfo = NetworkInfo.getInstance();
         if (chainId === networkInfo.ChainId) return true;
-
+        let providerInfo = new ProviderInfo(this.moralis);
         let usersWalletNetwork = NetworkInfo.getNetworkInfoByChainId(chainId);
         if (usersWalletNetwork) {
-            NetworkInfo.setNetworkByChainId(chainId);
+            NetworkInfo.setNetworkByChainId(chainId, providerInfo.WalletType);
             return true;
         }
 
@@ -415,7 +415,7 @@ export default class ExecuteTradeButton {
 
                 let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
                 if (balance.isGreaterThan(0)) {
-                    await AUsdBalance.forceLoadAUSDBalanceUI();
+                    await AUsdBalance.forceLoadAUSDBalanceUI(this.moralis);
 
                     clearInterval(this.checkBalanceInterval);
                     await this.renderButton();

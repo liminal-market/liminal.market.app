@@ -7,14 +7,16 @@ import LoadingHelper from "../../../util/LoadingHelper";
 
 export default class KycEditTrustedContact {
 
+    moralis: typeof Moralis;
     modal: Modal;
 
-    constructor() {
+    constructor(moralis: typeof Moralis) {
+        this.moralis = moralis;
         this.modal = new Modal();
     }
 
     public async show() {
-        let userService = new UserService(Moralis);
+        let userService = new UserService(this.moralis);
         let account = await userService.getAccount();
 
         let template = Handlebars.compile(KycEditTrustedContactHtml);

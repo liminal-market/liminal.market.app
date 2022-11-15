@@ -2,7 +2,9 @@ import Moralis from "moralis";
 import NetworkInfo from "../../networks/NetworkInfo";
 import GeneralError from "../../errors/GeneralError";
 import SwitchNetworkModal from "../../ui/modals/SwitchNetworkModal";
-import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
+import MagicWeb3Connector from "../../wallet/MagicWeb3Connector";
+import ProviderInfo from "../../wallet/ProviderInfo";
+
 
 export default class AuthenticateService {
     moralis: typeof Moralis
@@ -11,23 +13,21 @@ export default class AuthenticateService {
         this.moralis = moralis;
     }
 
-    public async authenticateUser(provider: any,
-                                  enableWeb3Callback?: (walletConnectionInfo: MoralisWeb3Provider) => void,
-                                  authenticatedCallback?: (user: Moralis.Attributes) => void
+    public static async enableWeb3(moralis: typeof Moralis) {
+        let options = {connector: MagicWeb3Connector} as any;
+        let result = await moralis.enableWeb3(options);
+        console.log('enableWeb3 result:', result);
+
+        return result;
+    }
+
+    public async authenticateUser(enableWeb3Callback?: (walletConnectionInfo: any) => void,
+                                  authenticatedCallback?: (user: Moralis.User) => void
     ) {
-        let moralis = this.moralis;
         let chainId = NetworkInfo.getInstance().ChainId;
-
-        let web3Result = await moralis.enableWeb3({
-            provider: provider,
-            chainId: chainId, appLogo: 'https://app.liminal.market/img/logos/default_logo.png'
-        })
-            .catch(async (reason) => {
-                throw new GeneralError(reason);
-            });
-
+        let web3Provider = await AuthenticateService.enableWeb3(this.moralis);
         if (enableWeb3Callback) {
-            enableWeb3Callback(web3Result);
+            enableWeb3Callback(web3Provider);
         }
 
         let user = this.moralis.User.current();
@@ -36,10 +36,11 @@ export default class AuthenticateService {
             return;
         }
 
-        if (web3Result.network.chainId != chainId) {
-            let userNetwork = NetworkInfo.getNetworkInfoByChainId(web3Result.network.chainId);
+        if (web3Provider.network.chainId != chainId) {
+            let userNetwork = NetworkInfo.getNetworkInfoByChainId(web3Provider.network.chainId);
             if (userNetwork) {
-                NetworkInfo.setNetworkByChainId(web3Result.network.chainId)
+                let providerInfo = new ProviderInfo(web3Provider);
+                NetworkInfo.setNetworkByChainId(web3Provider.network.chainId, providerInfo.WalletType);
             } else {
                 let modal = new SwitchNetworkModal(this.moralis);
                 modal.show();
@@ -47,17 +48,14 @@ export default class AuthenticateService {
             }
         }
 
-        let result = await moralis.authenticate({
-            signingMessage: "You are logging into Liminal.market.\n\n",
-            provider: provider,
-            chainId: chainId
-        }).catch((reason: any) => {
+        let obj: any = {signingMessage: "You are logging into Liminal.market.\n\n", connector: MagicWeb3Connector};
+        user = await this.moralis.authenticate(obj).catch((reason: any) => {
             console.log(reason);
             throw new GeneralError(reason);
         });
 
         if (authenticatedCallback) {
-            authenticatedCallback(result);
+            authenticatedCallback(user);
         } else {
             location.reload();
         }

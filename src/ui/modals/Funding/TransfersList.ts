@@ -3,6 +3,7 @@ import HandlebarHelpers from "../../../util/HandlebarHelpers";
 import UserService from "../../../services/backend/UserService";
 import Moralis from "moralis";
 import {TransferDirectionEnum} from "../../../enums/TransferDirectionEnum";
+import {Transfer} from "../../../dto/alpaca/Transfer";
 
 export default class TransfersList {
     moralis: typeof Moralis;
@@ -14,12 +15,11 @@ export default class TransfersList {
     }
 
 
-    public async render(direction: TransferDirectionEnum) {
+    public async render(direction: TransferDirectionEnum, transfers: Transfer[]) {
 
         HandlebarHelpers.registerHelpers();
 
         let transfersTemplate = Handlebars.compile(TransfersListHtml);
-        let transfers = await this.userService.getLatestTransfers(direction);
 
         return transfersTemplate({Direction: direction, transfers: transfers})
     }

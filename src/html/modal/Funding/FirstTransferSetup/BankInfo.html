@@ -1,0 +1,45 @@
+Create the bank information you need in your internet bank
+<table>
+    <tr>
+        <td>Bank name</td>
+        <td>BMO Harris Bank NA</td>
+    </tr>
+    <tr>
+        <td>Bank address</td>
+        <td>BMO Harris Bank
+            111. W. Monroe Street
+            Chicago, IL 60603, USA
+        </td>
+    </tr>
+    <tr>
+        <td>Recipient - Account name</td>
+        <td>Alpaca Securities LLC</td>
+    </tr>
+    <tr>
+        <td>Alpaca address</td>
+        <td>Alpaca Securities LLC
+            3 East Third Ave, Suite 233
+            San Mateo, CA 94401, USA
+        </td>
+    </tr>
+    <tr>
+        <td>Account number / IBAN</td>
+        <td>1636877</td>
+    </tr>
+    {{#if wire}}
+    <tr>
+        <td>SWIFT CODE</td>
+        <td>HATRUS44</td>
+    </tr>
+    {{^}}
+    <tr>
+        <td>ABA ROUTING NUMBER (ACH)</td>
+        <td>071000288</td>
+    </tr>
+    {{/if}}
+    <tr>
+        <td>Please specify the following in the reference of the wire:</td>
+        <td>FFC LMKT-{{account_number}}</td>
+    </tr>
+</table>
+<button id="bank_info_next">Next: I set up the information in my bank</button>

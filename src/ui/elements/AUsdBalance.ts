@@ -5,6 +5,10 @@ import FakeAUSDFund from "../modals/Funding/FakeAUSDFund";
 import AUSDFund from "../modals/Funding/AUSDFund";
 import WithdrawModal from "../modals/Funding/WithdrawModal";
 import UserService from "../../services/backend/UserService";
+import WalletHelper from "../../util/WalletHelper";
+import ContractInfo from "../../contracts/ContractInfo";
+import Modal from "../modals/Modal";
+import AddToWalletHtml from '../../html/elements/AddToWallet.html';
 
 export default class AUsdBalance {
     user: any;
@@ -15,10 +19,10 @@ export default class AUsdBalance {
         this.moralis = moralis;
     }
 
-    public static async forceLoadAUSDBalanceUI() {
-        let userService = new UserService(Moralis);
+    public static async forceLoadAUSDBalanceUI(moralis: typeof Moralis) {
+        let userService = new UserService(moralis);
         let user = userService.getUser();
-        let ui = new AUsdBalance(Moralis, user)
+        let ui = new AUsdBalance(moralis, user)
         AUSDService.lastUpdate = undefined;
         await ui.loadAUSDBalanceUI();
     }
@@ -66,6 +70,24 @@ export default class AUsdBalance {
 
     private bindEvents() {
         let networkInfo = NetworkInfo.getInstance();
+        let add_aUSD_to_wallet = document.querySelectorAll('.add_aUSD_to_wallet');
+        add_aUSD_to_wallet.forEach(element => {
+            element.addEventListener('click', async (evt) => {
+                evt.preventDefault();
+
+                let contractInfo = ContractInfo.getContractInfo(networkInfo.Name);
+                let walletHelper = new WalletHelper(this.moralis);
+                await walletHelper.addTokenToWallet(contractInfo.AUSD_ADDRESS, 'aUSD', () => {
+                    let template = Handlebars.compile(AddToWalletHtml);
+                    let obj = {symbol: 'aUSD', address: contractInfo.AUSD_ADDRESS};
+                    let modal = new Modal();
+                    modal.showModal('Add aUSD token', template(obj));
+                })
+            })
+
+        })
+
+
         let fund_accountButtons = document.querySelectorAll('.fund_account');
         fund_accountButtons.forEach(element => {
             let aUSDFundingModal = new FakeAUSDFund(this.moralis);

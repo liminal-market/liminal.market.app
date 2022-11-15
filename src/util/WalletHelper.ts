@@ -1,9 +1,11 @@
 import SecuritiesService from "../services/broker/SecuritiesService";
 import LoadingHelper from "./LoadingHelper";
-import ErrorInfo from "../errors/ErrorInfo";
 import GeneralError from "../errors/GeneralError";
 import Network from "../networks/Network";
-import * as net from "net";
+import AuthenticateService from "../services/backend/AuthenticateService";
+import NetworkInfo from "../networks/NetworkInfo";
+import ProviderInfo from "../wallet/ProviderInfo";
+import {WalletType} from "../enums/WalletType";
 
 export default class WalletHelper {
     static addTokenFallbackLoaded?: boolean = undefined;
@@ -25,14 +27,16 @@ export default class WalletHelper {
         const asset = (symbol == 'aUSD') ? this.getAUsdAsset() : await securitiesService.getSecurityBySymbol(symbol);
         let web3 = this.moralis.web3 as any;
         if (!web3) {
-            web3 = await this.moralis.enableWeb3().catch(reason => {
-                ErrorInfo.report(reason);
-            }) as any;
+            web3 = await AuthenticateService.enableWeb3(this.moralis)
             if (!web3) {
+                fallbackTimeout();
                 return;
             }
         }
-        if (!web3.provider.request) return;
+        if (!web3.provider.request) {
+            fallbackTimeout();
+            return;
+        }
         let timeout = (WalletHelper.addTokenFallbackLoaded === undefined) ? 2 * 1000 : 200;
         setTimeout(() => {
             if (WalletHelper.addTokenFallbackLoaded !== false) {
@@ -54,12 +58,13 @@ export default class WalletHelper {
                 },
             },
         }).then((result: any) => {
+            WalletHelper.addTokenFallbackLoaded = false;
             return true;
         }).catch((error: any) => {
-            LoadingHelper.removeLoading();
+            console.log(error);
             return false;
         }).finally(() => {
-            WalletHelper.addTokenFallbackLoaded = false;
+            LoadingHelper.removeLoading();
         });
 
         return wasAdded;
@@ -83,6 +88,13 @@ export default class WalletHelper {
 
     public async switchNetwork(network: Network) : Promise<boolean> {
         let web3 = this.moralis.web3 as any;
+
+        let providerInfo = new ProviderInfo(this.moralis);
+        if (providerInfo.WalletType == WalletType.MagicLink) {
+            NetworkInfo.setNetworkByChainId(network.ChainId, providerInfo.WalletType);
+            return true;
+        }
+
 
         return await web3.provider.request({
             method: 'wallet_switchEthereumChain',
@@ -118,7 +130,12 @@ export default class WalletHelper {
                             throw new GeneralError(error);
                         });
                 } else {
-                    throw new GeneralError(err);
+                    if (err.message.indexOf('Magic RPC') != -1) {
+                        NetworkInfo.setNetworkByChainId(network.ChainId, WalletType.MagicLink);
+                        return true;
+                    } else {
+                        throw new GeneralError(err);
+                    }
                 }
 
             });

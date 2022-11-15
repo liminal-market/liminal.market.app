@@ -10,11 +10,9 @@
             <a id="disconnectFromNetwork" href="#">Disconnect</a>
 
         </div>
-        <div class="edit_account grid">
-            <a id="editName" href="#">Edit name</a>
-            <a id="editContact" href="#">Edit contact info</a>
-        </div>
         <div class="edit_account">
+            <a id="editName" href="#">Edit name</a><br/>
+            <a id="editContact" href="#">Edit contact info</a><br/>
             <a id="editTrustedContact" href="#">Edit trusted contact</a>
         </div>
         <hr/>
@@ -24,7 +22,12 @@
             </div>
             <div>
                 <strong class="d-block"><a href="{{blockchainExplorer}}{{ethAddress}}" target="_blank">{{shortEthAddress}}</a></strong>
-                <small>{{walletName}}</small>
+                <br/>
+                {{#if internalWallet}}
+                <a href="#" id="wallet">Open my wallet</a>
+                {{/if}}
+                <a href="https://info.liminal.market/#/chain/{{chainId}}/{{ethAddress}}" target="_blank">View
+                    positions</a>
             </div>
         </div>
         <hr/>
@@ -33,7 +36,12 @@
                 <div><img src="https://app.liminal.market/img/ausd.png"></div>
                 <div>
                     <strong class="d-block">aUSD <span id="user_info_ausd_balance"></span></strong>
-
+                    <a href="" class="add_aUSD_to_wallet">Add aUSD to wallet</a>
+                </div>
+            </div>
+            <div id="fund_account_options">
+                <h6>Fund your account</h6>
+                <div class="grid">
                     <a href="#" class="fund_account">Fund my account</a>
                     <a href="#" id="withdraw_from_account">Withdraw from account</a>
                 </div>

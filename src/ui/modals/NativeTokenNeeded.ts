@@ -18,7 +18,7 @@ export default class NativeTokenNeeded {
 
     public show() {
         let networkInfo = NetworkInfo.getInstance();
-        let userService = new UserService();
+        let userService = new UserService(this.moralis);
         let ethAddress = userService.getEthAddress();
 
         if (networkInfo.TestNetwork) {

@@ -62,6 +62,8 @@ export default class SwitchNetworkModal {
                     if (elements.length > 0) {
                         elements[0].dispatchEvent(new MouseEvent('click'))
                         return;
+                    } else {
+                        location.reload();
                     }
                 }
             })
