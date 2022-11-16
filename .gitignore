@@ -1,3 +1,4 @@
 node_modules
 .env
 .idea
+app/js/*.bundle.js
