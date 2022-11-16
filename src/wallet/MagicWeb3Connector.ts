@@ -8,45 +8,26 @@ import {CustomNodeConfiguration} from "@magic-sdk/types/dist/types/modules/rpc-p
 
 export default class MagicWeb3Connector extends AbstractWeb3Connector {
     type = 'MagicLink';
-    magicUser: any;
+    magic: any;
 
-    async activate({
-                       apiKey = '',
-                       newSession = '',
-
-                       // Options passed to loginWithMagicLink
-                       email = '',
-                       showUI = '',
-                       redirectURI = '',
-
-                       // Options passed to new Magic creation
-                       network = '',
-                       locale = '',
-                       extensions = '',
-                       testMode = '',
-                       endpoint = '',
-                   } = {}) {
+    async activate() {
         let networkInfo = NetworkInfo.getInstance();
-
+        console.log('networkInfo', networkInfo);
         let customNetwork = {rpcUrl: networkInfo.RpcUrl, chainId: networkInfo.ChainId} as CustomNodeConfiguration;
-        console.log(customNetwork);
-        const magic = new Magic('pk_live_EA9DDC458FE21B24', {
+        this.magic = new Magic('pk_live_EA9DDC458FE21B24', {
             extensions: [new ConnectExtension()],
             network: customNetwork
         });
 
-
         // @ts-ignore
-        let ether = new ethers.providers.Web3Provider(magic.rpcProvider);
+        let ether = new ethers.providers.Web3Provider(this.magic.rpcProvider);
         let accounts = await ether.listAccounts();
-        console.log('accounts', accounts);
 
         // Assign Constants
         this.account = accounts[0];
         this.provider = ether.provider;
         this.chainId = `0x${networkInfo.ChainId.toString(16)}`;
-        // Assign magic user for deactivation
-        this.magicUser = magic;
+
         this.subscribeToEvents(this.provider);
         return {
             provider: this.provider,
@@ -58,13 +39,9 @@ export default class MagicWeb3Connector extends AbstractWeb3Connector {
 
     deactivate = async () => {
         this.unsubscribeToEvents(this.provider);
-        console.log('should logout')
-        if (this.magicUser) {
-            console.log('logout')
-            await this.magicUser.connect.disconnect().catch((e: any) => {
-                console.log('error to disconnect:', e);
-            }).then((response: any) => {
-                console.log('disconnected', response)
+        if (this.magic) {
+            await this.magic.connect.disconnect().catch((e: any) => {
+                console.error('error to disconnect:', e);
             });
         }
         this.account = null;

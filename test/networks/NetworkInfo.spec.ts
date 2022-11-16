@@ -1,9 +1,7 @@
-import {instance, mock, verify} from "@johanblumenberg/ts-mockito";
 import {equal} from "assert";
-import CookieHelper from "../../src/util/CookieHelper";
-import {JSDOM} from 'jsdom';
 import NetworkInformation from '../../src/networks/NetworkInfo';
-import NetworkInfo from "../../src/networks/NetworkInfo";
+import NetworkInfo from '../../src/networks/NetworkInfo';
+import {NetworkType} from "../../src/networks/NetworkType";
 
 describe("Test for NetworkInfo", () => {
     it("Get default instance of network info, should give mumbai network", () => {
@@ -40,4 +38,11 @@ describe("Test for NetworkInfo", () => {
         equal(instance.Name, "mumbai")
     });
 
+    it('should get only mainnet networks', () => {
+        let networks = NetworkInfo.getNetworks(NetworkType.Mainnet);
+        for (let i = 0; i < networks.length; i++) {
+            equal(networks[i].TestNetwork, false);
+        }
+
+    })
 });

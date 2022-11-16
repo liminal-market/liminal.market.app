@@ -17,7 +17,7 @@ export default class UserService {
 
     public async logOut() {
         try {
-            await this.moralis.connector.magicUser.connect.disconnect();
+            await this.moralis.connector.magic.connect.disconnect();
         } catch (e: any) {
             console.error('logout magicUser', e);
         }
@@ -30,7 +30,6 @@ export default class UserService {
 
     public async isLoggedIn() {
         let user = await this.moralis.User.currentAsync();
-        console.log('user', user);
         if (!user) {
             return;
         }
@@ -38,6 +37,7 @@ export default class UserService {
         if (!this.moralis.isWeb3Enabled()) {
             let result = await AuthenticateService.enableWeb3(this.moralis)
                 .catch(reason => {
+                    console.error('enableWeb3 error:', reason);
                     this.logOut();
                 })
 

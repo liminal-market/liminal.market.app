@@ -13,10 +13,6 @@ export default class CookieHelper {
         this.document.cookie = name + "=" + value + "; expires=Mon, 2 Dec " + (date.getFullYear() + 1) + " 12:00:00 UTC;path=/;SameSite=Strict";
     }
 
-    public setCookieNetwork = (name: string) => {
-        this.setCookie("network", name);
-    }
-
     public getCookieValue(name: string) {
         return this.document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || '';
     }

@@ -3,6 +3,7 @@ import TradePage from "../ui/pages/TradePage";
 import PositionsPage from "../ui/pages/PositionsPage";
 import FakeAUSDFund from "../ui/modals/Funding/FakeAUSDFund";
 import NetworkInfo from "../networks/NetworkInfo";
+import WalletHelper from "../util/WalletHelper";
 
 
 export default class Routing {
@@ -23,7 +24,6 @@ export default class Routing {
 
     public async loadRoutes() {
         let path = window.location.hash.replace('#', '').replace('/', '');
-        console.log(path);
         if (path === '') path = 'stocks';
 
         this.attachNavLinks();
@@ -114,14 +114,16 @@ export default class Routing {
 
         let tradeNavLinks = document.querySelectorAll('.tradeNavLink');
         tradeNavLinks.forEach(link => {
-            (link as HTMLElement).addEventListener('click', async function (evt : MouseEvent) {
+            (link as HTMLElement).addEventListener('click', async (evt) => {
+                WalletHelper.hideMagicWallet();
                 await router.showTrade(router, evt);
                 link.parentElement!.parentElement!.parentElement!.removeAttribute('open');
             });
         });
         let investLinks = document.querySelectorAll('.investNavLink');
         investLinks.forEach(link => {
-            (link as HTMLElement).addEventListener('click', async function (evt) {
+            (link as HTMLElement).addEventListener('click', async (evt) => {
+                WalletHelper.hideMagicWallet();
                 await router.showStocks(router, evt);
                 link.parentElement!.parentElement!.parentElement!.removeAttribute('open');
             });
@@ -129,7 +131,8 @@ export default class Routing {
 
         let positionLinks = document.querySelectorAll('.positionNavLink');
         positionLinks.forEach(link => {
-            (link as HTMLElement).addEventListener('click', async function (evt) {
+            (link as HTMLElement).addEventListener('click', async (evt) => {
+                WalletHelper.hideMagicWallet();
                 await router.showPositions(router, evt);
                 link.parentElement!.parentElement!.parentElement!.removeAttribute('open');
             });

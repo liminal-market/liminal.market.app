@@ -1,8 +1,16 @@
 <div id="switchNetworkInfo">
-    You are using wrong network in your wallet.
     You can choose any of these networks.
-    <div class="grid">
-        {{#each networks}}
+    <div>
+        <h3>Mainnet - real money & stocks</h3>
+        {{#each mainNetworks}}
+        <button href="" class="setNetwork"
+                data-chainid="{{ChainId}}">{{ChainName}}
+        </button>
+        {{/each}}
+    </div>
+    <div>
+        <h3>Testnet - fake money & stocks</h3>
+        {{#each testNetworks}}
         <button href="" class="setNetwork"
                 data-chainid="{{ChainId}}">{{ChainName}}
         </button>

@@ -1,31 +1,29 @@
-import WrongNetworkHtml from '../../html/modal/WrongNetwork.html';
+import SwitchNetworkHtml from '../../html/modal/SwitchNetwork.html';
 import NetworkInfo from "../../networks/NetworkInfo";
 import Modal from "./Modal";
 import WalletHelper from "../../util/WalletHelper";
 import GeneralError from "../../errors/GeneralError";
-import ErrorInfo from "../../errors/ErrorInfo";
 import Network from "../../networks/Network";
+import {NetworkType} from "../../networks/NetworkType";
+import UserService from "../../services/backend/UserService";
 
 
 export default class SwitchNetworkModal {
     moralis: typeof Moralis;
-    selectedNetwork? : Network;
+    selectedNetwork?: Network;
+
     constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
     }
 
     public show() {
-        let template = Handlebars.compile(WrongNetworkHtml);
-        let networks = NetworkInfo.getNetworks();
-        let content = template({networks: networks});
+        let template = Handlebars.compile(SwitchNetworkHtml);
+        let testNetworks = NetworkInfo.getNetworks(NetworkType.Testnet);
+        let mainNetworks = NetworkInfo.getNetworks(NetworkType.Mainnet);
+        let content = template({testNetworks, mainNetworks});
 
         let modal = new Modal();
-        modal.showModal('Switch network', content, false, async () => {
-            if (!this.selectedNetwork) return;
-
-            let walletHelper = new WalletHelper(this.moralis);
-            await walletHelper.switchNetwork(this.selectedNetwork)
-        });
+        modal.showModal('Switch network', content, false);
 
         let setNetworkLinks = document.querySelectorAll('.setNetwork');
         setNetworkLinks.forEach(setNetworkLink => {
@@ -38,7 +36,7 @@ export default class SwitchNetworkModal {
 
                 let walletHelper = new WalletHelper(this.moralis);
                 let successAddingNetwork = await walletHelper.switchNetwork(this.selectedNetwork)
-                    .catch((error : GeneralError) => {
+                    .catch((error: GeneralError) => {
                         let jsSwitchNetworkNotWorking = document.getElementById('jsSwitchNetworkNotWorking');
                         if (!jsSwitchNetworkNotWorking) throw error;
 
@@ -58,13 +56,10 @@ export default class SwitchNetworkModal {
                 if (successAddingNetwork) {
                     modal.hideModal();
 
-                    let elements = document.querySelectorAll(".liminal_market_connect_wallet");
-                    if (elements.length > 0) {
-                        elements[0].dispatchEvent(new MouseEvent('click'))
-                        return;
-                    } else {
-                        location.reload();
-                    }
+                    let userService = new UserService(this.moralis);
+                    await userService.logOut();
+                    location.reload();
+
                 }
             })
         })

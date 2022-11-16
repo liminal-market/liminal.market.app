@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import EventEmitter from 'events';
 import {ConnectorEvents, EthereumEvents} from './events';
 import Moralis from "moralis";

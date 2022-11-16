@@ -86,59 +86,20 @@ export default class WalletHelper {
         return !!ua.match(webviewRegExp)
     }
 
-    public async switchNetwork(network: Network) : Promise<boolean> {
+    public async isMagic() {
+        const walletInfo = await this.moralis.connector.magic.connect.getWalletInfo();
+        const walletType = walletInfo.walletType;
+        console.log('walletType', walletType)
+        return (walletType === "magic");
+    }
 
-        let providerInfo = new ProviderInfo(this.moralis);
-        console.log('ProviderInfo', providerInfo, this.moralis.provider);
-        if (providerInfo.WalletType == WalletType.MagicLink) {
-            NetworkInfo.setNetworkByChainId(network.ChainId, providerInfo.WalletType);
-            return true;
-        }
+    public async switchNetwork(network: Network): Promise<boolean> {
+        NetworkInfo.setNetworkByChainId(network.ChainId);
+        return true;
+    }
 
-        let web3 = this.moralis.web3 as any;
-        return await web3.provider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{chainId: '0x' + network.ChainId.toString(16)}]
-        })
-            .then((result: any) => {
-                console.log('switch result:', result);
-                return true;
-            })
-            .catch(async (err: any) => {
-                // This error code indicates that the chain has not been added to MetaMask
-                if (err.code === 4902) {
-                    return await web3.provider.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [
-                            {
-                                chainName: network.ChainName,
-                                chainId: '0x' + network.ChainId.toString(16),
-                                nativeCurrency: {
-                                    name: network.NativeCurrencyName,
-                                    decimals: network.NativeDecimal,
-                                    symbol: network.NativeSymbol
-                                },
-                                rpcUrls: [network.RpcUrl]
-                            }
-                        ]
-                    })
-                        .then((result: any) => {
-                            console.log('addChain result:' + result);
-                            return true;
-                        }).catch((error: any) => {
-                            console.log('error on addNetwork:', error);
-                            throw new GeneralError(error);
-                        });
-                } else {
-                    if (err.message.indexOf('Magic RPC') != -1) {
-                        NetworkInfo.setNetworkByChainId(network.ChainId, WalletType.MagicLink);
-                        return true;
-                    } else {
-                        throw new GeneralError(err);
-                    }
-                }
-
-            });
-
+    static hideMagicWallet() {
+        let magicIframe = document.querySelector('.magic-iframe') as HTMLElement;
+        if (magicIframe && magicIframe.style.display == 'block') magicIframe.style.display = 'none'
     }
 }

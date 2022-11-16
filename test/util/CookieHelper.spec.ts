@@ -10,7 +10,7 @@ describe("Test CookieHelper", () => {
 
         let networkName = "test";
         let cookieHelper = new CookieHelper(document);
-        cookieHelper.setCookieNetwork(networkName);
+        cookieHelper.setCookie('network', networkName);
 
         equal(document.cookie, "network=" + networkName);
 
@@ -22,7 +22,7 @@ describe("Test CookieHelper", () => {
         let networkName = "test";
         let cookieHelper = new CookieHelper(document);
 
-        cookieHelper.setCookieNetwork(networkName);
+        cookieHelper.setCookie('network', networkName);
         let cookieValue = cookieHelper.getCookieValue("network");
 
         equal(cookieValue, networkName);

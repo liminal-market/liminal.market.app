@@ -4,6 +4,7 @@ import GeneralError from "../../errors/GeneralError";
 import SwitchNetworkModal from "../../ui/modals/SwitchNetworkModal";
 import MagicWeb3Connector from "../../wallet/MagicWeb3Connector";
 import ProviderInfo from "../../wallet/ProviderInfo";
+import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
 
 
 export default class AuthenticateService {
@@ -14,9 +15,12 @@ export default class AuthenticateService {
     }
 
     public static async enableWeb3(moralis: typeof Moralis) {
+        if (moralis.isWeb3Enabled()) {
+            return moralis.provider as MoralisWeb3Provider;
+        }
+
         let options = {connector: MagicWeb3Connector} as any;
         let result = await moralis.enableWeb3(options);
-        console.log('enableWeb3 result:', result);
 
         return result;
     }
@@ -39,8 +43,7 @@ export default class AuthenticateService {
         if (web3Provider.network.chainId != chainId) {
             let userNetwork = NetworkInfo.getNetworkInfoByChainId(web3Provider.network.chainId);
             if (userNetwork) {
-                let providerInfo = new ProviderInfo(web3Provider);
-                NetworkInfo.setNetworkByChainId(web3Provider.network.chainId, providerInfo.WalletType);
+                NetworkInfo.setNetworkByChainId(web3Provider.network.chainId);
             } else {
                 let modal = new SwitchNetworkModal(this.moralis);
                 modal.show();
@@ -49,10 +52,15 @@ export default class AuthenticateService {
         }
 
         let obj: any = {signingMessage: "You are logging into Liminal.market.\n\n", connector: MagicWeb3Connector};
-        user = await this.moralis.authenticate(obj).catch((reason: any) => {
-            console.log(reason);
-            throw new GeneralError(reason);
-        });
+        user = await this.moralis.authenticate(obj)
+            .then(result => {
+                console.log(result);
+                return result;
+            })
+            .catch((reason: any) => {
+                console.log(reason);
+                throw new GeneralError(reason);
+            });
 
         if (authenticatedCallback) {
             authenticatedCallback(user);

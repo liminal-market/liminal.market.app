@@ -301,10 +301,10 @@ export default class ExecuteTradeButton {
         let chainId = this.authenticateService.getChainId();
         let networkInfo = NetworkInfo.getInstance();
         if (chainId === networkInfo.ChainId) return true;
-        let providerInfo = new ProviderInfo(this.moralis);
+
         let usersWalletNetwork = NetworkInfo.getNetworkInfoByChainId(chainId);
         if (usersWalletNetwork) {
-            NetworkInfo.setNetworkByChainId(chainId, providerInfo.WalletType);
+            NetworkInfo.setNetworkByChainId(chainId);
             return true;
         }
 
