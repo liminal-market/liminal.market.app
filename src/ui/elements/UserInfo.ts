@@ -14,6 +14,8 @@ import ExecuteTradeButton from "./tradepanel/ExecuteTradeButton";
 import LoadingHelper from "../../util/LoadingHelper";
 import WalletHelper from "../../util/WalletHelper";
 
+type ListenerAction = (...args: Array<any>) => void;
+
 export default class UserInfo {
     moralis: typeof Moralis;
     user?: Moralis.Attributes;
@@ -21,6 +23,7 @@ export default class UserInfo {
     providerInfo: ProviderInfo;
     walletHelper: WalletHelper;
     walletLoaded = false;
+    static onUserLoggedIn: Array<ListenerAction> = [];
 
     public constructor(moralis: typeof Moralis, providerInfo: ProviderInfo, user?: Moralis.Attributes) {
         this.moralis = moralis;
@@ -82,6 +85,10 @@ export default class UserInfo {
 
         this.bindEvents();
         this.bindUserActionEvents();
+
+        for (let i = 0; i < UserInfo.onUserLoggedIn.length; i++) {
+            UserInfo.onUserLoggedIn[i]();
+        }
     }
 
     private bindUserActionEvents() {

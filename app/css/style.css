@@ -558,13 +558,25 @@ progress.invalid {
 }
 
 .funding_type li {
-    list-style: none;
+	list-style: none;
 }
 
 .w3a-header__button img {
-    float: right;
+	float: right;
 }
 
 .magic-iframe {
-    top: 84px !important;
+	top: 84px !important;
+}
+
+.pl_status {
+	cursor: pointer;
+}
+
+.red {
+	color: #9d1e1e;
+}
+
+.green {
+	color: #025202;
 }

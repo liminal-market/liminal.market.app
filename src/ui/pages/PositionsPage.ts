@@ -13,6 +13,7 @@ import PositionsService from "../../services/backend/PositionsService";
 import HandlebarHelpers from "../../util/HandlebarHelpers";
 import TradePage from "./TradePage";
 import NetworkInfo from "../../networks/NetworkInfo";
+import UserService from "../../services/backend/UserService";
 
 export default class PositionsPage {
     moralis : typeof Moralis;
@@ -28,9 +29,9 @@ export default class PositionsPage {
         let mainContainer = document.getElementById('main_container');
         if (!mainContainer) return;
 
-
+        let userService = new UserService(this.moralis);
         let positionService = new PositionsService(this.moralis);
-        let positions = await positionService.getPositions();
+        let positions = await positionService.getPositions(userService.getEthAddress()!);
 
         HandlebarHelpers.registerHelpers();
 

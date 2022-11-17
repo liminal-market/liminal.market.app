@@ -5,6 +5,7 @@ import WalletHelper from "./util/WalletHelper";
 import GeneralError from "./errors/GeneralError";
 import Header from "./ui/elements/Header";
 import AuthenticateUser from "./ui/elements/AuthenticateUser";
+import UserPosition from "./ui/elements/UserPosition";
 
 
 const start = async function () {
@@ -16,6 +17,8 @@ const start = async function () {
 
         let routing = new Routing(moralis);
         await routing.loadRoutes();
+
+        UserPosition.registerListener(moralis);
 
         let authorizeUser = new AuthenticateUser(moralis);
         authorizeUser.authenticate();
