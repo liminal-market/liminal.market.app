@@ -41,6 +41,7 @@ export default class UserPosition {
             unrealized_pl.classList.add(className);
         }
 
+
         let unrealized_plpc = document.getElementById('unrealized_plpc');
         if (unrealized_plpc) {
             let number = new BigNumber(userPosition.unrealizedPLPc);
