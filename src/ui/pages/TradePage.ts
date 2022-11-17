@@ -8,24 +8,24 @@ import WalletHelper from "../../util/WalletHelper";
 import Modal from "../modals/Modal";
 import CopyTokenAddressToAddToWallet from '../../html/modal/CopyTokenAddressToAddToWallet.html';
 import BigNumber from "bignumber.js";
+import ContractAddresses from "../../contracts/ContractAddresses";
 
 export default class TradePage {
 
     moralis: typeof Moralis;
+    contractInfo: ContractAddresses;
 
     constructor(moralis: typeof Moralis) {
         this.moralis = moralis;
+        this.contractInfo = ContractInfo.getContractInfo();
     }
 
     public async load(symbol?: string, name?: string, logo?: string, address?: string) {
         let mainContainer = document.getElementById('main_container');
         if (!mainContainer) return;
 
-        let contractInfo = ContractInfo.getContractInfo();
-
-
         let template = Handlebars.compile(TradePageHtml);
-        mainContainer.innerHTML = template({AUSDAddress: contractInfo.AUSD_ADDRESS});
+        mainContainer.innerHTML = template({AUSDAddress: this.contractInfo.AUSD_ADDRESS});
 
         let tradePanel = new TradePanel(this.moralis);
         await tradePanel.render('liminal_market_trade_panel');
@@ -35,24 +35,10 @@ export default class TradePage {
 
         }
 
-        let user = new UserService(this.moralis);
-        let ethAddress = user.getEthAddress();
+        AUSDService.onAUsdLoad.push(() => {
+            this.loadBuyWithWallet();
+        })
 
-        let aUSDService = new AUSDService(this.moralis);
-        let ausdAmount = new BigNumber(0);
-        if (ethAddress) {
-            ausdAmount = await aUSDService.getAUSDBalanceOf(ethAddress);
-        }
-
-        let userWallet = document.getElementById('use_wallet_for_orders');
-        let userWalletLink = document.getElementById('use_wallet_for_orders_link');
-        if (ausdAmount.eq(0)) {
-            userWallet?.classList.add('hidden');
-            userWalletLink?.classList.add('not_visible');
-        } else {
-            userWallet?.classList.remove('hidden');
-            userWalletLink?.classList.remove('not_visible');
-        }
 
         let findSymbols = document.querySelectorAll('.findSymbol');
         findSymbols?.forEach(findSymbol => {
@@ -66,18 +52,6 @@ export default class TradePage {
             });
         });
 
-        let addAUSDToWallet = document.getElementById('addAUSDToWallet');
-        addAUSDToWallet?.addEventListener('click', (evt) => {
-            evt.preventDefault();
-
-            let walletHelper = new WalletHelper(this.moralis);
-            walletHelper.addTokenToWallet(contractInfo.AUSD_ADDRESS, 'aUSD', () => {
-                let modal = new Modal();
-                let template = Handlebars.compile(CopyTokenAddressToAddToWallet);
-                let content = template({symbol: 'aUSD', tokenAddress: contractInfo.AUSD_ADDRESS});
-                modal.showModal('Add aUSD to wallet', content);
-            })
-        })
     };
 
     public async selectSymbol(symbol: string, name: string, logo: string, address: string) {
@@ -85,6 +59,38 @@ export default class TradePage {
         await tradePanel.render('liminal_market_trade_panel', symbol, name, logo, address);
     }
 
+    private async loadBuyWithWallet() {
+        let user = new UserService(this.moralis);
+        let ethAddress = user.getEthAddress();
+        if (!ethAddress) {
+            return;
+        }
+        let aUSDService = new AUSDService(this.moralis);
+        let ausdAmount = await aUSDService.getAUSDBalanceOf(ethAddress);
+
+        let userWallet = document.getElementById('use_wallet_for_orders');
+        let userWalletLink = document.getElementById('use_wallet_for_orders_link');
+        if (ausdAmount.eq(0)) {
+            userWallet?.classList.add('hidden');
+            userWalletLink?.classList.add('not_visible');
+        } else {
+            userWallet?.classList.remove('hidden');
+            userWalletLink?.classList.remove('not_visible');
+        }
+
+        let addAUSDToWallet = document.getElementById('addAUSDToWallet');
+        addAUSDToWallet?.addEventListener('click', (evt) => {
+            evt.preventDefault();
+
+            let walletHelper = new WalletHelper(this.moralis);
+            walletHelper.addTokenToWallet(this.contractInfo.AUSD_ADDRESS, 'aUSD', () => {
+                let modal = new Modal();
+                let template = Handlebars.compile(CopyTokenAddressToAddToWallet);
+                let content = template({symbol: 'aUSD', tokenAddress: this.contractInfo.AUSD_ADDRESS});
+                modal.showModal('Add aUSD to wallet', content);
+            })
+        })
+    }
 }
 
 

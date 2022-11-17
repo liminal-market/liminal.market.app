@@ -89,7 +89,6 @@ export default class WalletHelper {
     public async isMagic() {
         const walletInfo = await this.moralis.connector.magic.connect.getWalletInfo();
         const walletType = walletInfo.walletType;
-        console.log('walletType', walletType)
         return (walletType === "magic");
     }
 

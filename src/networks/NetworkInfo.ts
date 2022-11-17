@@ -49,7 +49,6 @@ export default class NetworkInfo {
             if (networkType === undefined) {
                 networks.push(tmp);
             } else {
-                console.log(networkType)
                 if (networkType == NetworkType.Mainnet && !tmp.TestNetwork) {
                     networks.push(tmp);
                 } else if (networkType == NetworkType.Testnet && tmp.TestNetwork) {

@@ -12,7 +12,6 @@ export default class MagicWeb3Connector extends AbstractWeb3Connector {
 
     async activate() {
         let networkInfo = NetworkInfo.getInstance();
-        console.log('networkInfo', networkInfo);
         let customNetwork = {rpcUrl: networkInfo.RpcUrl, chainId: networkInfo.ChainId} as CustomNodeConfiguration;
         this.magic = new Magic('pk_live_EA9DDC458FE21B24', {
             extensions: [new ConnectExtension()],

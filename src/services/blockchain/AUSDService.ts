@@ -5,10 +5,14 @@ import BlockchainError from "../../errors/BlockchainError";
 import DateHelper from '../../util/DateHelper';
 import BlockchainService from "./BlockchainService";
 
+type ListenerAction = (...args: Array<any>) => void;
+
+
 export default class AUSDService extends BlockchainService {
     private static AUSDInfo: any;
     public static lastUpdate?: Date;
     private static aUSDAmount?: BigNumber;
+    static onAUsdLoad: Array<ListenerAction> = [];
 
     constructor(moralis: typeof Moralis) {
         super(moralis)
@@ -20,13 +24,15 @@ export default class AUSDService extends BlockchainService {
             return AUSDService.aUSDAmount;
         }
 
+        if (!this.moralis.isWeb3Enabled()) {
+            return new BigNumber(0);
+        }
+
         let options = await this.getOptions("balanceOf", {
             account: ethAddress
         });
-if (!this.moralis.isWeb3Enabled()) {
-    //await this.moralis.enableWeb3();
-}
-        return await this.executeFunction(options).then(balanceOf => {
+
+        let result = await this.executeFunction(options).then(balanceOf => {
             let amount = this.moralis.Units.FromWei(balanceOf.toString(), 18);
             AUSDService.aUSDAmount = new BigNumber(amount);
             AUSDService.lastUpdate = new Date();
@@ -37,9 +43,14 @@ if (!this.moralis.isWeb3Enabled()) {
             ErrorInfo.report(blockchainError);
             return new BigNumber(0);
         });
+
+        for (let i = 0; i < AUSDService.onAUsdLoad.length; i++) {
+            AUSDService.onAUsdLoad[i]();
+        }
+        return result;
     }
 
-    public async transfer(symbolAddress : string, qty : BigNumber) {
+    public async transfer(symbolAddress: string, qty: BigNumber) {
         const options = await this.getOptions('transfer', {
             to: symbolAddress,
             amount: Moralis.Units.Token(qty.toString(), 18)
@@ -61,7 +72,7 @@ if (!this.moralis.isWeb3Enabled()) {
         return result;
     }
 
-    public async getOptions(functionName : string, params : any) {
+    public async getOptions(functionName: string, params: any) {
         let contractInfo = ContractInfo.getContractInfo();
         let abi = await this.getAUsdAbi();
 

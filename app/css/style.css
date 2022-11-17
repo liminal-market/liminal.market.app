@@ -200,7 +200,11 @@ dialog .infoBar {
 .tag_line {
 	font-size: 0.6rem;
 }
-#ul_user_info { margin-right: 0;}
+
+#ul_user_info {
+	margin-right: 0;
+	font-size: 0.8rem;
+}
 
 /* user menu */
 #userMenuPanel {
