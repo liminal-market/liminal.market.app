@@ -72,11 +72,9 @@ export default class Routing {
         let aUSDFundingModal = new FakeAUSDFund(this.moralis);
         let networkInfo = NetworkInfo.getInstance();
         if (networkInfo.TestNetwork) {
-            aUSDFundingModal.showAUSDFakeFund(() => {
-            })
+            aUSDFundingModal.showAUSDFakeFund()
         } else {
-            aUSDFundingModal.showAUSDFund(() => {
-            })
+            aUSDFundingModal.showAUSDFund()
         }
     }
 

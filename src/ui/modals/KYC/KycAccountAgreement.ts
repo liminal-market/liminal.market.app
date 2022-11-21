@@ -7,6 +7,7 @@ import KYCService from "../../../services/blockchain/KYCService";
 import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 import FormHelper from "../../../util/FormHelper";
 import ExecuteTradeButton from "../../elements/tradepanel/ExecuteTradeButton";
+import FakeAUSDFund from "../Funding/FakeAUSDFund";
 
 export default class KycAccountAgreement extends KycBase {
 
@@ -73,7 +74,7 @@ export default class KycAccountAgreement extends KycBase {
             let networkInfo = NetworkInfo.getInstance();
             params.chainId = networkInfo.ChainId;
 
-            let kycService = new KYCService(Moralis);
+            let kycService = new KYCService(this.kycForm.moralis);
             let result = await kycService.saveKYCInfo(params)
                 .catch((reason: any) => {
                     if (account_agreement_prev) account_agreement_prev.classList.remove('hidden');
@@ -88,7 +89,8 @@ export default class KycAccountAgreement extends KycBase {
                 });
 
             if (result) {
-                this.kycForm.kycWaiting.show();
+                let ausdFund = new FakeAUSDFund(this.kycForm.moralis);
+                ausdFund.showAUSDFakeFund();
                 ExecuteTradeButton.Instance.renderButton();
             } else {
                 if (account_agreement_prev) account_agreement_prev.classList.remove('hidden');

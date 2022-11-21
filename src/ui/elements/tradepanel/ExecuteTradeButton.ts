@@ -375,15 +375,13 @@ export default class ExecuteTradeButton {
                     modal.hideModal();
 
                     let ausdFund = new FakeAUSDFund(this.moralis);
-                    ausdFund.showAUSDFakeFund(() => {
-                        this.renderButton();
-                    })
+                    ausdFund.showAUSDFakeFund()
                 })
             }
             return true;
         }
 
-        let kycStatusHandler = new KycStatusHandler(kycResponse, this);
+        let kycStatusHandler = new KycStatusHandler(this.moralis, kycResponse, this);
 
         button.innerHTML = kycStatusHandler.getButtonText();
         button.addEventListener('click', kycStatusHandler.getButtonClickEvent(this));
@@ -429,17 +427,13 @@ export default class ExecuteTradeButton {
             button.innerHTML = 'You need aUSD. Click here to get some';
             button.addEventListener('click', () => {
                 let ausdFund = new FakeAUSDFund(this.moralis);
-                ausdFund.showAUSDFakeFund(() => {
-                    this.renderButton();
-                })
+                ausdFund.showAUSDFakeFund()
             });
         } else {
             button.innerHTML = 'You need aUSD. Click here for instructions';
             button.addEventListener('click', () => {
                 let ausdFund = new FakeAUSDFund(this.moralis);
-                ausdFund.showAUSDFund(() => {
-                    this.renderButton();
-                });
+                ausdFund.showAUSDFund();
             });
         }
         this.stopLoadingButton(button);
@@ -459,14 +453,9 @@ export default class ExecuteTradeButton {
                 let networkInfo = NetworkInfo.getInstance();
                 let ausdFund = new FakeAUSDFund(this.moralis);
                 if (networkInfo.TestNetwork) {
-
-                    ausdFund.showAUSDFakeFund(() => {
-                        this.renderButton();
-                    });
+                    ausdFund.showAUSDFakeFund();
                 } else {
-                    ausdFund.showAUSDFund(() => {
-                        this.renderButton();
-                    })
+                    ausdFund.showAUSDFund();
                 }
             })
         } else {

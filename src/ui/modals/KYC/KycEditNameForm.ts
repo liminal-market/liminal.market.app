@@ -17,7 +17,7 @@ export default class KycEditNameForm {
         let kycEditNameError = document.getElementById('kycEditNameError');
         if (kycEditNameError) kycEditNameError.style.display = 'none';
 
-        let userService = new UserService(Moralis);
+        let userService = new UserService(this.moralis);
         let account = await userService.getAccount()
 
         let given_name = account.identity.given_name as string;
@@ -101,7 +101,7 @@ export default class KycEditNameForm {
             let middle_name = document.getElementById('middle_name') as HTMLInputElement;
             let family_name = document.getElementById('family_name') as HTMLInputElement;
             LoadingHelper.setLoading(kycEditNameSave);
-            let userService = new UserService(Moralis);
+            let userService = new UserService(this.moralis);
             await userService.updateName(given_name.value, middle_name.value, family_name.value)
                 .then((response) => {
                     if (response.message) {

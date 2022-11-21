@@ -95,8 +95,7 @@ export default class AUsdBalance {
                 element.innerHTML = 'Click for some aUSD';
                 element.addEventListener('click', (evt) => {
                     evt.preventDefault();
-                    aUSDFundingModal.showAUSDFakeFund(() => {
-                    });
+                    aUSDFundingModal.showAUSDFakeFund();
                 });
             } else {
                 element.addEventListener('click', async (evt) => {

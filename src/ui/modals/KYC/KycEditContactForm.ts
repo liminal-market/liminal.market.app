@@ -40,7 +40,7 @@ export default class KycEditContactForm {
             LoadingHelper.setLoading(kycEditContactSave);
 
             let data = FormHelper.getParams('#kycEditContactForm');
-            let userService = new UserService(Moralis);
+            let userService = new UserService(this.moralis);
             await userService.updateContact(data).then((response) => {
 
 

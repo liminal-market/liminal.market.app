@@ -5,6 +5,7 @@ import SwitchNetworkModal from "../../ui/modals/SwitchNetworkModal";
 import MagicWeb3Connector from "../../wallet/MagicWeb3Connector";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
+import UserService from "./UserService";
 
 
 export default class AuthenticateService {
@@ -40,7 +41,7 @@ export default class AuthenticateService {
             return;
         }
 
-        if (web3Provider.network.chainId != chainId) {
+        if (web3Provider.network && web3Provider.network.chainId != chainId) {
             let userNetwork = NetworkInfo.getNetworkInfoByChainId(web3Provider.network.chainId);
             if (userNetwork) {
                 NetworkInfo.setNetworkByChainId(web3Provider.network.chainId);
@@ -57,10 +58,17 @@ export default class AuthenticateService {
                 console.log(result);
                 return result;
             })
-            .catch((reason: any) => {
+            .catch(async (reason: any) => {
+                if (reason.message.indexOf('User rejected the action') != -1) {
+                    let userService = new UserService(this.moralis);
+                    await userService.logOut();
+                    return undefined;
+                }
                 console.log(reason);
                 throw new GeneralError(reason);
             });
+
+        if (!user) return;
 
         if (authenticatedCallback) {
             authenticatedCallback(user);

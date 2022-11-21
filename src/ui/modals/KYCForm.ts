@@ -6,12 +6,10 @@ import KycDisclosures from "./KYC/KycDisclosures";
 import KycAccountAgreement from "./KYC/KycAccountAgreement";
 import KycTrustedContact from "./KYC/KycTrustedContact";
 import KycUpload from "./KYC/KycUpload";
-import KycWaiting from "./KYC/KycWaiting";
-import ExecuteTradeButton from "../elements/tradepanel/ExecuteTradeButton";
-import UserService from "../../services/backend/UserService";
 
 
 export default class KYCForm {
+    moralis: typeof Moralis;
     steps = 5;
     modal: Modal;
     timeout?: any = undefined;
@@ -21,12 +19,12 @@ export default class KYCForm {
     kycContact: KycContact;
     kycIdentity: KycIdentity;
     kycDisclosures: KycDisclosures
-    kycAccountAgreement: KycAccountAgreement;
     kycTrustedContact: KycTrustedContact;
     kycUpload: KycUpload;
-    kycWaiting: KycWaiting;
+    kycAccountAgreement: KycAccountAgreement;
 
-    constructor(onHide: () => void) {
+    constructor(moralis: typeof Moralis, onHide: () => void) {
+        this.moralis = moralis;
         this.modal = new Modal();
         this.onHide = onHide;
 
@@ -34,14 +32,13 @@ export default class KYCForm {
         this.kycIdentity = new KycIdentity(this);
         this.kycTrustedContact = new KycTrustedContact(this);
         this.kycDisclosures = new KycDisclosures(this);
-        this.kycAccountAgreement = new KycAccountAgreement(this);
         this.kycUpload = new KycUpload(this);
-        this.kycWaiting = new KycWaiting(this);
+        this.kycAccountAgreement = new KycAccountAgreement(this);
     }
 
     public show(className: string) {
 
-        let kycForm = new KYCForm(() => {
+        let kycForm = new KYCForm(this.moralis, () => {
         });
         type ObjectKey = keyof typeof kycForm;
         const ble = className as ObjectKey;

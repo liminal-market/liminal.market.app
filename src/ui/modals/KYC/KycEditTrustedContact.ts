@@ -41,7 +41,7 @@ export default class KycEditTrustedContact {
 
             let params = FormHelper.getParams('#kycTrustedContactForm');
 
-            let userService = new UserService(Moralis);
+            let userService = new UserService(this.moralis);
             await userService.updateTrustedContact(params).then((response) => {
                 if (response.message) {
                     this.showError(response.message);

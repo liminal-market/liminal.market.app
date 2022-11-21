@@ -8,6 +8,7 @@ import UserService from "../../../services/backend/UserService";
 import {roundBigNumber} from "../../../util/Helper";
 import BigNumber from "bignumber.js";
 import AUSDFund from "./AUSDFund";
+import NetworkInfo from "../../../networks/NetworkInfo";
 
 
 export default class FakeAUSDFund {
@@ -21,13 +22,18 @@ export default class FakeAUSDFund {
         this.modal = new Modal();
     }
 
-    public showAUSDFund(callback: () => void) {
-
-        //this is real instruction how to transfer to broker
-        callback();
+    public showAUSDFund() {
+        let aUsdFund = new AUSDFund(this.moralis);
+        aUsdFund.show();
     }
 
-    public showAUSDFakeFund(callback: () => void) {
+    public showAUSDFakeFund() {
+        let networkInfo = NetworkInfo.getInstance();
+        if (!networkInfo.TestNetwork) {
+            this.showAUSDFund()
+            return;
+        }
+
         let template = Handlebars.compile(FakeFundingHtml);
 
         let contractInfo = ContractInfo.getContractInfo();
