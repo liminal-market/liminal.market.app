@@ -9,7 +9,7 @@ export default class PositionsService {
 
     public async getPositions(address: string) {
         let userPosition = await this.moralis.Cloud.run('positions', {address});
-        return userPosition.positions;
+        return userPosition?.positions;
     }
 
     public async getUserPositions(address: string) {

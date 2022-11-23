@@ -32,6 +32,7 @@ export default class PositionsPage {
         let userService = new UserService(this.moralis);
         let positionService = new PositionsService(this.moralis);
         let positions = await positionService.getPositions(userService.getEthAddress()!);
+        if (!positions) positions = [];
 
         HandlebarHelpers.registerHelpers();
 
