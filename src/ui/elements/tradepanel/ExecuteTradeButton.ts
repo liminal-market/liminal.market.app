@@ -103,8 +103,8 @@ export default class ExecuteTradeButton {
 
         button.addEventListener('click', async () => {
             this.loadingButton(button);
-            let providerInfo = ProviderInfo.Instance;
-            button.innerHTML = 'Confirm transaction in your ' + providerInfo.WalletName + ' wallet';
+
+            button.innerHTML = 'Confirm transaction in your wallet';
 
             if (this.sellTradeInput.symbol == 'aUSD') {
                 let liminalMarketService = new LiminalMarketService(this.moralis);
