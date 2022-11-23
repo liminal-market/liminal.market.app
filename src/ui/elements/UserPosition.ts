@@ -24,6 +24,7 @@ export default class UserPosition {
         let userService = new UserService(this.moralis);
         let positionService = new PositionsService(this.moralis);
         let userPosition = await positionService.getUserPositions(userService.getEthAddress()!);
+        if (!userPosition) return;
 
         let pl_status = document.querySelector('.pl_status');
         pl_status?.classList.remove('hidden');

@@ -30,6 +30,11 @@
 				<td><a href="" class="addToWallet" data-symbol="{{symbol}}">Add</a></td>
 			</tr>
 			{{/each}}
+			{{^}}
+			<tr>
+				<td colspan="9">No trades have been executed on this wallet. Start <a href="/#/trade">trading to see
+					your positions</a></td>
+			</tr>
 			{{/if}}
 		</tbody>
 	</table>
