@@ -205,7 +205,7 @@ export default class ExecuteTradeButton {
         let isBuy = (object.side == 'buy');
 
         let obj = (isBuy) ? this.getBuyingSharesObj(object) : this.getSellSharesObj(object);
-        obj.walletName = providerInfo.WalletName;
+        obj.walletName = providerInfo?.WalletName ?? '';
         obj.blockExplorerLink = networkInfo.BlockExplorer + '/tx/' + object.transaction_hash;
 
         let template = Handlebars.compile(TradeExecutedHtml);
