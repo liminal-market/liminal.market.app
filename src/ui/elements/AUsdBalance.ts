@@ -9,43 +9,43 @@ import WalletHelper from "../../util/WalletHelper";
 import ContractInfo from "../../contracts/ContractInfo";
 import Modal from "../modals/Modal";
 import AddToWalletHtml from '../../html/elements/AddToWallet.html';
+import User from "../../dto/User";
+import App from "../../main";
+import AuthenticateService from "../../services/backend/AuthenticateService";
 
 export default class AUsdBalance {
-    user: any;
-    moralis: typeof Moralis;
 
-    constructor(moralis: typeof Moralis, user: any) {
-        this.user = user;
-        this.moralis = moralis;
+
+    constructor() {
+
     }
 
-    public static async forceLoadAUSDBalanceUI(moralis: typeof Moralis) {
-        let userService = new UserService(moralis);
-        let user = userService.getUser();
-        let ui = new AUsdBalance(moralis, user)
+    public static async forceLoadAUSDBalanceUI() {
+        let ui = new AUsdBalance()
         AUSDService.lastUpdate = undefined;
         await ui.loadAUSDBalanceUI();
     }
 
     public async loadAUSDBalanceUI() {
-        if (!this.user) return;
+        if (!App.User.ether) {
+            await AuthenticateService.enableWeb3();
+            if (!App.User.ether) return;
+        }
 
         let userInfoAUsdBalance = document.getElementById('userInfoAUsdBalance');
         let frontpageAUsdBalance = document.getElementById('frontpageAUsdBalance');
 
-        if (!userInfoAUsdBalance) return;
-
-        if (!this.user.get('alpacaId')) {
+        if (!App.User.alpacaId) {
             frontpageAUsdBalance?.classList.add('hidden');
             userInfoAUsdBalance?.classList.add('hidden');
-            return;
+            //return;
         } else {
             frontpageAUsdBalance?.classList.remove('hidden');
             userInfoAUsdBalance?.classList.remove('hidden');
         }
 
-        let aUSDService = new AUSDService(this.moralis);
-        let aUsdValueWei = await aUSDService.getAUSDBalanceOf(this.user.get('ethAddress'));
+        let aUSDService = new AUSDService();
+        let aUsdValueWei = await aUSDService.getAUSDBalanceOf(App.User.address);
         let aUsdValue = roundBigNumber(aUsdValueWei);
 
         let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
@@ -76,7 +76,7 @@ export default class AUsdBalance {
                 evt.preventDefault();
 
                 let contractInfo = ContractInfo.getContractInfo(networkInfo.Name);
-                let walletHelper = new WalletHelper(this.moralis);
+                let walletHelper = new WalletHelper();
                 await walletHelper.addTokenToWallet(contractInfo.AUSD_ADDRESS, 'aUSD', () => {
                     let template = Handlebars.compile(AddToWalletHtml);
                     let obj = {symbol: 'aUSD', address: contractInfo.AUSD_ADDRESS};
@@ -90,7 +90,7 @@ export default class AUsdBalance {
 
         let fund_accountButtons = document.querySelectorAll('.fund_account');
         fund_accountButtons.forEach(element => {
-            let aUSDFundingModal = new FakeAUSDFund(this.moralis);
+            let aUSDFundingModal = new FakeAUSDFund();
             if (networkInfo.TestNetwork) {
                 element.innerHTML = 'Click for some aUSD';
                 element.addEventListener('click', (evt) => {
@@ -100,7 +100,7 @@ export default class AUsdBalance {
             } else {
                 element.addEventListener('click', async (evt) => {
                     evt.preventDefault();
-                    let aUsdFund = new AUSDFund(this.moralis);
+                    let aUsdFund = new AUSDFund();
                     await aUsdFund.show();
                 })
             }
@@ -110,7 +110,7 @@ export default class AUsdBalance {
         withdraw_from_account?.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            let withdrawModal = new WithdrawModal(this.moralis);
+            let withdrawModal = new WithdrawModal();
             await withdrawModal.show()
         })
     }

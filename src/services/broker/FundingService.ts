@@ -1,16 +1,14 @@
 import NetworkInfo from "../../networks/NetworkInfo";
+import BaseService from "../backend/BaseService";
 
-export default class FundingService {
-    moralis : typeof Moralis;
+export default class FundingService extends BaseService {
 
-    constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
+        super()
     }
 
     public async requestFakeFunding() {
-        let networkInfo = NetworkInfo.getInstance();
-
-        return await this.moralis.Cloud.run('fundUser', {chainId:networkInfo.ChainId});
+        return await this.post('fundUser');
     }
 
 }

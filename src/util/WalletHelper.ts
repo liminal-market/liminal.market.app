@@ -6,13 +6,14 @@ import AuthenticateService from "../services/backend/AuthenticateService";
 import NetworkInfo from "../networks/NetworkInfo";
 import ProviderInfo from "../wallet/ProviderInfo";
 import {WalletType} from "../enums/WalletType";
+import UserService from "../services/backend/UserService";
+import App from "../main";
 
 export default class WalletHelper {
     static addTokenFallbackLoaded?: boolean = undefined;
-    moralis: typeof Moralis;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+
+    constructor() {
     }
 
     public getAUsdAsset() {
@@ -25,15 +26,8 @@ export default class WalletHelper {
         let securitiesService = await SecuritiesService.getInstance();
 
         const asset = (symbol == 'aUSD') ? this.getAUsdAsset() : await securitiesService.getSecurityBySymbol(symbol);
-        let web3 = this.moralis.web3 as any;
-        if (!web3) {
-            web3 = await AuthenticateService.enableWeb3(this.moralis)
-            if (!web3) {
-                fallbackTimeout();
-                return;
-            }
-        }
-        if (!web3.provider.request) {
+        let connector = await AuthenticateService.enableWeb3();
+        if (!connector || !connector.provider || !connector.provider.request) {
             fallbackTimeout();
             return;
         }
@@ -46,9 +40,9 @@ export default class WalletHelper {
 
         }, timeout);
 
-        const wasAdded = await web3.provider.request({
+        const wasAdded = await connector.provider.request({
             method: 'wallet_watchAsset',
-            params: {
+            params: [{
                 type: 'ERC20',
                 options: {
                     address: address,
@@ -56,7 +50,7 @@ export default class WalletHelper {
                     decimals: 18,
                     image: 'https://app.liminal.market/img/logos/' + asset.Logo,
                 },
-            },
+            }]
         }).then((result: any) => {
             WalletHelper.addTokenFallbackLoaded = false;
             return true;
@@ -87,7 +81,7 @@ export default class WalletHelper {
     }
 
     public async isMagic() {
-        const walletInfo = await this.moralis.connector.magic.connect.getWalletInfo();
+        const walletInfo = App.User.providerInfo
         const walletType = walletInfo.walletType;
         return (walletType === "magic");
     }

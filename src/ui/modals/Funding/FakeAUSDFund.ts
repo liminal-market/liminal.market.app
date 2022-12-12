@@ -12,18 +12,16 @@ import NetworkInfo from "../../../networks/NetworkInfo";
 
 
 export default class FakeAUSDFund {
-    moralis: typeof Moralis;
     currentBalance: BigNumber;
     modal: Modal;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.currentBalance = new BigNumber(-1);
         this.modal = new Modal();
     }
 
     public showAUSDFund() {
-        let aUsdFund = new AUSDFund(this.moralis);
+        let aUsdFund = new AUSDFund();
         aUsdFund.show();
     }
 
@@ -48,7 +46,7 @@ export default class FakeAUSDFund {
         addToWallet.addEventListener('click', async (evt) => {
             let contractInfo = ContractInfo.getContractInfo();
 
-            let walletHelper = new WalletHelper(this.moralis);
+            let walletHelper = new WalletHelper();
             let result = await walletHelper.addTokenToWallet(contractInfo.AUSD_ADDRESS, 'aUSD', () => {
                 this.showCopyField();
             })
@@ -60,7 +58,7 @@ export default class FakeAUSDFund {
         registerBankInfo?.addEventListener('click', (evt) => {
             this.modal.hideModal();
 
-            let aUsdFund = new AUSDFund(this.moralis);
+            let aUsdFund = new AUSDFund();
             aUsdFund.show();
         })
 
@@ -69,7 +67,7 @@ export default class FakeAUSDFund {
         requestFakeAUSD?.addEventListener('click', async (evt) => {
             requestFakeAUSD!.setAttribute('aria-busy', 'true');
 
-            let fundingService = new FundingService(this.moralis);
+            let fundingService = new FundingService();
             let result = await fundingService.requestFakeFunding()
                 .catch((reason) => {
                     this.errorWhileFunding({})
@@ -106,12 +104,13 @@ export default class FakeAUSDFund {
         let currentAUSDBalance = document.getElementById('currentAUSDBalance')
         if (!currentAUSDBalance) return;
 
-        let aUSDService = new AUSDService(this.moralis);
-        let userService = new UserService(this.moralis);
+        let aUSDService = new AUSDService();
+        let userService = new UserService();
         let ethAddress = userService.getEthAddress();
 
         let amount = new BigNumber(0);
         if (ethAddress) {
+            AUSDService.lastUpdate = undefined;
             amount = await aUSDService.getAUSDBalanceOf(ethAddress);
         }
         currentAUSDBalance.innerHTML = '$' + roundBigNumber(amount).toString();

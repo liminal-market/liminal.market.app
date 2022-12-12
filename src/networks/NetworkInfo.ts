@@ -12,10 +12,8 @@ const networkInfos = [localhostNetwork, mumbaiNetwork, polygonNetwork];
 
 export default class NetworkInfo {
     private static instance: Network;
-    moralis: typeof Moralis;
 
-    private constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    private constructor() {
     }
 
     public static getInstance(): Network {
@@ -76,6 +74,14 @@ export default class NetworkInfo {
     private static getNetworkInfo(networkName?: string): Network {
         let cookieHelper = new CookieHelper(document);
 
+        // @ts-ignore
+        console.log('window.ethereum', window.ethereum.chainId, window.ethereum);
+        // @ts-ignore
+        if (!networkName && window.ethereum && window.ethereum.chainId) {
+            // @ts-ignore
+            let networkInfo = this.getNetworkNameByChainIdHex(window.ethereum.chainId);
+            if (networkInfo) return networkInfo;
+        }
         if (!networkName) networkName = cookieHelper.getCookieValue('network');
         if (!networkName) networkName = 'polygon';
 
@@ -93,6 +99,16 @@ export default class NetworkInfo {
         return new polygonNetwork();
     }
 
+    private static getNetworkNameByChainIdHex(chainIdHex: string) {
+        let networkInfo: Network | undefined = undefined;
+        networkInfos.forEach(networkInfoType => {
+            let tmp = new networkInfoType();
+            if (tmp.ChainIdHex == chainIdHex) {
+                networkInfo = tmp;
+            }
+        });
+        return networkInfo;
+    }
 }
 
 

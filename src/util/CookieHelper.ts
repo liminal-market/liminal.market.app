@@ -3,11 +3,11 @@
 export default class CookieHelper {
     document: Document
 
-    constructor(document: Document) {
-        this.document = document;
+    constructor(doc?: Document) {
+        this.document = (doc) ? doc : document;
     }
 
-    public setCookie(name : string, value : string) {
+    public setCookie(name: string, value: string) {
         let date = new Date();
         this.deleteCookie(name);
         this.document.cookie = name + "=" + value + "; expires=Mon, 2 Dec " + (date.getFullYear() + 1) + " 12:00:00 UTC;path=/;SameSite=Strict";

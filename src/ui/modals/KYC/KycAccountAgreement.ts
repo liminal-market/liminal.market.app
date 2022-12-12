@@ -74,14 +74,14 @@ export default class KycAccountAgreement extends KycBase {
             let networkInfo = NetworkInfo.getInstance();
             params.chainId = networkInfo.ChainId;
 
-            let kycService = new KYCService(this.kycForm.moralis);
+            let kycService = new KYCService();
             let result = await kycService.saveKYCInfo(params)
                 .catch((reason: any) => {
                     if (account_agreement_prev) account_agreement_prev.classList.remove('hidden');
                     LoadingHelper.removeLoading();
 
                     if (reason.message) {
-                        let kycError = new KycValidatorError(reason.message, this.kycForm);
+                        let kycError = new KycValidatorError(JSON.parse(reason.message), this.kycForm);
                         kycError.handle();
                     } else {
                         console.log(reason);
@@ -89,7 +89,7 @@ export default class KycAccountAgreement extends KycBase {
                 });
 
             if (result) {
-                let ausdFund = new FakeAUSDFund(this.kycForm.moralis);
+                let ausdFund = new FakeAUSDFund();
                 ausdFund.showAUSDFakeFund();
                 ExecuteTradeButton.Instance.renderButton();
             } else {

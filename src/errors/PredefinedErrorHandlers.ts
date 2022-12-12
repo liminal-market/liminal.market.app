@@ -19,7 +19,7 @@ export default class PredefinedErrorHandlers {
             let switchNetworkLink = document.getElementById('switchNetworkLink');
             switchNetworkLink?.addEventListener('click', (evt) => {
                 evt.preventDefault();
-                let modal = new SwitchNetworkModal(Moralis);
+                let modal = new SwitchNetworkModal();
                 modal.show();
             })
         });

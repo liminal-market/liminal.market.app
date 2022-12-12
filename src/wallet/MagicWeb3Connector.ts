@@ -9,29 +9,32 @@ import {CustomNodeConfiguration} from "@magic-sdk/types/dist/types/modules/rpc-p
 export default class MagicWeb3Connector extends AbstractWeb3Connector {
     type = 'MagicLink';
     magic: any;
+    ether?: ethers.providers.Web3Provider;
 
     async activate() {
         let networkInfo = NetworkInfo.getInstance();
-        let customNetwork = {rpcUrl: networkInfo.RpcUrl, chainId: networkInfo.ChainId} as CustomNodeConfiguration;
+        let network = {rpcUrl: networkInfo.RpcUrl, chainId: networkInfo.ChainId} as CustomNodeConfiguration;
         this.magic = new Magic('pk_live_EA9DDC458FE21B24', {
             extensions: [new ConnectExtension()],
-            network: customNetwork
+            network: network
         });
 
-        // @ts-ignore
-        let ether = new ethers.providers.Web3Provider(this.magic.rpcProvider);
-        let accounts = await ether.listAccounts();
+        this.ether = new ethers.providers.Web3Provider(this.magic.rpcProvider);
+        let accounts = await this.ether.listAccounts();
 
         // Assign Constants
         this.account = accounts[0];
-        this.provider = ether.provider;
-        this.chainId = `0x${networkInfo.ChainId.toString(16)}`;
+        this.provider = this.ether.provider;
+        this.chainId = networkInfo.ChainId;
 
         this.subscribeToEvents(this.provider);
         return {
             provider: this.provider,
             account: this.account,
             chainId: this.chainId,
+            ether: this.ether,
+            magic: this.magic,
+            signer: this.ether.getSigner()
         };
 
     }

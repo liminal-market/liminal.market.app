@@ -455,7 +455,8 @@ progress.invalid {
 	width:5rem;
 }
 .trade_executed {
-	text-align: center;
+    text-align: center;
+    position: relative;
 }
 
 .trade_executed > nav {
@@ -574,13 +575,21 @@ progress.invalid {
 }
 
 .pl_status {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .red {
-	color: #9d1e1e;
+    color: #9d1e1e;
 }
 
 .green {
-	color: #025202;
+    color: #025202;
+}
+
+#confetti {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
 }

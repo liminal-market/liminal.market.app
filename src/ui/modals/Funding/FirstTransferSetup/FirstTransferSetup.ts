@@ -5,12 +5,10 @@ import BankInfo from "../FirstTransferSetup/BankInfo";
 
 export default class FirstTransferSetup {
 
-    moralis: typeof Moralis;
     aUsdFund: AUSDFund
     bankRelationship?: BankRelationship;
 
-    constructor(moralis: typeof Moralis, aUsdFund: AUSDFund) {
-        this.moralis = moralis;
+    constructor(aUsdFund: AUSDFund) {
         this.aUsdFund = aUsdFund;
     }
 

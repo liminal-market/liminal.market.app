@@ -23,22 +23,24 @@ import BigNumber from "bignumber.js";
 import KycStatusHandler from "../../modals/KYC/KycStatusHandler";
 import KycApprovedHtml from '../../../html/modal/Kyc/KycApproved.html';
 import AUsdBalance from "../AUsdBalance";
+import User from "../../../dto/User";
+import App from "../../../main";
 
+const confetti = require('canvas-confetti');
 
 export default class ExecuteTradeButton {
-    moralis: typeof Moralis;
     authenticateService: AuthenticateService;
     sellTradeInput: TradePanelInput;
     buyTradeInput: TradePanelInput;
     template: any;
     button: HTMLInputElement;
-
     static Instance: ExecuteTradeButton;
-    constructor(moralis: typeof Moralis, sellTradeInput: TradePanelInput, buyTradeInput: TradePanelInput) {
-        this.moralis = moralis;
+
+    constructor(sellTradeInput: TradePanelInput, buyTradeInput: TradePanelInput) {
+
         this.sellTradeInput = sellTradeInput;
         this.buyTradeInput = buyTradeInput;
-        this.authenticateService = new AuthenticateService(this.moralis);
+        this.authenticateService = new AuthenticateService();
         this.template = Handlebars.compile(ExecuteTradeButtonHtml);
         this.button = document.getElementById('liminal_market_execute_trade') as HTMLInputElement;
 
@@ -56,7 +58,7 @@ export default class ExecuteTradeButton {
             return;
         }
         //user logged in
-        if (!this.userIsLoggedIn(this.button)) {
+        if (!await this.userIsLoggedIn(this.button)) {
             return;
         }
         //chain id correct
@@ -107,7 +109,7 @@ export default class ExecuteTradeButton {
             button.innerHTML = 'Confirm transaction in your wallet';
 
             if (this.sellTradeInput.symbol == 'aUSD') {
-                let liminalMarketService = new LiminalMarketService(this.moralis);
+                let liminalMarketService = new LiminalMarketService();
                 let symbolAddress = await liminalMarketService.getSymbolContractAddress(this.buyTradeInput.symbol);
 
                 if (symbolAddress === AddressZero) {
@@ -123,10 +125,10 @@ export default class ExecuteTradeButton {
 
                 await this.executeTransfer(symbolAddress, button);
             } else {
-                let liminalMarketService = new LiminalMarketService(this.moralis);
+                let liminalMarketService = new LiminalMarketService();
                 let symbolAddress = await liminalMarketService.getSymbolContractAddress(this.sellTradeInput.symbol);
 
-                let securityTokenService = new SecurityTokenService(this.moralis);
+                let securityTokenService = new SecurityTokenService();
                 await securityTokenService.transfer(symbolAddress, this.sellTradeInput.quantity)
                     .catch(reason => {
                         console.log('CATCH - securityTokenService.transfer', reason);
@@ -145,14 +147,14 @@ export default class ExecuteTradeButton {
     }
 
     private async executeTransfer(symbolAddress: string, button: HTMLElement) {
-        let aUsdService = new AUSDService(this.moralis);
+        let aUsdService = new AUSDService();
         await aUsdService.transfer(symbolAddress, this.sellTradeInput.quantity)
             .catch(reason => {
                 console.log('CATCH - aUsdService.transfer', reason);
             }).then(transaction => {
                 if (!transaction) return;
 
-                this.monitorExecuteTrade(transaction as Moralis.ExecuteFunctionResult, TradeType.Buy);
+                this.monitorExecuteTrade(transaction, TradeType.Buy);
                 this.setProgressText('Sending to blockchain', transaction.hash)
 
             }).finally(() => {
@@ -165,7 +167,7 @@ export default class ExecuteTradeButton {
         let ethAddress = object.walletAddress;
         let tokenAddress = object.tokenAddress;
         let buyingQuantity = object.filled_qty;
-        let sellingAmount = '$' + new BigNumber(object.amount).div(10 ** 18).toFixed();
+        let sellingAmount = '$' + object.amount;
 
         return {
             sellingLogo: '/img/logos/aUSD.png',
@@ -200,6 +202,11 @@ export default class ExecuteTradeButton {
     }
 
     public async showTradeExecuted(object: any) {
+        await AUsdBalance.forceLoadAUSDBalanceUI();
+
+        let executingTrade = document.getElementById('executing-trade-progress');
+        executingTrade?.classList.add('d-none');
+
         let providerInfo = ProviderInfo.Instance;
         let networkInfo = NetworkInfo.getInstance();
         let isBuy = (object.side == 'buy');
@@ -213,13 +220,29 @@ export default class ExecuteTradeButton {
         let modal = new Modal();
         modal.showModal('Trade executed', content);
 
+        let myCanvas = document.createElement('canvas');
+        myCanvas.id = 'confetti';
+        document.querySelector('.trade_executed')!.appendChild(myCanvas);
+
+        let myConfetti = confetti.create(myCanvas, {
+            resize: true,
+            useWorker: true
+        });
+        myConfetti({
+            particleCount: 200,
+            spread: 200
+            // any other options from the global
+            // confetti function
+        });
+
+
         let addTokenToWallet = document.getElementById('addTokenToWallet');
         if (!addTokenToWallet) return;
 
         addTokenToWallet.addEventListener('click', (evt) => {
 
             let address = (evt.target as HTMLElement).dataset.address as string;
-            let walletHelper = new WalletHelper(this.moralis);
+            let walletHelper = new WalletHelper();
             walletHelper.addTokenToWallet(address, this.buyTradeInput.symbol, () => {
                 let addTokenToWalletFailed = document.getElementById('addTokenToWalletFailed');
                 if (!addTokenToWalletFailed) return;
@@ -230,23 +253,15 @@ export default class ExecuteTradeButton {
     }
 
     public async monitorExecuteTrade(transaction: Moralis.ExecuteFunctionResult, tradeType: TradeType) {
-        let subscription = new Subscription(this.moralis);
+        let subscription = new Subscription();
 
         await subscription.subscribeToTable(tradeType, async (object) => {
-            let user = this.moralis.User.current();
-            if (!user) return;
-            if (object.walletAddress != user.get('ethAddress')) {
-                return;
-            }
+            if (!App.User.isLoggedIn) return;
+
 
             if (object.status == 'order_filled') {
                 await this.showTradeExecuted(object);
-                await AUsdBalance.forceLoadAUSDBalanceUI(this.moralis);
 
-                let executingTrade = document.getElementById('executing-trade-progress');
-                if (!executingTrade) return;
-
-                executingTrade.classList.add('d-none');
             } else if (object.status == 'order_failed') {
                 let modal = new Modal();
                 modal.showModal('Order failed', 'We could not finish your order.')
@@ -254,7 +269,7 @@ export default class ExecuteTradeButton {
                 this.setProgressText('Received order sending to stock exchange', object.transaction_hash)
             } else if (object.status == 'order_requested') {
                 this.setProgressText('Sent to stock exchange', object.transaction_hash);
-                await AUsdBalance.forceLoadAUSDBalanceUI(this.moralis);
+                await AUsdBalance.forceLoadAUSDBalanceUI();
             }
         });
 
@@ -273,21 +288,19 @@ export default class ExecuteTradeButton {
     }
 
     private walletIsConnected(button: HTMLElement) {
-        let walletConnected = this.authenticateService.isWalletConnected();
-        if (walletConnected) return true;
+        if (App.User.provider) return true;
 
         button.innerHTML = 'Connect wallet';
         button.addEventListener('click', async (evt) => {
-            let connectWallet = new ConnectWallet(this.moralis);
+            let connectWallet = new ConnectWallet();
             await connectWallet.connectWallet(evt.target as HTMLElement)
         });
         this.stopLoadingButton(button);
         return false;
     }
 
-    private userIsLoggedIn(button: HTMLElement) {
-        let userLoggedIn = this.authenticateService.isUserLoggedIn();
-        if (userLoggedIn) return true;
+    private async userIsLoggedIn(button: HTMLElement) {
+        if (App.User.isLoggedIn) return true;
 
         button.innerHTML = 'Login';
         button.addEventListener('click', async () => {
@@ -298,9 +311,8 @@ export default class ExecuteTradeButton {
     }
 
     private chainIdIsCorrect(button: HTMLElement) {
-        let chainId = this.authenticateService.getChainId();
-        let networkInfo = NetworkInfo.getInstance();
-        if (chainId === networkInfo.ChainId) return true;
+        let chainId = App.User.chainId;
+        if (chainId === App.Network.ChainId) return true;
 
         let usersWalletNetwork = NetworkInfo.getNetworkInfoByChainId(chainId);
         if (usersWalletNetwork) {
@@ -310,7 +322,7 @@ export default class ExecuteTradeButton {
 
         button.innerHTML = 'Switch Network';
         button.addEventListener('click', async () => {
-            await networkInfo.addNetworkToWallet(this.moralis);
+            await App.Network.addNetworkToWallet();
         })
         this.stopLoadingButton(button);
         return false;
@@ -319,14 +331,14 @@ export default class ExecuteTradeButton {
 
     private async userHasNativeToken(button: HTMLElement): Promise<boolean> {
         let networkInfo = NetworkInfo.getInstance();
-        let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens(this.moralis);
+        let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens();
         if (hasEnoughNativeTokens) return true;
 
         button.classList.replace('enabled', 'disabled');
 
         button.innerHTML = 'You need ' + networkInfo.NativeCurrencyName + ' tokens. Click me for some tokens';
         button.addEventListener('click', () => {
-            let nativeTokenNeededModal = new NativeTokenNeeded(this.moralis, () => {
+            let nativeTokenNeededModal = new NativeTokenNeeded(() => {
                 this.renderButton();
             });
             nativeTokenNeededModal.show()
@@ -340,13 +352,12 @@ export default class ExecuteTradeButton {
     kycIdDoneTimeout: any;
 
     private async kycIsDone(button: HTMLElement, intervalCheck = false) {
-        let kycService = new KYCService(this.moralis);
-        let ethAddress = this.authenticateService.getEthAddress();
-        if (ethAddress === '') {
+        if (App.User.address === '') {
             console.log('no ETH address, kyc check failed')
             return false;
         }
 
+        let kycService = new KYCService();
         let kycResponse = await kycService.hasValidKYC();
         if (!kycResponse.isValidKyc && kycResponse.status == 'ACTIVE') {
             this.kycIdDoneTimeout = setInterval(async () => {
@@ -374,14 +385,14 @@ export default class ExecuteTradeButton {
                 fundAccount?.addEventListener('click', (evt) => {
                     modal.hideModal();
 
-                    let ausdFund = new FakeAUSDFund(this.moralis);
+                    let ausdFund = new FakeAUSDFund();
                     ausdFund.showAUSDFakeFund()
                 })
             }
             return true;
         }
 
-        let kycStatusHandler = new KycStatusHandler(this.moralis, kycResponse, this);
+        let kycStatusHandler = new KycStatusHandler(kycResponse, this);
 
         button.innerHTML = kycStatusHandler.getButtonText();
         button.addEventListener('click', kycStatusHandler.getButtonClickEvent(this));
@@ -402,8 +413,8 @@ export default class ExecuteTradeButton {
     hasBuyingPower = false;
 
     private async userHasAUSD(button: HTMLElement): Promise<boolean> {
-        let ausdService = new AUSDService(this.moralis);
-        let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
+        let ausdService = new AUSDService();
+        let balance = await ausdService.getAUSDBalanceOf(App.User.address);
         if (balance.isGreaterThan(0)) return true;
 
         if (this.hasBuyingPower) {
@@ -411,9 +422,9 @@ export default class ExecuteTradeButton {
             this.checkBalanceInterval = setInterval(async () => {
                 AUSDService.lastUpdate = undefined;
 
-                let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
+                let balance = await ausdService.getAUSDBalanceOf(App.User.address);
                 if (balance.isGreaterThan(0)) {
-                    await AUsdBalance.forceLoadAUSDBalanceUI(this.moralis);
+                    await AUsdBalance.forceLoadAUSDBalanceUI();
 
                     clearInterval(this.checkBalanceInterval);
                     await this.renderButton();
@@ -426,13 +437,13 @@ export default class ExecuteTradeButton {
         if (networkInfo.TestNetwork) {
             button.innerHTML = 'You need aUSD. Click here to get some';
             button.addEventListener('click', () => {
-                let ausdFund = new FakeAUSDFund(this.moralis);
+                let ausdFund = new FakeAUSDFund();
                 ausdFund.showAUSDFakeFund()
             });
         } else {
             button.innerHTML = 'You need aUSD. Click here for instructions';
             button.addEventListener('click', () => {
-                let ausdFund = new FakeAUSDFund(this.moralis);
+                let ausdFund = new FakeAUSDFund();
                 ausdFund.showAUSDFund();
             });
         }
@@ -443,15 +454,15 @@ export default class ExecuteTradeButton {
 
     private async userHasEnoughQty(button: HTMLElement) {
 
-        let ausdService = new AUSDService(this.moralis);
+        let ausdService = new AUSDService();
         if (this.sellTradeInput.symbol == 'aUSD') {
-            let balance = await ausdService.getAUSDBalanceOf(this.authenticateService.getEthAddress());
+            let balance = await ausdService.getAUSDBalanceOf(App.User.address);
             if (balance.isGreaterThanOrEqualTo(this.sellTradeInput.quantity)) return true;
 
             button.innerHTML = "You don't have enough aUSD. Click for more funding";
             button.addEventListener('click', () => {
                 let networkInfo = NetworkInfo.getInstance();
-                let ausdFund = new FakeAUSDFund(this.moralis);
+                let ausdFund = new FakeAUSDFund();
                 if (networkInfo.TestNetwork) {
                     ausdFund.showAUSDFakeFund();
                 } else {
@@ -459,11 +470,8 @@ export default class ExecuteTradeButton {
                 }
             })
         } else {
-            let securityTokenService = new SecurityTokenService(this.moralis);
-            let authenticateService = new AuthenticateService(this.moralis);
-            let ethAddress = authenticateService.getEthAddress();
-
-            let userQuantity = await securityTokenService.getQuantityByAddress(this.sellTradeInput.symbol, ethAddress);
+            let securityTokenService = new SecurityTokenService();
+            let userQuantity = await securityTokenService.getQuantityByAddress(this.sellTradeInput.symbol, App.User.address);
             if (this.sellTradeInput.quantity <= userQuantity) return true;
 
             button.innerHTML = "You don't have enough " + this.sellTradeInput.symbol;
@@ -474,7 +482,7 @@ export default class ExecuteTradeButton {
     }
 
     private async isMarketOpen(button: HTMLElement): Promise<boolean> {
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let isMarketOpen = await userService.isMarketOpenOrUserOffHours();
         if (isMarketOpen) return true;
 

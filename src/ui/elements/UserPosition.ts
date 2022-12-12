@@ -7,22 +7,20 @@ import PositionsPage from "../pages/PositionsPage";
 
 export default class UserPosition {
 
-    moralis: typeof Moralis;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
     }
 
-    public static registerListener(moralis: typeof Moralis) {
+    public static registerListener() {
         UserInfo.onUserLoggedIn.push(async () => {
-            let userPosition = new UserPosition(moralis);
+            let userPosition = new UserPosition();
             userPosition.render();
         })
     }
 
     public async render() {
-        let userService = new UserService(this.moralis);
-        let positionService = new PositionsService(this.moralis);
+        let userService = new UserService();
+        let positionService = new PositionsService();
         let userPosition = await positionService.getUserPositions(userService.getEthAddress()!);
         if (!userPosition) return;
 
@@ -30,7 +28,7 @@ export default class UserPosition {
         pl_status?.classList.remove('hidden');
         pl_status?.addEventListener('click', (evt) => {
             evt.preventDefault();
-            let positionPage = new PositionsPage(this.moralis);
+            let positionPage = new PositionsPage();
             positionPage.load();
         })
 

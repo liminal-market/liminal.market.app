@@ -11,7 +11,7 @@ export default class localhostNetwork extends TestNetwork {
         this.NativeCurrencyName = "Ethereum";
         this.NativeSymbol = "ETH";
         this.NativeDecimal = 18;
-        this.RpcUrl = 'https://rinkeby.infura.io/';
+        this.RpcUrl = 'http://127.0.0.1:8545/';
         this.BlockExplorer = 'https://rinkeby.etherscan.io';
 
 	}

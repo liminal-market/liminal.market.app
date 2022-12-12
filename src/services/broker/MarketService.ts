@@ -1,15 +1,14 @@
+import BaseService from "../backend/BaseService";
 
-export default class MarketService {
-    moralis : typeof Moralis;
+export default class MarketService extends BaseService {
 
-    public constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
+    public constructor() {
+        super();
     }
 
-    public async isMarketOpen() : Promise<boolean> {
-        return await this.moralis.Cloud.run('isOpen');
+    public async isMarketOpen(): Promise<boolean> {
+        return await this.get('isOpen');
     }
-
 
 
 }

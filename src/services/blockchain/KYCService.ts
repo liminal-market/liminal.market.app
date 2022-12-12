@@ -4,13 +4,15 @@ import GeneralError from "../../errors/GeneralError";
 import KycStatus from "../../dto/KycStatus";
 import AUsdBalance from "../../ui/elements/AUsdBalance";
 import BlockchainService from "./BlockchainService";
+import UserService from "../backend/UserService";
+import App from "../../main";
 
 export default class KYCService extends BlockchainService {
     private static KYCInfo: any;
     private static KycResponse: KycStatus;
 
-    constructor(moralis: typeof Moralis) {
-        super(moralis)
+    constructor() {
+        super()
     }
 
     public async getKYCAbi() {
@@ -25,7 +27,7 @@ export default class KYCService extends BlockchainService {
     public async hasValidKYC(): Promise<KycStatus> {
         if (KYCService.KycResponse && KYCService.KycResponse.isValidKyc) return KYCService.KycResponse;
 
-        KYCService.KycResponse = await this.moralis.Cloud.run('isValidKyc', {chainId: this.moralis.chainId})
+        KYCService.KycResponse = await this.get('isValidKyc')
             .catch(reason => {
                 let blockchainError = new BlockchainError(reason);
                 if (blockchainError.addressIsNotValidKYC()) {
@@ -36,27 +38,20 @@ export default class KYCService extends BlockchainService {
             }) as KycStatus;
 
         if (KYCService.KycResponse.alpacaId) {
-            let user = this.moralis.User.current();
-            user?.set('alpacaId', KYCService.KycResponse.alpacaId);
+            App.User.alpacaId = KYCService.KycResponse.alpacaId;
 
-            let aUsdBalance = new AUsdBalance(this.moralis, user!);
+            let aUsdBalance = new AUsdBalance();
             await aUsdBalance.loadAUSDBalanceUI();
         }
         return KYCService.KycResponse;
     }
 
     public async saveKYCInfo(data: any): Promise<string> {
-        let user = this.moralis.User.current();
-        if (!user) throw new GeneralError("You need to be logged in to do KYC. Please login again.")
-
-        return await this.moralis.Cloud.run("kycRegistration", data);
+        return await this.post("kycRegistration", data);
     }
 
     public async updateKYCInfo(data: any): Promise<string> {
-        let user = this.moralis.User.current();
-        if (!user) throw new GeneralError("You need to be logged in to do KYC. Please login again.")
-
-        return await this.moralis.Cloud.run("updateAccount", data);
+        return await this.post("updateAccount", data);
     }
 
     public isValidAccountId(str: string) {
@@ -65,9 +60,6 @@ export default class KYCService extends BlockchainService {
     }
 
     async updateDocuments(params: any) {
-        let user = this.moralis.User.current();
-        if (!user) throw new GeneralError("You need to be logged in to do KYC. Please login again.")
-
-        return await this.moralis.Cloud.run("kycActionRequiredUpdate", params);
+        return await this.post("kycActionRequiredUpdate", params);
     }
 }

@@ -1,106 +1,128 @@
-import Moralis from "moralis";
 import NetworkInfo from "../../networks/NetworkInfo";
-import GeneralError from "../../errors/GeneralError";
 import SwitchNetworkModal from "../../ui/modals/SwitchNetworkModal";
 import MagicWeb3Connector from "../../wallet/MagicWeb3Connector";
-import ProviderInfo from "../../wallet/ProviderInfo";
-import MoralisWeb3Provider = Moralis.MoralisWeb3Provider;
-import UserService from "./UserService";
+import App from "../../main";
+import BaseService from "./BaseService";
+import CookieHelper from "../../util/CookieHelper";
+import User from "../../dto/User";
 
+export default class AuthenticateService extends BaseService {
 
-export default class AuthenticateService {
-    moralis: typeof Moralis
-
-    public constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    public constructor() {
+        super();
     }
 
-    public static async enableWeb3(moralis: typeof Moralis) {
-        if (moralis.isWeb3Enabled()) {
-            return moralis.provider as MoralisWeb3Provider;
+    public static async enableWeb3() {
+        if (App.User.connector) return App.User.connector;
+
+        let magicWeb3Connector = new MagicWeb3Connector();
+        let connector = await magicWeb3Connector.activate();
+        App.User.connector = connector;
+        App.User.magic = connector.magic;
+        App.User.provider = connector.provider;
+        App.User.ether = connector.ether;
+        App.User.signer = connector.signer;
+
+        return connector;
+    }
+
+    public async logOut() {
+        let cookieHelper = new CookieHelper(document);
+        cookieHelper.deleteCookie('validate');
+        if (!App.User.ether) {
+            let connection = await AuthenticateService.enableWeb3();
+            App.User.magic = connection.magic;
+        }
+        App.User.magic.connect.disconnect();
+        App.User = new User(null, '', App.Network.ChainId, '');
+    }
+
+    public async login() {
+        let connector = await AuthenticateService.enableWeb3();
+        App.User = new User(connector.provider, connector.account, connector.chainId, connector.ether);
+        App.User.magic = connector.magic;
+        App.User.signer = connector.signer;
+        App.User.isLoggedIn = true;
+    }
+
+    public async isAuthenticated() {
+        let cookieHelper = new CookieHelper();
+        let validate = cookieHelper.getCookieValue('validate');
+        if (!validate) return false;
+
+        try {
+            let obj = JSON.parse(atob(validate));
+            App.User.token = obj.token;
+
+            let result = await this.post('/me/jwt');
+            console.log('isValid', result);
+            if (!result.jwt) {
+                await this.logOut();
+                return false;
+            }
+
+            await AuthenticateService.enableWeb3();
+
+            App.User.address = obj.address;
+            App.User.alpacaId = obj.alpacaId;
+            App.User.chainId = obj.chainId;
+            App.User.isLoggedIn = true;
+
+            return true;
+        } catch (e: any) {
+            cookieHelper.deleteCookie('validate');
+
+            console.info(e);
+            return false;
         }
 
-        let options = {connector: MagicWeb3Connector} as any;
-        let result = await moralis.enableWeb3(options);
-
-        return result;
     }
 
     public async authenticateUser(enableWeb3Callback?: (walletConnectionInfo: any) => void,
-                                  authenticatedCallback?: (user: Moralis.User) => void
+                                  authenticatedCallback?: () => void
     ) {
-        let chainId = NetworkInfo.getInstance().ChainId;
-        let web3Provider = await AuthenticateService.enableWeb3(this.moralis);
-        if (enableWeb3Callback) {
-            enableWeb3Callback(web3Provider);
+
+        let connector = await AuthenticateService.enableWeb3();
+
+        if (enableWeb3Callback && connector.provider) {
+            enableWeb3Callback(connector.provider);
         }
 
-        let user = this.moralis.User.current();
-        if (user) {
-            if (authenticatedCallback) authenticatedCallback(user);
-            return;
-        }
-
-        if (web3Provider.network && web3Provider.network.chainId != chainId) {
-            let userNetwork = NetworkInfo.getNetworkInfoByChainId(web3Provider.network.chainId);
+        if (connector.chainId != App.Network.ChainId) {
+            let userNetwork = NetworkInfo.getNetworkInfoByChainId(connector.chainId);
             if (userNetwork) {
-                NetworkInfo.setNetworkByChainId(web3Provider.network.chainId);
+                NetworkInfo.setNetworkByChainId(connector.chainId);
             } else {
-                let modal = new SwitchNetworkModal(this.moralis);
+                let modal = new SwitchNetworkModal();
                 modal.show();
                 return;
             }
         }
 
-        let obj: any = {signingMessage: "You are logging into Liminal.market.\n\n", connector: MagicWeb3Connector};
-        user = await this.moralis.authenticate(obj)
-            .then(result => {
-                console.log(result);
-                return result;
-            })
-            .catch(async (reason: any) => {
-                if (reason.message.indexOf('User rejected the action') != -1) {
-                    let userService = new UserService(this.moralis);
-                    await userService.logOut();
-                    return undefined;
-                }
-                console.log(reason);
-                throw new GeneralError(reason);
-            });
+        let response = await this.post<any>('/me/nonce', {address: connector.account})
 
-        if (!user) return;
+        let obj: any = {
+            signingMessage: "You are logging into Liminal.market.\n\nNonce:" + response.nonce,
+            connector: MagicWeb3Connector
+        };
+
+        const signedMessage = await connector.ether.getSigner()
+            .signMessage(obj.signingMessage)
+            .catch((e: any) => console.log(e));
+
+        let loginResponse = await this.post<any>('me/validate', {address: connector.account, signedMessage})
+        App.User.setValidate(loginResponse);
+        App.User.token = loginResponse.token;
+        App.User.alpacaId = loginResponse.alpacaId;
+        App.User.address = loginResponse.address;
+        App.User.isLoggedIn = true;
 
         if (authenticatedCallback) {
-            authenticatedCallback(user);
+            authenticatedCallback();
         } else {
             location.reload();
         }
     }
 
-    public getUser() {
-        return this.moralis.User.current();
-    }
-
-    public getEthAddress(): string {
-        let user = this.getUser();
-        if (!user) return '';
-
-        let ethAddress = user.get('ethAddress');
-        return ethAddress;
-    }
-
-    public isWalletConnected() {
-        return this.moralis.isWeb3Enabled();
-    }
-
-    public isUserLoggedIn() {
-        return (this.moralis.User.current() !== null);
-    }
-
-    public getChainId(): number {
-        if (!this.moralis.chainId) return 0;
-
-        return parseInt(this.moralis.chainId, 16);
-    }
 
 }

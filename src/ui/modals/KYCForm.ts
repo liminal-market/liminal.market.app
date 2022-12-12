@@ -9,7 +9,6 @@ import KycUpload from "./KYC/KycUpload";
 
 
 export default class KYCForm {
-    moralis: typeof Moralis;
     steps = 5;
     modal: Modal;
     timeout?: any = undefined;
@@ -23,8 +22,7 @@ export default class KYCForm {
     kycUpload: KycUpload;
     kycAccountAgreement: KycAccountAgreement;
 
-    constructor(moralis: typeof Moralis, onHide: () => void) {
-        this.moralis = moralis;
+    constructor(onHide: () => void) {
         this.modal = new Modal();
         this.onHide = onHide;
 
@@ -38,7 +36,7 @@ export default class KYCForm {
 
     public show(className: string) {
 
-        let kycForm = new KYCForm(this.moralis, () => {
+        let kycForm = new KYCForm(() => {
         });
         type ObjectKey = keyof typeof kycForm;
         const ble = className as ObjectKey;

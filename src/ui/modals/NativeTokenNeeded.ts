@@ -5,20 +5,18 @@ import Modal from "./Modal";
 import UserService from "../../services/backend/UserService";
 
 export default class NativeTokenNeeded {
-    moralis : typeof Moralis;
     onNativeTokenArrived : () => void;
     timeOut?: any = undefined;
     modal: Modal;
 
-    constructor(moralis : typeof Moralis, onNativeTokenArrived : () => void) {
-        this.moralis = moralis;
+    constructor(onNativeTokenArrived: () => void) {
         this.onNativeTokenArrived = onNativeTokenArrived;
         this.modal = new Modal();
     }
 
     public show() {
         let networkInfo = NetworkInfo.getInstance();
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let ethAddress = userService.getEthAddress();
 
         if (networkInfo.TestNetwork) {
@@ -53,7 +51,7 @@ export default class NativeTokenNeeded {
 
     public async checkForNativeTokens() {
         let networkInfo = NetworkInfo.getInstance();
-        let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens(this.moralis);
+        let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens();
         if (hasEnoughNativeTokens) {
             this.modal.hideModal();
             this.onNativeTokenArrived();

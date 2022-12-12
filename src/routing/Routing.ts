@@ -16,10 +16,8 @@ export default class Routing {
         show_funding: this.showFunding,
         show_kyc: this.showKyc
     };
-    moralis : typeof Moralis;
 
-    constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
     }
 
     public async loadRoutes() {
@@ -40,7 +38,7 @@ export default class Routing {
     public async showKycActionRequired(routing: Routing, evt: MouseEvent) {
         if (evt) evt.preventDefault();
 
-        let page = new TradePage(routing.moralis);
+        let page = new TradePage();
         await page.load();
 
         history.pushState(null, 'Buy stocks', '#/kyc_action_required');
@@ -52,7 +50,7 @@ export default class Routing {
     public async showKyc(routing: Routing, evt: MouseEvent) {
         if (evt) evt.preventDefault();
 
-        let page = new TradePage(routing.moralis);
+        let page = new TradePage();
         await page.load();
 
         history.pushState(null, 'Buy stocks', '#/kyc');
@@ -64,12 +62,12 @@ export default class Routing {
     public async showFunding(routing: Routing, evt: MouseEvent) {
         if (evt) evt.preventDefault();
 
-        let page = new TradePage(routing.moralis);
+        let page = new TradePage();
         await page.load();
 
         history.pushState(null, 'Buy stocks', '#/funding');
 
-        let aUSDFundingModal = new FakeAUSDFund(this.moralis);
+        let aUSDFundingModal = new FakeAUSDFund();
         let networkInfo = NetworkInfo.getInstance();
         if (networkInfo.TestNetwork) {
             aUSDFundingModal.showAUSDFakeFund()
@@ -82,7 +80,7 @@ export default class Routing {
     public async showTrade(routing: Routing, evt: MouseEvent) {
         if (evt) evt.preventDefault();
 
-        let page = new TradePage(routing.moralis);
+        let page = new TradePage();
         await page.load();
 
         history.pushState(null, 'Buy stocks', '#/trade');
@@ -91,7 +89,7 @@ export default class Routing {
     public async showStocks(routing : Routing,evt : MouseEvent) {
         if (evt) evt.preventDefault();
 
-        let page = new StocksPage(routing.moralis);
+        let page = new StocksPage();
         await page.load();
 
         history.pushState(null, 'Stocks', '#/stocks');
@@ -100,7 +98,7 @@ export default class Routing {
     public async showPositions(routing : Routing,evt : MouseEvent) {
         if (evt) evt.preventDefault();
 
-        let page = new PositionsPage(routing.moralis);
+        let page = new PositionsPage();
         await page.load();
 
         history.pushState(null, 'Positions', '#/positions');

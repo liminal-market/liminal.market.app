@@ -17,7 +17,7 @@ class AbstractWeb3Connector extends EventEmitter {
     type = 'abstract';
     network = 'evm';
     account: string | null = null;
-    chainId: string | null = null;
+    chainId: number | null = null;
     provider: EthersExternalProvider | null = null;
 
     constructor() {

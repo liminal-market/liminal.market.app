@@ -1,14 +1,17 @@
 import Security from "./Security";
+import BaseService from "../backend/BaseService";
 
-export default class SecuritiesService {
+export default class SecuritiesService extends BaseService {
 
     securities = new Map<string, Security>();
-    securitiesArray : any;
-    private static instance : SecuritiesService;
+    securitiesArray: any;
+    private static instance: SecuritiesService;
     page: number;
     symbols = ["MSFT", "AAPL", "AMZN", "TSLA", "GOOGL", "GOOG", "GME", "META", "NVDA", "BRK.B", "JPM", "HD", "JNJ", "UNH", "PG", "BAC", "V", "ADBE", "NFLX", "CRM", "PFE", "DIS", "MA", "XOM", "TMO", "COST"]
 
     private constructor() {
+        super();
+
         this.securities = new Map<string, Security>();
         this.page = 1;
     }
@@ -24,9 +27,8 @@ export default class SecuritiesService {
     public async getSecurities() {
         if (this.securities.size != 0) return this.securities;
 
-        const response = await fetch('/securities/securities.json');
+        const results = await this.get('/securities/securities.json', {}, {relativeUrl: true});
 
-        const results = await response.json();
         for (let i = 0; i < results.length; i++) {
             this.securities.set(results[i].Symbol, Object.assign(new Security, results[i]));
         }

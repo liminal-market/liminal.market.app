@@ -23,7 +23,7 @@ export default class ACHRelationship extends RelationshipBase {
             if (!this.validate()) return;
 
             let params = FormHelper.getParams('#achForm');
-            let userService = new UserService(this.aUsdFund.moralis);
+            let userService = new UserService();
             userService.createAchRelationship(params.account_owner_name, params.bank_account_type, params.bank_account_number, params.bank_routing_number)
                 .then(result => {
                     this.aUsdFund.firstTransferSetup.show(result)

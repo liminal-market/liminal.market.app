@@ -5,7 +5,13 @@ import LiminalMarketService from "../../../services/blockchain/LiminalMarketServ
 import SecurityTokenService from "../../../services/blockchain/SecurityTokenService";
 import AUSDService from "../../../services/blockchain/AUSDService";
 import UserService from "../../../services/backend/UserService";
-import {roundBigNumber, roundBigNumberDecimal, roundNumberDecimal} from "../../../util/Helper";
+import {
+    formatWei,
+    formatWeiAsCurrency,
+    roundBigNumber,
+    roundBigNumberDecimal,
+    roundNumberDecimal
+} from "../../../util/Helper";
 import StockPriceService from "../../../services/backend/StockPriceService";
 import BigNumber from "bignumber.js";
 import PricePerShareHtml from '../../../html/elements/tradepanel/PricePerShare.html'
@@ -13,7 +19,6 @@ import Moralis from "moralis";
 
 
 export default class TradePanelInput {
-    moralis: typeof Moralis;
     symbol: string;
     name: string;
     logo: string;
@@ -31,8 +36,7 @@ export default class TradePanelInput {
     onUpdate : (() => void) | undefined;
     isDirty : boolean = false;
 
-    constructor(moralis: typeof Moralis, symbol: string, name: string, logo: string, address: string, tradeType: TradeType) {
-        this.moralis = moralis;
+    constructor(symbol: string, name: string, logo: string, address: string, tradeType: TradeType) {
         this.symbol = symbol;
         this.name = name;
         this.logo = logo;
@@ -86,7 +90,7 @@ export default class TradePanelInput {
         selectStock.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            let securityList = new SecuritiesListModal(this.moralis);
+            let securityList = new SecuritiesListModal();
             await securityList.showModal(async (symbol: string, name: string, logo: string) => {
                 securityList.hideModal();
 
@@ -98,7 +102,7 @@ export default class TradePanelInput {
                 this.name = name;
                 this.logo = logo;
 
-                let liminalMarketService = new LiminalMarketService(this.moralis);
+                let liminalMarketService = new LiminalMarketService();
                 this.address = await liminalMarketService.getSymbolContractAddress(symbol);
 
                 this.render();
@@ -150,7 +154,7 @@ export default class TradePanelInput {
     public async loadBalance() {
         this.balance = new BigNumber(0);
 
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let ethAddress = userService.getEthAddress();
 
         let balanceDom = document.querySelector('.' + this.tradeType + 'Inputs .balance_value') as HTMLElement;
@@ -158,17 +162,17 @@ export default class TradePanelInput {
 
         if (this.symbol === 'aUSD') {
             if (ethAddress) {
-                let aUsdService = new AUSDService(this.moralis);
+                let aUsdService = new AUSDService();
                 this.balance = await aUsdService.getAUSDBalanceOf(ethAddress);
             }
-            balanceDom.innerHTML = '$' + roundBigNumber(this.balance).toString();
+            balanceDom.innerHTML = '$' + this.balance;
         } else if (this.name !== '') {
             this.balance = new BigNumber(0);
             if (ethAddress) {
-                let securityTokenService = new SecurityTokenService(this.moralis);
+                let securityTokenService = new SecurityTokenService();
                 this.balance = await securityTokenService.getQuantityByAddress(this.symbol, ethAddress);
             }
-            balanceDom.innerHTML = roundBigNumberDecimal(this.balance, 6).toString();
+            balanceDom.innerHTML = this.balance.toString();
         }
         balanceDom.dataset.tooltip = this.balance.toString();
         balanceDom.title = this.balance.toString();
@@ -194,7 +198,7 @@ export default class TradePanelInput {
         aUsdPricePerShare.setAttribute('aria-busy', 'true');
         pricePerShare.setAttribute('aria-busy', 'true');
 
-        let stockPriceService = new StockPriceService(this.moralis);
+        let stockPriceService = new StockPriceService();
         let tradeInfo = await stockPriceService.getSymbolPrice(this.symbol, this.otherTradePanelInput.tradeType);
 
         this.lastPrice = tradeInfo.price;

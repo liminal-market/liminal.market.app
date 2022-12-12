@@ -28,13 +28,11 @@ import ExecuteTradeButton from "../../elements/tradepanel/ExecuteTradeButton";
 
 
 export default class KycActionRequired {
-    moralis: typeof Moralis;
     modal: Modal;
     templates: Map<string, string>;
     executeTradeButton: ExecuteTradeButton;
 
-    constructor(moralis: typeof Moralis, executeTradeButton: ExecuteTradeButton) {
-        this.moralis = moralis;
+    constructor(executeTradeButton: ExecuteTradeButton) {
         this.modal = new Modal();
         this.templates = new Map();
         this.executeTradeButton = executeTradeButton;
@@ -58,7 +56,7 @@ export default class KycActionRequired {
     }
 
     public async show() {
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let kycResult = await userService.kycActionRequired()
         if (!kycResult) return;
 
@@ -88,7 +86,7 @@ export default class KycActionRequired {
 
             let params = FormHelper.getParams('#kycActionRequiredForm');
 
-            let kycService = new KYCService(Moralis);
+            let kycService = new KYCService();
             await kycService.updateDocuments(params)
                 .then(() => {
                     let kycActionRequiredDiv = document.getElementById('kycActionRequiredDiv') as HTMLElement;

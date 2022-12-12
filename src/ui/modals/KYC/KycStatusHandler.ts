@@ -5,12 +5,10 @@ import Modal from "../Modal";
 import KYCForm from "../KYCForm";
 
 export default class KycStatusHandler {
-    moralis: typeof Moralis;
     kycResponse: KycStatus;
     executeTradeButton: ExecuteTradeButton;
 
-    constructor(moralis: typeof Moralis, kycResponse: KycStatus, executeTradeButton: ExecuteTradeButton) {
-        this.moralis = moralis;
+    constructor(kycResponse: KycStatus, executeTradeButton: ExecuteTradeButton) {
         this.kycResponse = kycResponse;
         this.executeTradeButton = executeTradeButton;
     }
@@ -62,7 +60,7 @@ export default class KycStatusHandler {
                     "<a target='_blank' href='mailto:info@liminal.market?subject=My application is being processed for to long&body=Hi, can you help me to find out what the problem is, the KYC process has not changed for some time? My name is _______ and I used the email _______ to register at liminal.market'>info@liminal.market</a>");
             case 'ACTION_REQUIRED':
                 return async () => {
-                    let kycActionRequired = new KycActionRequired(this.moralis, executeTradeButton)
+                    let kycActionRequired = new KycActionRequired(executeTradeButton)
                     await kycActionRequired.show();
                 };
             case 'REJECTED':
@@ -94,7 +92,7 @@ export default class KycStatusHandler {
         }
 
         return () => {
-            let kycForm = new KYCForm(this.moralis, async () => {
+            let kycForm = new KYCForm(async () => {
                 await this.executeTradeButton.renderButton();
             });
             kycForm.showKYCForm();

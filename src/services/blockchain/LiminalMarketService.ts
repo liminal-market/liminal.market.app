@@ -1,79 +1,72 @@
-import ContractInfo from "../../contracts/ContractInfo";
-import ErrorInfo from "../../errors/ErrorInfo";
 import BlockchainError from "../../errors/BlockchainError";
 import BlockchainService from "./BlockchainService";
+import {ethers} from "ethers";
+import App from "../../main";
 
 export default class LiminalMarketService extends BlockchainService {
 
     private static LiminalMarketInfo: any;
 
-    constructor(moralis: typeof Moralis) {
-        super(moralis);
+    constructor() {
+        super();
     }
 
     public async getSymbolContractAddress(symbol: string): Promise<string> {
-        const options = await this.getOptions("getSecurityToken", {
-            symbol: symbol
-        })
-        let result = await this.executeFunction(options)
-            .then((value) => {
-                return value.toString();
-            }).catch((reason) => {
-                let blockchainError = new BlockchainError(reason);
-                throw ErrorInfo.report(blockchainError);
-            });
-        return result;
+        await this.loadEther();
+
+        const contract = new ethers.Contract(this.contracts.LIMINAL_MARKET_ADDRESS, this.getSecurityTokenAbi, App.User.ether);
+        return await contract.getSecurityToken(symbol);
     }
 
 
-    private async getOptions(functionName: string, params: any) {
-        let contractInfo = ContractInfo.getContractInfo();
-        let abi = await this.getLiminalMarketAbi();
-
-        const options = {
-            contractAddress: contractInfo.LIMINAL_MARKET_ADDRESS,
-            functionName: functionName,
-            abi: abi,
-            params: params,
-        };
-        return options;
-    }
-
-    public async getLiminalMarketAbi() {
-        if (LiminalMarketService.LiminalMarketInfo) return LiminalMarketService.LiminalMarketInfo.abi;
-
-        let response = await fetch('../abi/LiminalMarket.json');
-        LiminalMarketService.LiminalMarketInfo = await response.json();
-        return LiminalMarketService.LiminalMarketInfo.abi;
-    }
-
-    public async createToken(symbol: string, creatingToken : () => void): Promise<string | BlockchainError> {
-        let salt = (new Date().getTime() + (Math.random() * 100000)).toString();
-        salt = salt.substring(0, salt.indexOf('.'));
-        const liminalOptions = await this.getOptions("createToken", {
-            symbol: symbol,
-            salt : salt
-        });
-
-        let result = await this.executeFunction(liminalOptions)
-            .then(result => {
-                return result as typeof ExecuteFunctionCallResult;
-            }).catch(reason => {
-                let blockchainError = new BlockchainError(reason);
-                if (blockchainError.userDeniedTransactionSignature()) {
-                    return blockchainError;
-                }
-                throw ErrorInfo.report(blockchainError);
-
-            });
-
-        if (result instanceof BlockchainError) return result;
+    public async createToken(symbol: string, creatingToken: () => void): Promise<string | BlockchainError> {
+        const contract = new ethers.Contract(this.contracts.LIMINAL_MARKET_ADDRESS, this.createTokenAbi, App.User.signer);
+        let result = await contract.createToken(symbol);
 
         creatingToken();
-        await (result as typeof ExecuteFunctionCallResult).wait();
+
+        console.log('createToken result:', result)
+        await result.wait();
 
         return await this.getSymbolContractAddress(symbol);
     }
 
-
+    getSecurityTokenAbi = [{
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "symbol",
+                "type": "string"
+            }
+        ],
+        "name": "getSecurityToken",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }]
+    createTokenAbi = [{
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "symbol",
+                "type": "string"
+            }
+        ],
+        "name": "createToken",
+        "outputs": [
+            {
+                "internalType": "contract SecurityToken",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }]
 }

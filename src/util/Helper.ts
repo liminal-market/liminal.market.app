@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import {ethers} from "ethers";
 
 export const showContainer = function(id : string) {
     let containers = document.querySelectorAll('.container');
@@ -11,31 +12,35 @@ export const showContainer = function(id : string) {
 			element.style.display = 'none';
         }
     }
-  }
+}
 
-export const roundNumber = function(number : number) {
+export const roundNumber = function (number: number) {
 	return Math.round(number * 100) / 100;
 }
 
-export const roundNumberDecimal = function(number : number, decimal : number) {
-	let hundred = parseInt('1'+ '0'.repeat(decimal));
+export const roundNumberDecimal = function (number: number, decimal: number) {
+	let hundred = parseInt('1' + '0'.repeat(decimal));
 	return Math.round(number * hundred) / hundred;
 }
-
-export const roundBigNumber = function(number : BigNumber) : BigNumber {
+export const formatWeiAsCurrency = function (number: BigNumber): string {
+	return '$' + ethers.utils.formatEther(number.toString())
+}
+export const formatWei = function (number: BigNumber): string {
+	return ethers.utils.formatEther(number.toString())
+}
+export const roundBigNumber = function (number: BigNumber): BigNumber {
 	return new BigNumber(Math.round(number.toNumber() * 100) / 100);
 }
-export const roundBigNumberDecimal = function(number : BigNumber, decimal : number) : BigNumber {
-	let hundred = parseInt('1'+ '0'.repeat(decimal));
+export const roundBigNumberDecimal = function (number: BigNumber, decimal: number): BigNumber {
+	let hundred = parseInt('1' + '0'.repeat(decimal));
 	return new BigNumber(Math.round(number.toNumber() * hundred) / hundred);
 }
 
 export const AddressZero = "0x0000000000000000000000000000000000000000";
 
-export const isJSON = function(str : string) {
+export const isJSON = function (str: string): any {
 	try {
-		JSON.parse(str);
-		return true;
+		return JSON.parse(str);
 	} catch (e) {
 		return false;
 	}

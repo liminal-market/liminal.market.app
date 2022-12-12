@@ -12,11 +12,9 @@ import ContractAddresses from "../../contracts/ContractAddresses";
 
 export default class TradePage {
 
-    moralis: typeof Moralis;
     contractInfo: ContractAddresses;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.contractInfo = ContractInfo.getContractInfo();
     }
 
@@ -27,7 +25,7 @@ export default class TradePage {
         let template = Handlebars.compile(TradePageHtml);
         mainContainer.innerHTML = template({AUSDAddress: this.contractInfo.AUSD_ADDRESS});
 
-        let tradePanel = new TradePanel(this.moralis);
+        let tradePanel = new TradePanel();
         await tradePanel.render('liminal_market_trade_panel');
 
         if (symbol) {
@@ -45,7 +43,7 @@ export default class TradePage {
             findSymbol.addEventListener('click', (evt) => {
                 evt.preventDefault();
 
-                let securitiesModal = new SecuritiesListModal(this.moralis);
+                let securitiesModal = new SecuritiesListModal();
                 securitiesModal.showModal(() => {
                     securitiesModal.hideModal();
                 })
@@ -55,17 +53,17 @@ export default class TradePage {
     };
 
     public async selectSymbol(symbol: string, name: string, logo: string, address: string) {
-        let tradePanel = new TradePanel(this.moralis);
+        let tradePanel = new TradePanel();
         await tradePanel.render('liminal_market_trade_panel', symbol, name, logo, address);
     }
 
     private async loadBuyWithWallet() {
-        let user = new UserService(this.moralis);
+        let user = new UserService();
         let ethAddress = user.getEthAddress();
         if (!ethAddress) {
             return;
         }
-        let aUSDService = new AUSDService(this.moralis);
+        let aUSDService = new AUSDService();
         let ausdAmount = await aUSDService.getAUSDBalanceOf(ethAddress);
 
         let userWallet = document.getElementById('use_wallet_for_orders');
@@ -82,7 +80,7 @@ export default class TradePage {
         addAUSDToWallet?.addEventListener('click', (evt) => {
             evt.preventDefault();
 
-            let walletHelper = new WalletHelper(this.moralis);
+            let walletHelper = new WalletHelper();
             walletHelper.addTokenToWallet(this.contractInfo.AUSD_ADDRESS, 'aUSD', () => {
                 let modal = new Modal();
                 let template = Handlebars.compile(CopyTokenAddressToAddToWallet);

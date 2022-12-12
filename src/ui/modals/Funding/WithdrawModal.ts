@@ -12,7 +12,6 @@ import BigNumber from "bignumber.js";
 
 export default class WithdrawModal {
 
-    moralis: typeof Moralis;
     private userService: UserService;
     private bankInfo?: BankRelationship;
     private wireTransferCost = 50;
@@ -21,12 +20,11 @@ export default class WithdrawModal {
     private currentBalance?: BigNumber;
     private transfersList: TransfersList;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
-        this.userService = new UserService(this.moralis);
+    constructor() {
+        this.userService = new UserService();
         this.transferCost = this.wireTransferCost;
 
-        this.transfersList = new TransfersList(this.moralis)
+        this.transfersList = new TransfersList()
     }
 
     public async show() {
@@ -41,7 +39,7 @@ export default class WithdrawModal {
         let transfersHtml = await this.transfersList.render(TransferDirectionEnum.Outgoing, transfers);
         let ethAddress = this.userService.getEthAddress();
 
-        let ausdService = new AUSDService(this.moralis);
+        let ausdService = new AUSDService();
         this.currentBalance = new BigNumber(0);
         if (ethAddress) {
             this.currentBalance = await ausdService.getAUSDBalanceOf(ethAddress);

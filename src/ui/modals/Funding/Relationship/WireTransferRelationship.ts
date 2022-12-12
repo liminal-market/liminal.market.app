@@ -30,7 +30,7 @@ export default class WireTransferRelationship extends RelationshipBase {
             if (!this.validate()) return;
 
             let params = FormHelper.getParams('#wireTransferForm');
-            let userService = new UserService(this.aUsdFund.moralis);
+            let userService = new UserService();
             await userService.registerWireTransferRelationship(params)
                 .then(async (bankRelationship: BankRelationship) => {
                     let transfers = await userService.getLatestTransfers(TransferDirectionEnum.Incoming);
