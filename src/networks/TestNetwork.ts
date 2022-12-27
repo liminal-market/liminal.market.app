@@ -6,12 +6,11 @@ export default class TestNetwork extends Network {
         super();
 
         if (window.location.host.indexOf('localhost') == -1) {
-            this.ServerUrl = "https://f8t1vrrwtboa.usemoralis.com:2053/server";
-            this.AppId = "XZhp3wQobrKiCib0Bf4FPVKAUhbHM9SvTLKOKvBb";
+            this.ServerUrl = "https://cloud-testnet.onrender.com";
         } else {
-            this.ServerUrl = "http://localhost:3000";
-            this.AppId = "";
+            this.ServerUrl = "http://localhost:10000";
         }
+        this.ServerUrl = "https://cloud-testnet.onrender.com";
         this.TestNetwork = true;
     }
 }

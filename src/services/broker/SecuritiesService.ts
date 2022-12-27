@@ -27,7 +27,7 @@ export default class SecuritiesService extends BaseService {
     public async getSecurities() {
         if (this.securities.size != 0) return this.securities;
 
-        const results = await this.get('/securities/securities.json', {}, {relativeUrl: true});
+        const results = await (await fetch('/securities/securities.json')).json();
 
         for (let i = 0; i < results.length; i++) {
             this.securities.set(results[i].Symbol, Object.assign(new Security, results[i]));

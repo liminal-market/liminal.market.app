@@ -69,7 +69,7 @@ export default class AUsdBalance {
     }
 
     private bindEvents() {
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         let add_aUSD_to_wallet = document.querySelectorAll('.add_aUSD_to_wallet');
         add_aUSD_to_wallet.forEach(element => {
             element.addEventListener('click', async (evt) => {

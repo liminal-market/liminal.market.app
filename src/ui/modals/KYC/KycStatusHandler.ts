@@ -1,14 +1,14 @@
 import KycStatus from "../../../dto/KycStatus";
 import KycActionRequired from "./KycActionRequired";
-import ExecuteTradeButton from "../../elements/tradepanel/ExecuteTradeButton";
+import ExecuteOrderButton from "../../elements/tradepanel/ExecuteOrderButton";
 import Modal from "../Modal";
 import KYCForm from "../KYCForm";
 
 export default class KycStatusHandler {
     kycResponse: KycStatus;
-    executeTradeButton: ExecuteTradeButton;
+    executeTradeButton: ExecuteOrderButton;
 
-    constructor(kycResponse: KycStatus, executeTradeButton: ExecuteTradeButton) {
+    constructor(kycResponse: KycStatus, executeTradeButton: ExecuteOrderButton) {
         this.kycResponse = kycResponse;
         this.executeTradeButton = executeTradeButton;
     }
@@ -44,7 +44,7 @@ export default class KycStatusHandler {
         return txt + '<small>Click for more info</small>';
     }
 
-    public getButtonClickEvent(executeTradeButton: ExecuteTradeButton) {
+    public getButtonClickEvent(executeTradeButton: ExecuteOrderButton) {
         switch (this.kycResponse.status) {
             case 'SUBMITTED':
             case 'ONBOARDING':

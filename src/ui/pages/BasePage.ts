@@ -10,7 +10,7 @@ export default class BasePage {
 
     constructor() {
         this.user = App.User;
-        this.network = NetworkInfo.getInstance();
+        this.network = App.Network
     }
 
 }

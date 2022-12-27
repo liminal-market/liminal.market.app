@@ -1,6 +1,6 @@
 import TradeSwitchHtml from '../../../html/elements/tradepanel/TradeSwitch.html';
 import TradePanelInput from "./TradePanelInput";
-import ExecuteTradeButton from "./ExecuteTradeButton";
+import ExecuteOrderButton from "./ExecuteOrderButton";
 
 export default class TradeSwitch {
 
@@ -22,7 +22,7 @@ export default class TradeSwitch {
         dom.outerHTML = this.renderToString()
     }
 
-    public bindEvents(sellTradePanelInput : TradePanelInput, buyTradePanelInput : TradePanelInput, executeTradeButton : ExecuteTradeButton) {
+    public bindEvents(sellTradePanelInput: TradePanelInput, buyTradePanelInput: TradePanelInput, executeTradeButton: ExecuteOrderButton) {
         let dom = document.querySelector('.switchBtn');
         if (!dom) return;
 

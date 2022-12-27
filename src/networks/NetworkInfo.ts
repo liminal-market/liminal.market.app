@@ -5,6 +5,7 @@ import CookieHelper from "../util/CookieHelper";
 import Moralis from "moralis";
 import polygonNetwork from "./polygon-network";
 import {NetworkType} from "./NetworkType";
+import network = Moralis.network;
 
 
 const networkInfos = [localhostNetwork, mumbaiNetwork, polygonNetwork];
@@ -74,13 +75,16 @@ export default class NetworkInfo {
     private static getNetworkInfo(networkName?: string): Network {
         let cookieHelper = new CookieHelper(document);
 
+        let isLocal = (window.location.host.indexOf('localhost') != -1)
         // @ts-ignore
-        console.log('window.ethereum', window.ethereum.chainId, window.ethereum);
-        // @ts-ignore
-        if (!networkName && window.ethereum && window.ethereum.chainId) {
+        if (isLocal || !networkName && window.ethereum && window.ethereum.chainId) {
             // @ts-ignore
-            let networkInfo = this.getNetworkNameByChainIdHex(window.ethereum.chainId);
-            if (networkInfo) return networkInfo;
+            let chainId = (window.ethereum.chainId) ? window.ethereum.chainId : 31337;
+            let networkInfo = this.getNetworkNameByChainIdHex(chainId);
+            if (networkInfo) {
+                return networkInfo;
+            }
+
         }
         if (!networkName) networkName = cookieHelper.getCookieValue('network');
         if (!networkName) networkName = 'polygon';

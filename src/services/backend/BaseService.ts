@@ -33,7 +33,7 @@ export default class BaseService {
                 headers: {'Authentication': 'Bearer: ' + App.User.token, 'Content-Type': 'application/json'}
             })
         let obj = await response.json();
-        return (obj.result) ? obj.result : obj;
+        return (obj.result) ? obj.result : undefined;
     }
 
     public async post<T>(path: string, data?: any) {

@@ -3,6 +3,7 @@ import FakeNativeTokenNeededHtml from '../../html/modal/FakeNativeTokenNeeded.ht
 import NativeTokenNeededHtml from '../../html/modal/NativeTokenNeeded.html';
 import Modal from "./Modal";
 import UserService from "../../services/backend/UserService";
+import App from "../../main";
 
 export default class NativeTokenNeeded {
     onNativeTokenArrived : () => void;
@@ -15,7 +16,7 @@ export default class NativeTokenNeeded {
     }
 
     public show() {
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         let userService = new UserService();
         let ethAddress = userService.getEthAddress();
 
@@ -50,7 +51,7 @@ export default class NativeTokenNeeded {
     }
 
     public async checkForNativeTokens() {
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens();
         if (hasEnoughNativeTokens) {
             this.modal.hideModal();

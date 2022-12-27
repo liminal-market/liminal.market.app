@@ -36,7 +36,7 @@ export default class UserPosition {
         if (unrealized_pl) {
             let number = new BigNumber(userPosition.unrealizedPL);
             unrealized_pl.innerHTML = '$' + number.decimalPlaces(0).toFixed();
-            let className = (userPosition.unrealizedPL.indexOf('-') == -1) ? 'green' : 'red';
+            let className = this.getClassName(userPosition.unrealizedPL);
             unrealized_pl.classList.add(className);
         }
 
@@ -45,10 +45,14 @@ export default class UserPosition {
         if (unrealized_plpc) {
             let number = new BigNumber(userPosition.unrealizedPLPc);
             unrealized_plpc.innerHTML = number.multipliedBy(100).decimalPlaces(2).toFixed() + '%';
-            let className = (userPosition.unrealizedPLPc.indexOf('-') == -1) ? 'green' : 'red';
+            let className = this.getClassName(userPosition.unrealizedPL);
             unrealized_plpc.classList.add(className);
         }
 
+    }
+
+    private getClassName(value: number) {
+        return (value.toString().indexOf('-') == -1) ? 'green' : 'red';
     }
 
 

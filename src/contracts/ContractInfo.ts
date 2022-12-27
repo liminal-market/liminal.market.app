@@ -4,6 +4,7 @@ import fujiContractAddresses from './fuji-contract-addresses';
 import ContractAddresses from "./ContractAddresses";
 import NetworkInfo from "../networks/NetworkInfo";
 import polygonContractAddresses from "./polygon-contract-addresses";
+import App from "../main";
 
 
 export default class ContractInfo {
@@ -16,7 +17,7 @@ export default class ContractInfo {
         };
 
         if (!networkName) {
-            networkName = NetworkInfo.getInstance().Name;
+            networkName = App.Network.Name;
         }
         const contractInfoType = contractInfos[networkName + 'ContractAddresses'];
         return new contractInfoType();

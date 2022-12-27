@@ -20,7 +20,7 @@ export default class BlockchainService extends BaseService {
 
     constructor() {
         super();
-        this.network = NetworkInfo.getInstance();
+        this.network = App.Network;
         this.contracts = ContractInfo.getContractInfo(this.network.Name);
     }
 
@@ -34,6 +34,7 @@ export default class BlockchainService extends BaseService {
         const contract = new ethers.Contract(tokenAddress, this.balanceOfAbi, App.User.ether);
         return await contract.balanceOf(ethAddress);
     }
+
 
     protected async transferInner(tokenAddress: string, to: string, qty: BigNumber) {
         await this.loadEther();

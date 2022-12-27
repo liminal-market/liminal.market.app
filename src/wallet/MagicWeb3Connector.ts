@@ -5,6 +5,7 @@ import {Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
 import NetworkInfo from "../networks/NetworkInfo";
 import {CustomNodeConfiguration} from "@magic-sdk/types/dist/types/modules/rpc-provider-types";
+import App from "../main";
 
 export default class MagicWeb3Connector extends AbstractWeb3Connector {
     type = 'MagicLink';
@@ -12,7 +13,7 @@ export default class MagicWeb3Connector extends AbstractWeb3Connector {
     ether?: ethers.providers.Web3Provider;
 
     async activate() {
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         let network = {rpcUrl: networkInfo.RpcUrl, chainId: networkInfo.ChainId} as CustomNodeConfiguration;
         this.magic = new Magic('pk_live_EA9DDC458FE21B24', {
             extensions: [new ConnectExtension()],

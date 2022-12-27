@@ -6,8 +6,9 @@ import NetworkInfo from "../../../networks/NetworkInfo";
 import KYCService from "../../../services/blockchain/KYCService";
 import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 import FormHelper from "../../../util/FormHelper";
-import ExecuteTradeButton from "../../elements/tradepanel/ExecuteTradeButton";
+import ExecuteOrderButton from "../../elements/tradepanel/ExecuteOrderButton";
 import FakeAUSDFund from "../Funding/FakeAUSDFund";
+import App from "../../../main";
 
 export default class KycAccountAgreement extends KycBase {
 
@@ -71,7 +72,7 @@ export default class KycAccountAgreement extends KycBase {
 
             let params = FormHelper.getParams('#kyc_wizard_form');
 
-            let networkInfo = NetworkInfo.getInstance();
+            let networkInfo = App.Network;
             params.chainId = networkInfo.ChainId;
 
             let kycService = new KYCService();
@@ -91,7 +92,7 @@ export default class KycAccountAgreement extends KycBase {
             if (result) {
                 let ausdFund = new FakeAUSDFund();
                 ausdFund.showAUSDFakeFund();
-                ExecuteTradeButton.Instance.renderButton();
+                ExecuteOrderButton.Instance.renderButton();
             } else {
                 if (account_agreement_prev) account_agreement_prev.classList.remove('hidden');
                 LoadingHelper.removeLoading();

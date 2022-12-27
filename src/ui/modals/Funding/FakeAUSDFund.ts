@@ -9,6 +9,7 @@ import {roundBigNumber} from "../../../util/Helper";
 import BigNumber from "bignumber.js";
 import AUSDFund from "./AUSDFund";
 import NetworkInfo from "../../../networks/NetworkInfo";
+import App from "../../../main";
 
 
 export default class FakeAUSDFund {
@@ -26,7 +27,7 @@ export default class FakeAUSDFund {
     }
 
     public showAUSDFakeFund() {
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         if (!networkInfo.TestNetwork) {
             this.showAUSDFund()
             return;
@@ -72,9 +73,9 @@ export default class FakeAUSDFund {
                 .catch((reason) => {
                     this.errorWhileFunding({})
                 });
-            console.log('success', result.success);
+            if (!result) return;
+
             if (!result.success) {
-                console.log(result);
                 let fundingError = document.getElementById('fundingError');
                 if (fundingError) {
                     requestFakeAUSD!.removeAttribute('aria-busy');

@@ -10,7 +10,7 @@ import KycEditTrustedContact from "../modals/KYC/KycEditTrustedContact";
 import AUsdBalance from "./AUsdBalance";
 import TestNetworkBannerHtml from "../../html/elements/TestNetworkBanner.html";
 import SwitchNetworkModal from "../modals/SwitchNetworkModal";
-import ExecuteTradeButton from "./tradepanel/ExecuteTradeButton";
+import ExecuteOrderButton from "./tradepanel/ExecuteOrderButton";
 import LoadingHelper from "../../util/LoadingHelper";
 import WalletHelper from "../../util/WalletHelper";
 import User from "../../dto/User";
@@ -75,7 +75,7 @@ export default class UserInfo {
         let userInfoDiv = document.getElementById(elementId);
         if (!userInfoDiv) return;
         console.log('loadUserMenuUI User:', App.User);
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         let obj: any = {
             ethAddress: App.User.address,
             shortEthAddress: shortEth(App.User.address),
@@ -214,7 +214,7 @@ export default class UserInfo {
 
     private loadIfTestNetwork() {
         if (!App.User.provider) return;
-        if (!NetworkInfo.getInstance().TestNetwork) return;
+        if (!App.Network.TestNetwork) return;
 
         let header = document.querySelector('header');
         if (!header) return;
@@ -233,6 +233,6 @@ export default class UserInfo {
         let btn = document.getElementById('liminal_market_execute_trade');
         if (!btn) return;
 
-        ExecuteTradeButton.Instance.renderButton();
+        ExecuteOrderButton.Instance.renderButton();
     }
 }

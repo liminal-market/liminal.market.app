@@ -55,7 +55,6 @@ export default class AuthenticateService extends BaseService {
             App.User.token = obj.token;
 
             let result = await this.post('/me/jwt');
-            console.log('isValid', result);
             if (!result.jwt) {
                 await this.logOut();
                 return false;
@@ -110,7 +109,13 @@ export default class AuthenticateService extends BaseService {
             .signMessage(obj.signingMessage)
             .catch((e: any) => console.log(e));
 
-        let loginResponse = await this.post<any>('me/validate', {address: connector.account, signedMessage})
+        let loginResponse = await this.post<any>('me/validate', {address: connector.account, signedMessage});
+
+        if (!loginResponse.address) {
+            await this.logOut();
+            return;
+        }
+
         App.User.setValidate(loginResponse);
         App.User.token = loginResponse.token;
         App.User.alpacaId = loginResponse.alpacaId;

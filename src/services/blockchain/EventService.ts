@@ -2,6 +2,7 @@ import {ethers} from "ethers";
 import App from "../../main";
 import ContractAddresses from "../../contracts/ContractAddresses";
 import ContractInfo from "../../contracts/ContractInfo";
+import BigNumber from "bignumber.js";
 
 export default class EventService {
     contracts: ContractAddresses;
@@ -18,19 +19,19 @@ export default class EventService {
         this.listen(hash, 'SellSecurityToken')
     }
 
-    private listen(hash: string, event: string) {
+    private listen(hash: string, eventName: string) {
         this.store(hash);
 
         const lmContract = new ethers.Contract(this.contracts.LIMINAL_MARKET_ADDRESS, this.lmAbi, App.User.signer);
-        console.log('subscribe to event ' + event);
-        let listeners = lmContract.listeners('BuyWithAUsd');
+
+        let listeners = lmContract.listeners(eventName);
         if (listeners.length > 0) {
             return;
         }
 
-        lmContract.on(event, (a, b, c) => {
-            console.log(event + ' event', a, b, c);
-            lmContract.off(event, App.User.provider);
+        lmContract.on(eventName, (walletAddress: string, amount: BigNumber, accountId: string, symbol: string, tokenAddress: string, spender: string) => {
+            console.log(eventName + ' event');
+            lmContract.off(eventName, App.User.provider);
             this.remove(hash);
         });
 

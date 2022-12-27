@@ -1,4 +1,4 @@
-import ExecuteTradeButton from "./tradepanel/ExecuteTradeButton";
+import ExecuteOrderButton from "./tradepanel/ExecuteOrderButton";
 import StockPriceService from "../../services/backend/StockPriceService";
 import {TradeType} from "../../enums/TradeType";
 import TradePanelInput from "./tradepanel/TradePanelInput";
@@ -47,7 +47,7 @@ export default class TradePanel {
         sellTradeInput.bindEvents();
         buyTradeInput.bindEvents();
 
-        let executeTradeButton = new ExecuteTradeButton(sellTradeInput, buyTradeInput);
+        let executeTradeButton = new ExecuteOrderButton(sellTradeInput, buyTradeInput);
         await executeTradeButton.renderButton();
 
         tradeSwitch.bindEvents(sellTradeInput, buyTradeInput, executeTradeButton);

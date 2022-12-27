@@ -1,4 +1,5 @@
 import NetworkInfo from "../../networks/NetworkInfo";
+import App from "../../main";
 
 export default class ConnectionService {
     options : {serverUrl:string, appId:string};
@@ -13,7 +14,7 @@ export default class ConnectionService {
     }
 
     public async start(): Promise<void> {
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         this.options = {serverUrl: networkInfo.ServerUrl, appId: networkInfo.AppId};
 
     }

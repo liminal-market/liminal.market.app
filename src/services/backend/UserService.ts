@@ -26,8 +26,8 @@ export default class UserService extends BaseService {
 
     public async isMarketOpenOrUserOffHours(): Promise<boolean> {
         let marketService = new MarketService();
-        let isOpen = await marketService.isMarketOpen();
-        return isOpen;
+        let response = await marketService.isMarketOpen();
+        return response.marketIsOpen;
     }
 
     public getUser() {

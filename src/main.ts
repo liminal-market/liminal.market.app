@@ -1,14 +1,9 @@
-import ConnectionService from "./services/backend/ConnectionService";
 import Routing from "./routing/Routing";
-import ErrorInfo from "./errors/ErrorInfo";
-import WalletHelper from "./util/WalletHelper";
-import GeneralError from "./errors/GeneralError";
 import Header from "./ui/elements/Header";
 import UserPosition from "./ui/elements/UserPosition";
 import User from "./dto/User";
 import Network from "./networks/Network";
 import NetworkInfo from "./networks/NetworkInfo";
-import ExecuteTradeButton from "./ui/elements/tradepanel/ExecuteTradeButton";
 import EventService from "./services/backend/EventService";
 
 export default class App {
@@ -17,6 +12,7 @@ export default class App {
 
     constructor() {
         App.Network = NetworkInfo.getInstance();
+        console.log('network', App.Network);
         App.User = new User(null, '', App.Network.ChainId, '');
     }
 

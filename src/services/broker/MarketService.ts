@@ -6,7 +6,7 @@ export default class MarketService extends BaseService {
         super();
     }
 
-    public async isMarketOpen(): Promise<boolean> {
+    public async isMarketOpen(): Promise<any> {
         return await this.get('isOpen');
     }
 

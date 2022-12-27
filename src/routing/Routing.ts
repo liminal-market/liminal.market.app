@@ -4,6 +4,7 @@ import PositionsPage from "../ui/pages/PositionsPage";
 import FakeAUSDFund from "../ui/modals/Funding/FakeAUSDFund";
 import NetworkInfo from "../networks/NetworkInfo";
 import WalletHelper from "../util/WalletHelper";
+import App from "../main";
 
 
 export default class Routing {
@@ -68,8 +69,7 @@ export default class Routing {
         history.pushState(null, 'Buy stocks', '#/funding');
 
         let aUSDFundingModal = new FakeAUSDFund();
-        let networkInfo = NetworkInfo.getInstance();
-        if (networkInfo.TestNetwork) {
+        if (App.Network.TestNetwork) {
             aUSDFundingModal.showAUSDFakeFund()
         } else {
             aUSDFundingModal.showAUSDFund()
