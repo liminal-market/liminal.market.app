@@ -5,17 +5,10 @@ import LiminalMarketService from "../../../services/blockchain/LiminalMarketServ
 import SecurityTokenService from "../../../services/blockchain/SecurityTokenService";
 import AUSDService from "../../../services/blockchain/AUSDService";
 import UserService from "../../../services/backend/UserService";
-import {
-    formatWei,
-    formatWeiAsCurrency,
-    roundBigNumber,
-    roundBigNumberDecimal,
-    roundNumberDecimal
-} from "../../../util/Helper";
+import {roundNumberDecimal} from "../../../util/Helper";
 import StockPriceService from "../../../services/backend/StockPriceService";
 import BigNumber from "bignumber.js";
 import PricePerShareHtml from '../../../html/elements/tradepanel/PricePerShare.html'
-import Moralis from "moralis";
 
 
 export default class TradePanelInput {

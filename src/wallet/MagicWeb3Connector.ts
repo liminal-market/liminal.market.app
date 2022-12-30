@@ -10,7 +10,7 @@ import App from "../main";
 export default class MagicWeb3Connector extends AbstractWeb3Connector {
     type = 'MagicLink';
     magic: any;
-    ether?: ethers.providers.Web3Provider;
+    ether: ethers.providers.Web3Provider | null = null;
 
     async activate() {
         let networkInfo = App.Network;

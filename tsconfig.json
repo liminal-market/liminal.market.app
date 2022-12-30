@@ -23,7 +23,6 @@
     "./src/main.ts",
     "./src/.d.ts",
     "./src/html.d.ts",
-    "./node_modules/moralis/types/index.d.ts",
   ],
   "compileOnSave": true
 }

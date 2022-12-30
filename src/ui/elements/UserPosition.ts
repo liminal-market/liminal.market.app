@@ -1,4 +1,3 @@
-import Moralis from "moralis";
 import PositionsService from "../../services/backend/PositionsService";
 import UserInfo from "./UserInfo";
 import UserService from "../../services/backend/UserService";

@@ -1,5 +1,4 @@
 import WithdrawModalHtml from '../../../html/modal/Funding/WithdrawModal.html'
-import Moralis from "moralis";
 import Modal from "../Modal";
 import AUSDService from "../../../services/blockchain/AUSDService";
 import UserService from "../../../services/backend/UserService";

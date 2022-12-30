@@ -1,7 +1,6 @@
 import TransfersListHtml from '../../../html/modal/Funding/TransfersList.html'
 import HandlebarHelpers from "../../../util/HandlebarHelpers";
 import UserService from "../../../services/backend/UserService";
-import Moralis from "moralis";
 import {TransferDirectionEnum} from "../../../enums/TransferDirectionEnum";
 import {Transfer} from "../../../dto/alpaca/Transfer";
 

@@ -1,8 +1,6 @@
 import UserService from "../../services/backend/UserService";
-import Moralis from "Moralis";
 import UserInfoElement from '../../html/elements/UserInfo.html'
 import {shortEth} from "../../util/Helper";
-import NetworkInfo from "../../networks/NetworkInfo";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import KycEditNameForm from "../modals/KYC/KycEditNameForm";
 import KycEditContactForm from "../modals/KYC/KycEditContactForm";
@@ -13,7 +11,6 @@ import SwitchNetworkModal from "../modals/SwitchNetworkModal";
 import ExecuteOrderButton from "./tradepanel/ExecuteOrderButton";
 import LoadingHelper from "../../util/LoadingHelper";
 import WalletHelper from "../../util/WalletHelper";
-import User from "../../dto/User";
 import App from "../../main";
 import AuthenticateService from "../../services/backend/AuthenticateService";
 
