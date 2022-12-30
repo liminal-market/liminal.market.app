@@ -1,17 +1,14 @@
 import TransfersListHtml from '../../../html/modal/Funding/TransfersList.html'
 import HandlebarHelpers from "../../../util/HandlebarHelpers";
 import UserService from "../../../services/backend/UserService";
-import Moralis from "moralis";
 import {TransferDirectionEnum} from "../../../enums/TransferDirectionEnum";
 import {Transfer} from "../../../dto/alpaca/Transfer";
 
 export default class TransfersList {
-    moralis: typeof Moralis;
     private userService: UserService;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
-        this.userService = new UserService(this.moralis);
+    constructor() {
+        this.userService = new UserService();
     }
 
 
@@ -37,7 +34,7 @@ export default class TransfersList {
                 let id = (deleteTransfers[i] as HTMLElement).dataset['id'];
                 if (!id) return;
 
-                let userService = new UserService(this.moralis);
+                let userService = new UserService();
                 await userService.deleteTransfer(id)
                     .then(() => {
                         let statusTd = document.getElementById('status_' + id);

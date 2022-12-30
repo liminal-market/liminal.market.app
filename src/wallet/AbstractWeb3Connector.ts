@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import {ConnectorEvents, EthereumEvents} from './events';
-import Moralis from "moralis";
-import EthersExternalProvider = Moralis.EthersExternalProvider;
+import {ethers} from "ethers";
 
 /**
  * Abstract connector to connect EIP-1193 providers to Moralis
@@ -17,8 +16,8 @@ class AbstractWeb3Connector extends EventEmitter {
     type = 'abstract';
     network = 'evm';
     account: string | null = null;
-    chainId: string | null = null;
-    provider: EthersExternalProvider | null = null;
+    chainId: number | null = null;
+    provider?: ethers.providers.ExternalProvider | null;
 
     constructor() {
         super();

@@ -14,14 +14,12 @@ import ErrorInfo from "../../errors/ErrorInfo";
 import GeneralError from "../../errors/GeneralError";
 
 export default class SecuritiesList {
-    moralis: typeof Moralis;
     page: number;
     tbodyId = 'liminal_market_securities_list';
     loadmore: boolean;
     onSelectSymbol?: (symbol: string, name: string, logo: string) => void = undefined;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.page = 0;
         this.loadmore = true;
 
@@ -183,7 +181,7 @@ export default class SecuritiesList {
 
         LoadingHelper.setLoading(element);
 
-        let liminalMarketService = new LiminalMarketService(this.moralis);
+        let liminalMarketService = new LiminalMarketService();
         let address = await liminalMarketService.getSymbolContractAddress(symbol);
 
         if (className == 'getAddress') {
@@ -208,7 +206,7 @@ export default class SecuritiesList {
 
     public async showAddToWallet(element: HTMLElement, symbol: string, address: string) {
         if (address !== AddressZero) {
-            let walletHelper = new WalletHelper(this.moralis);
+            let walletHelper = new WalletHelper();
 
             let added = await walletHelper.addTokenToWallet(address, symbol, () => {
                 LoadingHelper.removeLoading();

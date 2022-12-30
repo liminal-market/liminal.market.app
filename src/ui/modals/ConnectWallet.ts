@@ -8,12 +8,10 @@ import TradePage from "../pages/TradePage";
 import LoadingHelper from "../../util/LoadingHelper";
 
 export default class ConnectWallet {
-    moralis: typeof Moralis;
     public static Provider: string;
     providerInfo: ProviderInfo;
 
-    public constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    public constructor() {
         this.providerInfo = new ProviderInfo(null);
     }
 
@@ -34,18 +32,17 @@ export default class ConnectWallet {
     public async connectWallet(button: HTMLElement) {
         LoadingHelper.setLoading(button);
 
-        let authenticationService = new AuthenticateService(this.moralis);
-
+        let authenticationService = new AuthenticateService();
         await authenticationService.authenticateUser(
             (walletConnectionInfo: any) => {
                 this.web3EnabledResult(walletConnectionInfo);
             },
-            async (user) => {
-                let userInfo = new UserInfo(this.moralis, this.providerInfo, user);
+            async () => {
+                let userInfo = new UserInfo(this.providerInfo);
                 await userInfo.render('user_header_info');
 
                 if (document.getElementById('liminal_market_execute_trade')) {
-                    let page = new TradePage(this.moralis);
+                    let page = new TradePage();
                     await page.load();
                 }
             })

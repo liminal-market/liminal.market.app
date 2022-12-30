@@ -1,20 +1,21 @@
+import BaseService from "./BaseService";
 
 
-export default class DocumentService {
-    moralis : typeof Moralis;
+export default class DocumentService extends BaseService {
 
-    constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
+
+    constructor() {
+        super();
     }
 
     public async getDocuments() {
-        return await this.moralis.Cloud.run('documents');
+        return await this.get('documents');
     }
 
-    public async getDocument(documentId : string) {
+    public async getDocument(documentId: string) {
         const params = {
             documentId: documentId
         };
-        return await this.moralis.Cloud.run("download", params);
+        return await this.get("download", params);
     }
 }

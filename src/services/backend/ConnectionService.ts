@@ -1,11 +1,10 @@
 import NetworkInfo from "../../networks/NetworkInfo";
+import App from "../../main";
 
 export default class ConnectionService {
-    moralis : typeof Moralis;
     options : {serverUrl:string, appId:string};
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.options = {serverUrl: '', appId: ''};
     }
 
@@ -15,14 +14,8 @@ export default class ConnectionService {
     }
 
     public async start(): Promise<void> {
-        let networkInfo = NetworkInfo.getInstance();
+        let networkInfo = App.Network;
         this.options = {serverUrl: networkInfo.ServerUrl, appId: networkInfo.AppId};
 
-        await this.moralis.start(this.options).catch(function (err) {
-            if (err.message.indexOf('Invalid session token') != -1) {
-                Moralis.User.logOut();
-                console.log('Invalid session token')
-            }
-        });
     }
 }

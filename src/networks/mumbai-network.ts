@@ -13,8 +13,8 @@ export default class mumbaiNetwork extends TestNetwork {
         this.NativeCurrencyName = "Matic";
         this.NativeSymbol = "MATIC";
         this.NativeDecimal = 18;
-        this.RpcUrl = 'https://matic-mumbai.chainstacklabs.com/';
-            this.BlockExplorer = 'https://mumbai.polygonscan.com/';
+        this.RpcUrl = 'https://polygon-mumbai.g.alchemy.com/v2/FILTBk8FT9RzcRVxkMXIg7Ipl8JCNdK2';
+        this.BlockExplorer = 'https://mumbai.polygonscan.com/';
             this.FaucetUrl = 'https://faucet.polygon.technology/';
             this.BuyUrl = 'https://www.moonpay.com/buy/matic';
 	}

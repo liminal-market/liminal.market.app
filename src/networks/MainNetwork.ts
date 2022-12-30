@@ -4,9 +4,14 @@ export default class MainNetwork extends Network {
 
     constructor() {
         super();
-
-        this.ServerUrl = "https://rokinwgcthqy.grandmoralis.com:2053/server";
-        this.AppId = "FqJxfp9xng1SbovOToR2fnFjnBJju2Ko67nmTfFF";
+        if (window.location.host.indexOf('localhost') != -1) {
+            this.ServerUrl = "http://localhost:10000";
+            this.AppId = "";
+        } else {
+            this.ServerUrl = "https://cloud-mainnet.onrender.com";
+            this.AppId = "";
+        }
+        this.ServerUrl = "https://cloud-mainnet.onrender.com";
         this.TestNetwork = false;
     }
 }

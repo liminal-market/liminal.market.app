@@ -10,7 +10,6 @@ import FirstTransferSetup from "./FirstTransferSetup/FirstTransferSetup";
 
 export default class AUSDFund {
 
-    moralis: typeof Moralis;
     modal: Modal;
 
     selectFundingType: SelectFundingType;
@@ -21,21 +20,20 @@ export default class AUSDFund {
     transferNotification: TransferNotification;
     transferNotified: TransferNotified;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.modal = new Modal();
 
         this.selectFundingType = new SelectFundingType(this);
         this.achRelationship = new ACHRelationship(this);
         this.wireTransferRelationship = new WireTransferRelationship(this);
 
-        this.firstTransferSetup = new FirstTransferSetup(moralis, this);
-        this.transferNotification = new TransferNotification(moralis, this);
+        this.firstTransferSetup = new FirstTransferSetup(this);
+        this.transferNotification = new TransferNotification(this);
         this.transferNotified = new TransferNotified(this);
     }
 
     public async show() {
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let bankRelationship = await userService.getBankRelationship();
         if (bankRelationship) {
             let transfers = await userService.getLatestTransfers(TransferDirectionEnum.Incoming);

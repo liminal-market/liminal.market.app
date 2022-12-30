@@ -7,16 +7,14 @@ import LoadingHelper from "../../../util/LoadingHelper";
 
 export default class KycEditTrustedContact {
 
-    moralis: typeof Moralis;
     modal: Modal;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.modal = new Modal();
     }
 
     public async show() {
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let account = await userService.getAccount();
 
         let template = Handlebars.compile(KycEditTrustedContactHtml);
@@ -41,8 +39,8 @@ export default class KycEditTrustedContact {
 
             let params = FormHelper.getParams('#kycTrustedContactForm');
 
-            let userService = new UserService(this.moralis);
-            await userService.updateTrustedContact(params).then((response) => {
+            let userService = new UserService();
+            await userService.updateTrustedContact(params).then((response: any) => {
                 if (response.message) {
                     this.showError(response.message);
                     return;

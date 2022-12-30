@@ -39,7 +39,7 @@ export default class MoneyTransferred extends FirstTransferSetupPage {
             }
             LoadingHelper.setLoading(notifyTransfer);
 
-            let userService = new UserService(this.aUsdFund.moralis);
+            let userService = new UserService();
             await userService.createTransfer(amount.value, 'INCOMING')
                 .then(() => {
                     this.aUsdFund.transferNotified.show(this.bankRelationship!, amount.value);

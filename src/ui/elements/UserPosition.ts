@@ -1,4 +1,3 @@
-import Moralis from "moralis";
 import PositionsService from "../../services/backend/PositionsService";
 import UserInfo from "./UserInfo";
 import UserService from "../../services/backend/UserService";
@@ -7,22 +6,20 @@ import PositionsPage from "../pages/PositionsPage";
 
 export default class UserPosition {
 
-    moralis: typeof Moralis;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
     }
 
-    public static registerListener(moralis: typeof Moralis) {
+    public static registerListener() {
         UserInfo.onUserLoggedIn.push(async () => {
-            let userPosition = new UserPosition(moralis);
+            let userPosition = new UserPosition();
             userPosition.render();
         })
     }
 
     public async render() {
-        let userService = new UserService(this.moralis);
-        let positionService = new PositionsService(this.moralis);
+        let userService = new UserService();
+        let positionService = new PositionsService();
         let userPosition = await positionService.getUserPositions(userService.getEthAddress()!);
         if (!userPosition) return;
 
@@ -30,7 +27,7 @@ export default class UserPosition {
         pl_status?.classList.remove('hidden');
         pl_status?.addEventListener('click', (evt) => {
             evt.preventDefault();
-            let positionPage = new PositionsPage(this.moralis);
+            let positionPage = new PositionsPage();
             positionPage.load();
         })
 
@@ -38,7 +35,7 @@ export default class UserPosition {
         if (unrealized_pl) {
             let number = new BigNumber(userPosition.unrealizedPL);
             unrealized_pl.innerHTML = '$' + number.decimalPlaces(0).toFixed();
-            let className = (userPosition.unrealizedPL.indexOf('-') == -1) ? 'green' : 'red';
+            let className = this.getClassName(userPosition.unrealizedPL);
             unrealized_pl.classList.add(className);
         }
 
@@ -47,10 +44,14 @@ export default class UserPosition {
         if (unrealized_plpc) {
             let number = new BigNumber(userPosition.unrealizedPLPc);
             unrealized_plpc.innerHTML = number.multipliedBy(100).decimalPlaces(2).toFixed() + '%';
-            let className = (userPosition.unrealizedPLPc.indexOf('-') == -1) ? 'green' : 'red';
+            let className = this.getClassName(userPosition.unrealizedPL);
             unrealized_plpc.classList.add(className);
         }
 
+    }
+
+    private getClassName(value: number) {
+        return (value.toString().indexOf('-') == -1) ? 'green' : 'red';
     }
 
 

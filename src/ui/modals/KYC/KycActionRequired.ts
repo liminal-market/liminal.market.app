@@ -24,17 +24,15 @@ import KycValidatorError from "../../../errors/cloud/KycValidatorError";
 import FormValidator from "../../../util/FormValidator";
 import KYCService from "../../../services/blockchain/KYCService";
 import LoadingHelper from "../../../util/LoadingHelper";
-import ExecuteTradeButton from "../../elements/tradepanel/ExecuteTradeButton";
+import ExecuteOrderButton from "../../elements/tradepanel/ExecuteOrderButton";
 
 
 export default class KycActionRequired {
-    moralis: typeof Moralis;
     modal: Modal;
     templates: Map<string, string>;
-    executeTradeButton: ExecuteTradeButton;
+    executeTradeButton: ExecuteOrderButton;
 
-    constructor(moralis: typeof Moralis, executeTradeButton: ExecuteTradeButton) {
-        this.moralis = moralis;
+    constructor(executeTradeButton: ExecuteOrderButton) {
         this.modal = new Modal();
         this.templates = new Map();
         this.executeTradeButton = executeTradeButton;
@@ -58,7 +56,7 @@ export default class KycActionRequired {
     }
 
     public async show() {
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let kycResult = await userService.kycActionRequired()
         if (!kycResult) return;
 
@@ -88,7 +86,7 @@ export default class KycActionRequired {
 
             let params = FormHelper.getParams('#kycActionRequiredForm');
 
-            let kycService = new KYCService(Moralis);
+            let kycService = new KYCService();
             await kycService.updateDocuments(params)
                 .then(() => {
                     let kycActionRequiredDiv = document.getElementById('kycActionRequiredDiv') as HTMLElement;
@@ -96,7 +94,6 @@ export default class KycActionRequired {
 
                     let kycActionRequiredSubmittedDiv = document.getElementById('kycActionRequiredSubmittedDiv') as HTMLElement;
                     kycActionRequiredSubmittedDiv?.classList.remove('hidden');
-                    this.executeTradeButton.checkKycIsDone()
                     this.executeTradeButton.renderButton();
                 })
                 .catch(reason => {

@@ -6,14 +6,13 @@ import GeneralError from "../../errors/GeneralError";
 import Network from "../../networks/Network";
 import {NetworkType} from "../../networks/NetworkType";
 import UserService from "../../services/backend/UserService";
+import AuthenticateService from "../../services/backend/AuthenticateService";
 
 
 export default class SwitchNetworkModal {
-    moralis: typeof Moralis;
     selectedNetwork?: Network;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
     }
 
     public show() {
@@ -34,7 +33,7 @@ export default class SwitchNetworkModal {
                 this.selectedNetwork = NetworkInfo.getNetworkInfoByChainId(parseInt(dataset.chainid!));
                 if (!this.selectedNetwork) throw new GeneralError('Could not find chainId:' + dataset.chainid);
 
-                let walletHelper = new WalletHelper(this.moralis);
+                let walletHelper = new WalletHelper();
                 let successAddingNetwork = await walletHelper.switchNetwork(this.selectedNetwork)
                     .catch((error: GeneralError) => {
                         let jsSwitchNetworkNotWorking = document.getElementById('jsSwitchNetworkNotWorking');
@@ -56,8 +55,8 @@ export default class SwitchNetworkModal {
                 if (successAddingNetwork) {
                     modal.hideModal();
 
-                    let userService = new UserService(this.moralis);
-                    await userService.logOut();
+                    let authenticationService = new AuthenticateService();
+                    await authenticationService.logOut();
                     location.reload();
 
                 }

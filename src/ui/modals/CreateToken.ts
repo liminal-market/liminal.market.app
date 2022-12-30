@@ -7,9 +7,7 @@ import LoadingHelper from "../../util/LoadingHelper";
 import BlockchainError from "../../errors/BlockchainError";
 
 export default class CreateToken {
-    moralis : typeof Moralis;
-    constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
     }
 
     public show(symbol : string) {
@@ -26,7 +24,7 @@ export default class CreateToken {
         btn.addEventListener('click', async () => {
             LoadingHelper.setLoading(btn!);
 
-            let liminalMarketService = new LiminalMarketService(this.moralis);
+            let liminalMarketService = new LiminalMarketService();
             let address = await liminalMarketService.getSymbolContractAddress(symbol);
             if (address === AddressZero) {
                 let result = await liminalMarketService.createToken(symbol, () => {
@@ -41,7 +39,7 @@ export default class CreateToken {
             }
             LoadingHelper.removeLoading();
             btn.innerHTML = 'Add token to wallet';
-            let walletHelper = new WalletHelper(this.moralis);
+            let walletHelper = new WalletHelper();
             await walletHelper.addTokenToWallet(address, symbol, () => {
                 let tokenAddressInput = document.getElementById('tokenAddress');
                 if (!tokenAddressInput) return;

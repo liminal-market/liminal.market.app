@@ -35,7 +35,7 @@ export default abstract class RelationshipBase {
         }
 
         if (obj.serverError.message.indexOf('only one bank association') != -1) {
-            let userService = new UserService(this.aUsdFund.moralis);
+            let userService = new UserService();
             let bankRelationship = await userService.getBankRelationship();
 
             if (!bankRelationship) {

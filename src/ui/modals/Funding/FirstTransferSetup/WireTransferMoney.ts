@@ -32,7 +32,7 @@ export default class WireTransferMoney extends FirstTransferSetupBase {
         prev?.addEventListener('click', (evt) => {
             evt.preventDefault();
 
-            let transferSetup = new FirstTransferSetup(Moralis, this.aUsdFund);
+            let transferSetup = new FirstTransferSetup(this.aUsdFund);
             transferSetup.show(this.bankRelationship)
         })
     }

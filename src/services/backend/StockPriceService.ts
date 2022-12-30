@@ -1,19 +1,19 @@
 import TradeInfo from "./TradeInfo";
 import CloudError from "../../errors/CloudError";
 import {TradeType} from "../../enums/TradeType";
+import BaseService from "./BaseService";
 
-export default class StockPriceService {
-    moralis: typeof Moralis;
+export default class StockPriceService extends BaseService {
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
+        super();
     }
 
     public async getSymbolPrice(symbol: string, tradeType: TradeType): Promise<TradeInfo> {
         const params = {
             symbol: symbol
         };
-        let result = await this.moralis.Cloud.run("getSymbolPrice", params)
+        let result = await this.get("getSymbolPrice", params)
             .catch((e: any) => {
                 throw new CloudError(e);
             });

@@ -14,14 +14,14 @@ import HandlebarHelpers from "../../util/HandlebarHelpers";
 import TradePage from "./TradePage";
 import NetworkInfo from "../../networks/NetworkInfo";
 import UserService from "../../services/backend/UserService";
+import BasePage from "./BasePage";
 
-export default class PositionsPage {
-    moralis : typeof Moralis;
-    documentService : DocumentService;
+export default class PositionsPage extends BasePage {
+    documentService: DocumentService;
 
-    constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
-        this.documentService = new DocumentService(this.moralis);
+    constructor() {
+        super();
+        this.documentService = new DocumentService();
     }
 
     public async load() {
@@ -29,23 +29,16 @@ export default class PositionsPage {
         let mainContainer = document.getElementById('main_container');
         if (!mainContainer) return;
 
-        let userService = new UserService(this.moralis);
-        let positionService = new PositionsService(this.moralis);
+        let userService = new UserService();
+        let positionService = new PositionsService();
         let positions = await positionService.getPositions(userService.getEthAddress()!);
         if (!positions) positions = [];
 
         HandlebarHelpers.registerHelpers();
 
         let template = Handlebars.compile(PositionPageHtml);
-        mainContainer.innerHTML = template({result:positions});
+        mainContainer.innerHTML = template({result: positions});
 
-        let syncWalletBtn = document.getElementById('syncWallet');
-        if (syncWalletBtn) {
-            syncWalletBtn.addEventListener('click', (evt) => {
-                evt.preventDefault();
-                this.syncAllTokens();
-            })
-        }
 
 
         let symbols = new Array<string>();
@@ -64,13 +57,13 @@ export default class PositionsPage {
                 let symbol = element.dataset.symbol;
                 if (!symbol) return;
 
-                let liminalMarketService = new LiminalMarketService(this.moralis);
+                let liminalMarketService = new LiminalMarketService();
                 let contractAddress = await liminalMarketService.getSymbolContractAddress(symbol);
 
                 let securitiesService = await SecuritiesService.getInstance();
                 let security = await securitiesService.getSecurityBySymbol(symbol);
 
-                let tradePage = new TradePage(this.moralis);
+                let tradePage = new TradePage();
                 await tradePage.load(symbol, security.Name, security.LogoPath + security.Logo, contractAddress);
                 window.scrollTo(0, 0);
             });
@@ -84,15 +77,15 @@ export default class PositionsPage {
                 let element = addToWalletLinks[i] as HTMLElement;
                 let symbol = element.dataset.symbol!;
 
-                let liminalMarketService = new LiminalMarketService(this.moralis);
+                let liminalMarketService = new LiminalMarketService();
                 let contractAddress = await liminalMarketService.getSymbolContractAddress(symbol);
                 if (contractAddress.toString() == AddressZero) {
-                    let createToken = new CreateToken(this.moralis);
+                    let createToken = new CreateToken();
                     createToken.show(symbol);
                     return;
                 }
 
-                let walletHelper = new WalletHelper(this.moralis);
+                let walletHelper = new WalletHelper();
                 await walletHelper.addTokenToWallet(contractAddress.toString(), symbol, () => {
                     let modal = new Modal();
                     let template = Handlebars.compile(AddressInfoHtml);
@@ -129,36 +122,11 @@ export default class PositionsPage {
         }
     }
 
-    public async syncAllTokens() {
-        let networkInfo = NetworkInfo.getInstance();
-        let costOfSync = await this.moralis.Cloud.run('costOfSync');
-        let template = Handlebars.compile(SyncStockHtml);
-        let content = template({
-            shareCount: costOfSync.shareCount,
-            costPerShare: Moralis.Units.FromWei(costOfSync.costPerShare, 18),
-            priceInNativeToken: costOfSync.priceInNativeToken,
-            totalCost: Moralis.Units.FromWei(costOfSync.cost, 18),
-            NativeSymbol: networkInfo.NativeSymbol
-        });
-
-        let modal = new Modal();
-        modal.showModal('Sync all stock to wallet', content)
-
-        let syncAllPositions = document.getElementById('syncAllPositions');
-        if (syncAllPositions) {
-            syncAllPositions.addEventListener('click', async (evt) => {
-                evt.preventDefault();
-
-            })
-        }
-    }
 
     public async initDocuments() {
+        if (!this.user.isLoggedIn) return;
 
         const links = document.getElementsByClassName('downloadDoc');
-        const user = this.moralis.User.current();
-        if (!user) return;
-
         for (let i = 0; i < links.length; i++) {
             links[i].addEventListener('click', async (evt) => {
                 evt.preventDefault();

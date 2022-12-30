@@ -5,11 +5,9 @@ import StringHelper from "../../../util/StringHelper";
 import LoadingHelper from "../../../util/LoadingHelper";
 
 export default class KycEditNameForm {
-    moralis: typeof Moralis;
     modal: Modal;
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.modal = new Modal();
     }
 
@@ -17,7 +15,7 @@ export default class KycEditNameForm {
         let kycEditNameError = document.getElementById('kycEditNameError');
         if (kycEditNameError) kycEditNameError.style.display = 'none';
 
-        let userService = new UserService(this.moralis);
+        let userService = new UserService();
         let account = await userService.getAccount()
 
         let given_name = account.identity.given_name as string;
@@ -101,9 +99,9 @@ export default class KycEditNameForm {
             let middle_name = document.getElementById('middle_name') as HTMLInputElement;
             let family_name = document.getElementById('family_name') as HTMLInputElement;
             LoadingHelper.setLoading(kycEditNameSave);
-            let userService = new UserService(this.moralis);
+            let userService = new UserService();
             await userService.updateName(given_name.value, middle_name.value, family_name.value)
-                .then((response) => {
+                .then((response: any) => {
                     if (response.message) {
                         this.showError(response.message);
                         return;

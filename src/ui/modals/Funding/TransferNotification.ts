@@ -12,16 +12,14 @@ import MoneyTransferred from "./FirstTransferSetup/MoneyTransferred";
 
 export default class TransferNotification {
 
-    moralis: typeof Moralis;
     aUsdFund: AUSDFund
     bankRelationship?: BankRelationship;
     private transfersList: TransfersList;
     moneyTransferred?: MoneyTransferred;
 
-    constructor(moralis: typeof Moralis, aUsdFund: AUSDFund) {
-        this.moralis = moralis;
+    constructor(aUsdFund: AUSDFund) {
         this.aUsdFund = aUsdFund;
-        this.transfersList = new TransfersList(this.moralis);
+        this.transfersList = new TransfersList();
 
     }
 

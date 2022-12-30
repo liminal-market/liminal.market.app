@@ -1,18 +1,19 @@
+import BaseService from "./BaseService";
 
 
-export default class PositionsService {
-    moralis: typeof Moralis;
+export default class PositionsService extends BaseService {
 
-    constructor(moralis: typeof Moralis) {
-        this.moralis = moralis;
+
+    constructor() {
+        super();
     }
 
     public async getPositions(address: string) {
-        let userPosition = await this.moralis.Cloud.run('positions', {address});
+        let userPosition = await this.get('positions', {address});
         return userPosition?.positions;
     }
 
     public async getUserPositions(address: string) {
-        return await this.moralis.Cloud.run('positions', {address});
+        return await this.get('positions', {address});
     }
 }

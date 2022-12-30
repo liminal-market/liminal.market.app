@@ -1,4 +1,4 @@
-import ExecuteTradeButton from "./tradepanel/ExecuteTradeButton";
+import ExecuteOrderButton from "./tradepanel/ExecuteOrderButton";
 import StockPriceService from "../../services/backend/StockPriceService";
 import {TradeType} from "../../enums/TradeType";
 import TradePanelInput from "./tradepanel/TradePanelInput";
@@ -7,11 +7,9 @@ import TradeSwitch from "./tradepanel/TradeSwitch";
 import SecuritiesListModal from "../modals/SecuritiesListModal";
 
 export default class TradePanel {
-    moralis : typeof Moralis;
     quantity : number;
 
-    constructor(moralis : typeof Moralis) {
-        this.moralis = moralis;
+    constructor() {
         this.quantity = 0;
     }
 
@@ -21,12 +19,12 @@ export default class TradePanel {
 
         let contractInfo = ContractInfo.getContractInfo();
 
-        let sellTradeInput = new TradePanelInput(this.moralis, "aUSD", "aUSD at Broker", "/img/ausd.png", contractInfo.AUSD_ADDRESS, TradeType.Sell);
-        let buyTradeInput : TradePanelInput;
+        let sellTradeInput = new TradePanelInput("aUSD", "aUSD at Broker", "/img/ausd.png", contractInfo.AUSD_ADDRESS, TradeType.Sell);
+        let buyTradeInput: TradePanelInput;
         if (!symbol) {
-            buyTradeInput = new TradePanelInput(this.moralis, "Select stock", "", "", "", TradeType.Buy);
+            buyTradeInput = new TradePanelInput("Select stock", "", "", "", TradeType.Buy);
         } else {
-            buyTradeInput = new TradePanelInput(this.moralis, symbol as string, name as string,logo as string,address as string, TradeType.Buy);
+            buyTradeInput = new TradePanelInput(symbol as string, name as string, logo as string, address as string, TradeType.Buy);
         }
 
         sellTradeInput.setOtherTradePanelInput(buyTradeInput);
@@ -49,7 +47,7 @@ export default class TradePanel {
         sellTradeInput.bindEvents();
         buyTradeInput.bindEvents();
 
-        let executeTradeButton = new ExecuteTradeButton(this.moralis, sellTradeInput, buyTradeInput);
+        let executeTradeButton = new ExecuteOrderButton(sellTradeInput, buyTradeInput);
         await executeTradeButton.renderButton();
 
         tradeSwitch.bindEvents(sellTradeInput, buyTradeInput, executeTradeButton);

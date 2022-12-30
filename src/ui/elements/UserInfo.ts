@@ -1,8 +1,6 @@
 import UserService from "../../services/backend/UserService";
-import Moralis from "Moralis";
 import UserInfoElement from '../../html/elements/UserInfo.html'
 import {shortEth} from "../../util/Helper";
-import NetworkInfo from "../../networks/NetworkInfo";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import KycEditNameForm from "../modals/KYC/KycEditNameForm";
 import KycEditContactForm from "../modals/KYC/KycEditContactForm";
@@ -10,43 +8,50 @@ import KycEditTrustedContact from "../modals/KYC/KycEditTrustedContact";
 import AUsdBalance from "./AUsdBalance";
 import TestNetworkBannerHtml from "../../html/elements/TestNetworkBanner.html";
 import SwitchNetworkModal from "../modals/SwitchNetworkModal";
-import ExecuteTradeButton from "./tradepanel/ExecuteTradeButton";
+import ExecuteOrderButton from "./tradepanel/ExecuteOrderButton";
 import LoadingHelper from "../../util/LoadingHelper";
 import WalletHelper from "../../util/WalletHelper";
+import App from "../../main";
+import AuthenticateService from "../../services/backend/AuthenticateService";
 
 type ListenerAction = (...args: Array<any>) => void;
 
 export default class UserInfo {
-    moralis: typeof Moralis;
-    user?: Moralis.Attributes;
+    authenticationService: AuthenticateService;
     userService: UserService;
     providerInfo: ProviderInfo;
     walletHelper: WalletHelper;
     walletLoaded = false;
     static onUserLoggedIn: Array<ListenerAction> = [];
 
-    public constructor(moralis: typeof Moralis, providerInfo: ProviderInfo, user?: Moralis.Attributes) {
-        this.moralis = moralis;
-        this.user = user;
-        this.userService = new UserService(this.moralis);
+    public constructor(providerInfo: ProviderInfo) {
+        this.authenticationService = new AuthenticateService();
+        this.userService = new UserService();
         this.providerInfo = providerInfo;
-        this.walletHelper = new WalletHelper(this.moralis);
+        this.walletHelper = new WalletHelper();
     }
 
     public async render(elementId: string) {
-        if (!this.user) return;
+        let user_header_info = document.getElementById('user_header_info');
+        if (user_header_info) user_header_info.innerHTML = 'Loading wallet..';
+        LoadingHelper.setLoading(user_header_info);
 
         this.listenForWalletChanges();
         this.loadUserMenuUI(elementId);
         this.loadIfTestNetwork();
         this.ifTradePage();
 
-        let aUsdBalance = new AUsdBalance(this.moralis, this.user);
+        LoadingHelper.removeLoading();
+
+        let aUsdBalance = new AUsdBalance();
         await aUsdBalance.loadAUSDBalanceUI();
+
 
     }
 
     private listenForWalletChanges() {
+        /*
+        TODO: need fixing
         this.moralis.onChainChanged(function () {
             location.reload();
         });
@@ -59,18 +64,18 @@ export default class UserInfo {
         this.moralis.onConnect(function () {
             location.reload();
         });
+
+         */
     }
 
     private async loadUserMenuUI(elementId: string) {
-        if (!this.user) return;
-
         let userInfoDiv = document.getElementById(elementId);
         if (!userInfoDiv) return;
-
-        let networkInfo = NetworkInfo.getInstance();
+        console.log('loadUserMenuUI User:', App.User);
+        let networkInfo = App.Network;
         let obj: any = {
-            ethAddress: this.user.get('ethAddress'),
-            shortEthAddress: shortEth(this.user.get('ethAddress')),
+            ethAddress: App.User.address,
+            shortEthAddress: shortEth(App.User.address),
             walletName: this.providerInfo.WalletName,
             networkName: networkInfo.ChainName + ((networkInfo.TestNetwork) ? ' - (Test network)' : ''),
             blockchainExplorer: networkInfo.BlockExplorer + '/address/',
@@ -96,14 +101,14 @@ export default class UserInfo {
         editName?.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            let kycModal = new KycEditNameForm(this.moralis);
+            let kycModal = new KycEditNameForm();
             await kycModal.show();
         })
 
         let editContact = document.getElementById('editContact');
         editContact?.addEventListener('click', async (evt) => {
             evt.preventDefault();
-            let kycModal = new KycEditContactForm(this.moralis);
+            let kycModal = new KycEditContactForm();
             await kycModal.show();
 
         })
@@ -111,7 +116,7 @@ export default class UserInfo {
         let editTrustedContact = document.getElementById('editTrustedContact');
         editTrustedContact?.addEventListener('click', async (evt) => {
             evt.preventDefault();
-            let kycModal = new KycEditTrustedContact(this.moralis);
+            let kycModal = new KycEditTrustedContact();
             await kycModal.show();
 
         })
@@ -147,8 +152,7 @@ export default class UserInfo {
         disconnectFromNetwork?.addEventListener('click', async (evt) => {
             evt.preventDefault();
 
-            let userService = new UserService(this.moralis);
-            await userService.logOut()
+            await this.authenticationService.logOut()
             window.location.reload();
         });
 
@@ -166,11 +170,11 @@ export default class UserInfo {
                 return;
             }
 
-            this.moralis.connector.magic.connect.showWallet()
+            App.User.provider.magic.connect.showWallet()
                 .catch(async (e: any) => {
                     this.walletLoaded = false;
                     if (e.message.indexOf('User denied account access') != -1) {
-                        await this.userService.logOut()
+                        await this.authenticationService.logOut()
                         alert('You have been logged out of you wallet and need to log back in. We will now reload the page and you can log in.');
                         location.reload();
                         return;
@@ -198,7 +202,7 @@ export default class UserInfo {
         switch_network?.addEventListener('click', (evt) => {
             evt.preventDefault();
 
-            let switchNetworkModal = new SwitchNetworkModal(this.moralis);
+            let switchNetworkModal = new SwitchNetworkModal();
             switchNetworkModal.show();
         })
 
@@ -206,8 +210,8 @@ export default class UserInfo {
 
 
     private loadIfTestNetwork() {
-        if (!this.moralis.isWeb3Enabled()) return;
-        if (!NetworkInfo.getInstance().TestNetwork) return;
+        if (!App.User.provider) return;
+        if (!App.Network.TestNetwork) return;
 
         let header = document.querySelector('header');
         if (!header) return;
@@ -217,7 +221,7 @@ export default class UserInfo {
 
         let switch_from_test_network = document.getElementById('switch_from_test_network')
         switch_from_test_network?.addEventListener('click', (evt) => {
-            let switchNetworkModal = new SwitchNetworkModal(this.moralis);
+            let switchNetworkModal = new SwitchNetworkModal();
             switchNetworkModal.show();
         })
     }
@@ -226,6 +230,6 @@ export default class UserInfo {
         let btn = document.getElementById('liminal_market_execute_trade');
         if (!btn) return;
 
-        ExecuteTradeButton.Instance.renderButton();
+        ExecuteOrderButton.Instance.renderButton();
     }
 }
