@@ -109,6 +109,8 @@ export default class AuthenticateService extends BaseService {
         console.log('isWebview', WalletHelper.isWebview());
         // @ts-ignore
         console.log('Ethereum', window.ethereum);
+
+        console.log('connector.ether', connector.ether);
         // @ts-ignore
         if (window.ethereum) {
             // @ts-ignore
@@ -121,6 +123,7 @@ export default class AuthenticateService extends BaseService {
         const signedMessage = await connector.ether.getSigner()
             .signMessage(obj.signingMessage)
             .catch((e: any) => {
+                console.log(e);
                 if (e.message && e.message.toLowerCase().indexOf('wrong network') != -1) {
                     showBar('Your wallet is on wrong network. I expect you to be on ' + App.Network.Name + '(chainId:' + App.Network.ChainId + ') network');
                 } else {
