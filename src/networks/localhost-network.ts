@@ -13,7 +13,7 @@ export default class localhostNetwork extends TestNetwork {
         this.NativeDecimal = 18;
         this.RpcUrl = 'http://127.0.0.1:8545/';
         this.BlockExplorer = 'https://rinkeby.etherscan.io';
-
+        this.ServerUrl = "http://localhost:10000";
 	}
 
 
