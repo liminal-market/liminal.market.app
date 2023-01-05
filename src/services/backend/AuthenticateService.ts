@@ -5,6 +5,7 @@ import App from "../../main";
 import BaseService from "./BaseService";
 import CookieHelper from "../../util/CookieHelper";
 import User from "../../dto/User";
+import {showBar} from "../../util/Helper";
 
 export default class AuthenticateService extends BaseService {
 
@@ -107,7 +108,13 @@ export default class AuthenticateService extends BaseService {
 
         const signedMessage = await connector.ether.getSigner()
             .signMessage(obj.signingMessage)
-            .catch((e: any) => console.log(e));
+            .catch((e: any) => {
+                if (e.message && e.message.toLowerCase().indexOf('wrong network') != -1) {
+                    showBar('Your wallet is on wrong network. I expect you to be on ' + App.Network.Name + '(chainId:' + App.Network.ChainId + ') network');
+                } else {
+                    showBar('Error signing in:' + e.message)
+                }
+            });
 
         let loginResponse = await this.post<any>('me/validate', {address: connector.account, signedMessage});
 
