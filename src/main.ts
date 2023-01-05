@@ -15,8 +15,10 @@ export default class App {
         console.log('App constructor');
         App.Network = NetworkInfo.getInstance();
         window.addEventListener('load', () => {
-            if (ethereum && ethereum.chainId != App.Network.ChainIdHex) {
-                NetworkInfo.setNetworkByChainId(ethereum.chainId);
+            // @ts-ignore
+            if (window.ethereum && window.ethereum.chainId != App.Network.ChainIdHex) {
+                // @ts-ignore
+                NetworkInfo.setNetworkByChainId(window.ethereum.chainId);
                 App.Network = NetworkInfo.getInstance();
             }
             console.log('network', App.Network);
@@ -40,16 +42,8 @@ export default class App {
             var vConsole = new window.VConsole();
         }
 
-        this.loadEth();
     }
 
-    private loadEth() {
-        window.addEventListener('load', () => {
-            // @ts-ignore
-            console.log('win.eth', window.ethereum)
-            console.log('ethereum', ethereum);
-        });
-    }
 }
 
 let app = new App();
