@@ -133,8 +133,7 @@ export default class AuthenticateService extends BaseService {
             .catch(async (e: any) => {
                 console.log(e);
                 if (e.message && e.message.toLowerCase().indexOf('wrong network') != -1) {
-                    let authenticationService = new AuthenticateService();
-                    await authenticationService.logOut();
+                    await this.logOut()
                     await this.authenticateUser(enableWeb3Callback, authenticatedCallback)
                     //showBar('Your wallet is on wrong network. I expect you to be on ' + App.Network.Name + '(chainId:' + App.Network.ChainId + ') network');
                 } else {

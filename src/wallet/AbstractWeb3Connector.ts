@@ -79,6 +79,7 @@ class AbstractWeb3Connector extends EventEmitter {
     }
 
     handleConnect(connectInfo: any) {
+        console.log('connected', connectInfo)
         this.emit(ConnectorEvents.CONNECT, connectInfo);
     }
 
