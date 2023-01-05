@@ -111,9 +111,12 @@ export default class AuthenticateService extends BaseService {
         console.log('Ethereum', window.ethereum);
 
         // @ts-ignore
-        console.log('Ethereum', window.ethereum.networkVersion, window.ethereum.chainId, App.Network.ChainIdHex);
-        if (WalletHelper.isWebview()) {
+        if (window.ethereum) {
+            // @ts-ignore
+            console.log('Ethereum', window.ethereum.networkVersion, window.ethereum.chainId, App.Network.ChainIdHex);
+            if (WalletHelper.isWebview()) {
 
+            }
         }
 
         const signedMessage = await connector.ether.getSigner()
