@@ -5,6 +5,7 @@ import User from "./dto/User";
 import Network from "./networks/Network";
 import NetworkInfo from "./networks/NetworkInfo";
 import EventService from "./services/backend/EventService";
+import WalletHelper from "./util/WalletHelper";
 
 export default class App {
     public static User: User;
@@ -25,6 +26,11 @@ export default class App {
 
         let header = new Header();
         header.load();
+
+        if (WalletHelper.isWebview()) {
+            // @ts-ignore
+            var vConsole = new window.VConsole();
+        }
     }
 }
 

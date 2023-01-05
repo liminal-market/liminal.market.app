@@ -120,6 +120,7 @@ export default class AuthenticateService extends BaseService {
             }
         }
 
+        console.log('calling signMessage');
         const signedMessage = await connector.ether.getSigner()
             .signMessage(obj.signingMessage)
             .catch((e: any) => {
