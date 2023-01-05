@@ -112,6 +112,7 @@ export default class AuthenticateService extends BaseService {
 
         console.log('connector.ether', connector.ether);
         console.log('network', App.Network);
+
         // @ts-ignore
         if (window.ethereum) {
             // @ts-ignore
