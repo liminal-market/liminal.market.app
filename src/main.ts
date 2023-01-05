@@ -14,7 +14,14 @@ export default class App {
     constructor() {
         console.log('App constructor');
         App.Network = NetworkInfo.getInstance();
-        console.log('network', App.Network);
+        window.addEventListener('load', () => {
+            if (ethereum && ethereum.chainId != App.Network.ChainIdHex) {
+                NetworkInfo.setNetworkByChainId(ethereum.chainId);
+                App.Network = NetworkInfo.getInstance();
+            }
+            console.log('network', App.Network);
+        });
+
         App.User = new User(null, '', App.Network.ChainId, '');
     }
 
