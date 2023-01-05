@@ -73,21 +73,18 @@ export default class NetworkInfo {
     private static getNetworkInfo(networkName?: string): Network {
         let cookieHelper = new CookieHelper(document);
 
-        if (!networkName) networkName = cookieHelper.getCookieValue('network');
-        if (!networkName) networkName = 'polygon';
-
-        let isLocal = (window.location.host.indexOf('localhost') != -1)
         // @ts-ignore
-        if (isLocal && !networkName && window.ethereum && window.ethereum.chainId) {
+        if (window.ethereum && window.ethereum.chainId) {
             // @ts-ignore
-            let chainId = (window.ethereum.chainId) ? window.ethereum.chainId : 31337;
-            let networkInfo = this.getNetworkNameByChainIdHex(chainId);
+            let networkInfo = this.getNetworkNameByChainIdHex(window.ethereum.chainId);
             if (networkInfo) {
                 return networkInfo;
             }
 
         }
 
+        if (!networkName) networkName = cookieHelper.getCookieValue('network');
+        if (!networkName) networkName = 'polygon';
 
         let networkInfo = null;
         networkInfos.forEach(networkInfoType => {

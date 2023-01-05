@@ -8,7 +8,6 @@ import UserService from "../../../services/backend/UserService";
 import {roundBigNumber} from "../../../util/Helper";
 import BigNumber from "bignumber.js";
 import AUSDFund from "./AUSDFund";
-import NetworkInfo from "../../../networks/NetworkInfo";
 import App from "../../../main";
 
 

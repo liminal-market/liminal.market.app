@@ -7,7 +7,6 @@ import UserService from "../../services/backend/UserService";
 import WalletHelper from "../../util/WalletHelper";
 import Modal from "../modals/Modal";
 import CopyTokenAddressToAddToWallet from '../../html/modal/CopyTokenAddressToAddToWallet.html';
-import BigNumber from "bignumber.js";
 import ContractAddresses from "../../contracts/ContractAddresses";
 
 export default class TradePage {

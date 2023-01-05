@@ -48,7 +48,8 @@ export const isJSON = function (str: string): any {
 
 export const ethereumInstalled = function () {
 	try {
-		return (typeof ethereum !== 'undefined');
+		// @ts-ignore
+		return (typeof window.ethereum !== 'undefined');
 	} catch (e: any) {
 		return false;
 	}

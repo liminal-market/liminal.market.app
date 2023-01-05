@@ -12,6 +12,7 @@ export default class App {
     public static Network: Network;
 
     constructor() {
+        console.log('App constructor');
         App.Network = NetworkInfo.getInstance();
         console.log('network', App.Network);
         App.User = new User(null, '', App.Network.ChainId, '');
@@ -31,6 +32,16 @@ export default class App {
             // @ts-ignore
             var vConsole = new window.VConsole();
         }
+
+        this.loadEth();
+    }
+
+    private loadEth() {
+        window.addEventListener('load', () => {
+            // @ts-ignore
+            console.log('win.eth', window.ethereum)
+            console.log('ethereum', ethereum);
+        });
     }
 }
 

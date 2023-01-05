@@ -100,7 +100,8 @@ export default class KycValidatorError {
 
             link.addEventListener('click', async (evt) => {
                 evt.preventDefault();
-                await Moralis.Cloud.run(this.onshow.functionName, this.onshow.params);
+                //await this(this.onshow.functionName, this.onshow.params);
+                //TODO: fix send email
 
                 document.getElementById('input_error_' + this.inputName)!.innerHTML = 'Email has been sent to ' + this.onshow.params.email;
             })

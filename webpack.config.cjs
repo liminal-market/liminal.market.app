@@ -32,7 +32,18 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js', '.html'],
-    fallback: { "stream":false, "assert":false, "http": false, "https":false, "os":false, "url":false, "crypto":false },
+    fallback: {
+      "stream": false,
+      "assert": false,
+      "http": false,
+      "https": false,
+      "os": false,
+      "url": false,
+      "crypto": false
+    },
+    alias: {
+      'express-handlebars': 'handlebars/dist/handlebars.js'
+    }
   },
   output: {
     publicPath:'app/js',

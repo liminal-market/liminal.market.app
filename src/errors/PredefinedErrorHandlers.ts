@@ -3,6 +3,9 @@ import {InfoBarType} from "../ui/elements/InfoBarType";
 import WalletMissingHtml from '../html/modal/WalletMissing.html';
 import Modal from "../ui/modals/Modal";
 import SwitchNetworkModal from "../ui/modals/SwitchNetworkModal";
+import UserService from "../services/backend/UserService";
+import App from "../main";
+import AuthenticateService from "../services/backend/AuthenticateService";
 
 export default class PredefinedErrorHandlers {
 
@@ -34,8 +37,9 @@ export default class PredefinedErrorHandlers {
                 return;
             }
         });
-        this.errorMessageMapping.set('user rejected the request', () => {
-            Moralis.User.logOut();
+        this.errorMessageMapping.set('user rejected the request', async () => {
+            let authenticationService = new AuthenticateService();
+            await authenticationService.logOut();
             window.location.reload();
         });
         this.errorMessageMapping.set('Non ethereum enabled browser', () => {
