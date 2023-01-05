@@ -109,7 +109,6 @@ export default class AuthenticateService extends BaseService {
         console.log('isWebview', WalletHelper.isWebview());
         // @ts-ignore
         console.log('Ethereum', window.ethereum);
-
         // @ts-ignore
         if (window.ethereum) {
             // @ts-ignore
