@@ -20,7 +20,7 @@ export default class MagicWeb3Connector extends AbstractWeb3Connector {
 
         this.ether = new ethers.providers.Web3Provider(this.magic.rpcProvider);
         let accounts = await this.ether.listAccounts();
-
+console.log('accounts after new Magic', accounts);
         // Assign Constants
         this.account = accounts[0];
         this.provider = this.ether.provider;
