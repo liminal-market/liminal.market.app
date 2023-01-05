@@ -64,7 +64,8 @@ export default class WalletHelper {
         return wasAdded;
     };
 
-    public isWebview(ua: string): boolean {
+    public static isWebview(): boolean {
+        let ua = navigator.userAgent;
         // if it says it's a webview, let's go with that
         let rules = ['WebView',
             // iOS webview will be the same as safari but missing "Safari"

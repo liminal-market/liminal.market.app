@@ -6,6 +6,7 @@ import BaseService from "./BaseService";
 import CookieHelper from "../../util/CookieHelper";
 import User from "../../dto/User";
 import {showBar} from "../../util/Helper";
+import WalletHelper from "../../util/WalletHelper";
 
 export default class AuthenticateService extends BaseService {
 
@@ -105,6 +106,15 @@ export default class AuthenticateService extends BaseService {
             signingMessage: "You are logging into Liminal.market.\n\nNonce:" + response.nonce,
             connector: MagicWeb3Connector
         };
+        console.log('isWebview', WalletHelper.isWebview());
+        // @ts-ignore
+        console.log('Ethereum', window.ethereum);
+
+        // @ts-ignore
+        console.log('Ethereum', window.ethereum.networkVersion, window.ethereum.chainId, App.Network.ChainIdHex);
+        if (WalletHelper.isWebview()) {
+
+        }
 
         const signedMessage = await connector.ether.getSigner()
             .signMessage(obj.signingMessage)
@@ -115,6 +125,7 @@ export default class AuthenticateService extends BaseService {
                     showBar('Error signing in:' + e.message)
                 }
             });
+        if (!signedMessage) return;
 
         let loginResponse = await this.post<any>('me/validate', {address: connector.account, signedMessage});
 
