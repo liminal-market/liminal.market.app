@@ -36,7 +36,9 @@ export default class EventService {
                 let orderExecutedModal = new OrderExecutedModal();
                 orderExecutedModal.show(obj);
             } else if (obj.methodName == 'SendingToExchange') {
-                await OrderProgress.getInstance().setProgressText(1, 'Received order, sending to stock exchange', obj.hash)
+                await OrderProgress.getInstance().setProgressText(1, 'Received order, sending to stock exchange', obj.hash);
+            } else if (obj.methodName == 'OrderExecutedWritingBlockchain') {
+                await OrderProgress.getInstance().setProgressText(1, 'Order executed, writing to blockchain', '');
             } else if (obj.methodName == 'BalanceSet') {
                 if (obj.balance != '0') {
                     ExecuteOrderButton.Instance.renderButton();
