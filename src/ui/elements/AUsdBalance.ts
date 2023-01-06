@@ -12,6 +12,7 @@ import AddToWalletHtml from '../../html/elements/AddToWallet.html';
 import User from "../../dto/User";
 import App from "../../main";
 import AuthenticateService from "../../services/backend/AuthenticateService";
+import BigNumber from "bignumber.js";
 
 export default class AUsdBalance {
 
@@ -48,11 +49,8 @@ export default class AUsdBalance {
         let aUsdValueWei = await aUSDService.getAUSDBalanceOf(App.User.address);
         let aUsdValue = roundBigNumber(aUsdValueWei);
 
-        let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
-        if (frontpageAUSDBalance) frontpageAUSDBalance.innerHTML = '$' + aUsdValue;
+        this.updateUIBalance(aUsdValue);
 
-        let user_info_ausd_balance = document.getElementById('user_info_ausd_balance')
-        if (user_info_ausd_balance) user_info_ausd_balance.innerHTML = '$' + aUsdValue;
         this.bindEvents();
 
         let balance_value = document.querySelector('.balance_value') as HTMLElement;
@@ -113,5 +111,13 @@ export default class AUsdBalance {
             let withdrawModal = new WithdrawModal();
             await withdrawModal.show()
         })
+    }
+
+    public updateUIBalance(aUsdValue: BigNumber) {
+        let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
+        if (frontpageAUSDBalance) frontpageAUSDBalance.innerHTML = '$' + aUsdValue.toString();
+
+        let user_info_ausd_balance = document.getElementById('user_info_ausd_balance')
+        if (user_info_ausd_balance) user_info_ausd_balance.innerHTML = '$' + aUsdValue.toString();
     }
 }

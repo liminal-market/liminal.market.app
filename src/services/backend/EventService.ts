@@ -9,6 +9,9 @@ import {Exception} from "handlebars";
 import OrderExecutedModal from "../../ui/elements/tradepanel/OrderExecutedModal";
 import OrderProgress from "../../ui/elements/tradepanel/OrderProgress";
 import FakeAUSDFund from "../../ui/modals/Funding/FakeAUSDFund";
+import AUsdBalance from "../../ui/elements/AUsdBalance";
+import BigNumber from "bignumber.js";
+import {ethers} from "ethers";
 
 export default class EventService {
 
@@ -44,6 +47,10 @@ export default class EventService {
             } else if (obj.methodName == 'UpdateAUsdOnChain') {
                 FakeAUSDFund.writingToChain();
             } else if (obj.methodName == 'BalanceSet') {
+                let aUsdBalance = new AUsdBalance();
+                let balance = new BigNumber(ethers.utils.formatEther(obj.balance));
+                aUsdBalance.updateUIBalance(balance);
+
                 if (obj.balance != '0') {
                     ExecuteOrderButton.Instance.renderButton();
                 }
