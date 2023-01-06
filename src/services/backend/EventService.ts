@@ -3,7 +3,7 @@ import App from "../../main";
 import NetworkInfo from "../../networks/NetworkInfo";
 import AuthenticateService from "./AuthenticateService";
 import UserInfo from "../../ui/elements/UserInfo";
-import {isJSON} from "../../util/Helper";
+import {isJSON, roundBigNumber, roundNumber} from "../../util/Helper";
 import KycApproved from "../../ui/modals/KYC/KycApproved";
 import {Exception} from "handlebars";
 import OrderExecutedModal from "../../ui/elements/tradepanel/OrderExecutedModal";
@@ -49,7 +49,7 @@ export default class EventService {
             } else if (obj.methodName == 'BalanceSet') {
                 let aUsdBalance = new AUsdBalance();
                 let balance = new BigNumber(ethers.utils.formatEther(obj.balance));
-                aUsdBalance.updateUIBalance(balance);
+                aUsdBalance.updateUIBalance(roundBigNumber(balance));
 
                 if (obj.balance != '0') {
                     ExecuteOrderButton.Instance.renderButton();
