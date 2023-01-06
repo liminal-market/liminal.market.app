@@ -8,6 +8,7 @@ import KycApproved from "../../ui/modals/KYC/KycApproved";
 import {Exception} from "handlebars";
 import OrderExecutedModal from "../../ui/elements/tradepanel/OrderExecutedModal";
 import OrderProgress from "../../ui/elements/tradepanel/OrderProgress";
+import FakeAUSDFund from "../../ui/modals/Funding/FakeAUSDFund";
 
 export default class EventService {
 
@@ -39,6 +40,9 @@ export default class EventService {
                 await OrderProgress.getInstance().setProgressText(1, 'Received order, sending to stock exchange', obj.hash);
             } else if (obj.methodName == 'OrderExecutedWritingBlockchain') {
                 await OrderProgress.getInstance().setProgressText(1, 'Order executed, writing to blockchain', '');
+
+            } else if (obj.methodName == 'UpdateAUsdOnChain') {
+                FakeAUSDFund.writingToChain();
             } else if (obj.methodName == 'BalanceSet') {
                 if (obj.balance != '0') {
                     ExecuteOrderButton.Instance.renderButton();

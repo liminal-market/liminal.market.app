@@ -25,6 +25,11 @@ export default class FakeAUSDFund {
         aUsdFund.show();
     }
 
+    public static writingToChain() {
+        let element = document.getElementById('fake_funding_writing_to_ausd');
+        element?.classList.remove('hidden')
+    }
+
     public showAUSDFakeFund() {
         let networkInfo = App.Network;
         if (!networkInfo.TestNetwork) {

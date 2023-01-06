@@ -17,11 +17,14 @@
     </div>
     <div id="afterFunding" class="d-none center">
         We have now sending aUSD to your wallet. This usually takes few minutes, so lets wait.
-<br /><br />
+        <br/><br/>
         When you have the aUSD in you wallet, we will tell you.
         <div>
             <h3>Current aUSD balance</h3>
             <div id="currentAUSDBalance"></div>
+        </div>
+        <div class="hidden center" id="fake_funding_writing_to_ausd">
+            <strong aria-busy="true">Writing amount to aUSD token. Few more seconds...</strong>
         </div>
     </div>
     <div id="errorAfterTryFunding" class="d-none">
