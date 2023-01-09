@@ -28,6 +28,7 @@ export default class NetworkInfo {
 
     public static setNetworkByChainId(chainId: number): void {
         let network = this.getNetworkInfoByChainId(chainId);
+
         if (network) {
             NetworkInfo.instance = network;
 

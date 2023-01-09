@@ -8,11 +8,9 @@ import Modal from "../../ui/modals/Modal";
 import CreateToken from "../../ui/modals/CreateToken";
 import AddressInfoHtml from '../../html/elements/AddressInfo.html';
 import PositionPageHtml from '../../html/pages/positions.html';
-import SyncStockHtml from '../../html/modal/SyncStock.html';
 import PositionsService from "../../services/backend/PositionsService";
 import HandlebarHelpers from "../../util/HandlebarHelpers";
 import TradePage from "./TradePage";
-import NetworkInfo from "../../networks/NetworkInfo";
 import UserService from "../../services/backend/UserService";
 import BasePage from "./BasePage";
 
@@ -135,7 +133,7 @@ export default class PositionsPage extends BasePage {
                 if (!documentId) return;
 
                 let locationUrl = await this.documentService.getDocument(documentId);
-                if (locationUrl == '') {
+                if (!locationUrl || locationUrl == '') {
                     alert('Could not find document. Please contact us if you should have gotten a document')
                     return;
                 }

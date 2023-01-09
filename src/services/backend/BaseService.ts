@@ -34,7 +34,6 @@ export default class BaseService {
         }
         data.chainId = (data.chainId) ? data.chainId : App.Network.ChainId;
         data.address = (data.address) ? data.address : App.User.address;
-        console.log(this.getUrl(App.Network.ServerUrl, path));
 
         let response = await fetch(this.getUrl(App.Network.ServerUrl, path),
             {

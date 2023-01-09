@@ -32,9 +32,7 @@ export default class UserInfo {
     }
 
     public async render(elementId: string) {
-        let user_header_info = document.getElementById('user_header_info');
-        if (user_header_info) user_header_info.innerHTML = 'Loading wallet..';
-        LoadingHelper.setLoading(user_header_info);
+
 
         this.listenForWalletChanges();
         this.loadUserMenuUI(elementId);
@@ -71,7 +69,7 @@ export default class UserInfo {
     private async loadUserMenuUI(elementId: string) {
         let userInfoDiv = document.getElementById(elementId);
         if (!userInfoDiv) return;
-        console.log('loadUserMenuUI User:', App.User);
+
         let networkInfo = App.Network;
         let obj: any = {
             ethAddress: App.User.address,
@@ -93,6 +91,11 @@ export default class UserInfo {
 
         for (let i = 0; i < UserInfo.onUserLoggedIn.length; i++) {
             UserInfo.onUserLoggedIn[i]();
+        }
+
+        if (networkInfo.TestNetwork) {
+            let edit_account = document.querySelector('.edit_account');
+            edit_account?.classList.add('hidden');
         }
     }
 
@@ -122,7 +125,7 @@ export default class UserInfo {
         })
     }
 
-    private async bindEvents() {
+    private bindEvents() {
         let userInfoDropdown = document.getElementById('userInfoDropdown');
         if (!userInfoDropdown) return;
 

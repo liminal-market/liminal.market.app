@@ -46,6 +46,14 @@ export default class KYCService extends BlockchainService {
         return KYCService.KycResponse;
     }
 
+    public async sandboxCreateAccount(firstName: string, lastName: string, email: string) {
+        return await this.post("sandboxCreateAccount", {
+            given_name: firstName,
+            family_name: lastName,
+            email_address: email
+        });
+    }
+
     public async saveKYCInfo(data: any): Promise<string> {
         return await this.post("kycRegistration", data);
     }

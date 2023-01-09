@@ -6,22 +6,28 @@ import Network from "./networks/Network";
 import NetworkInfo from "./networks/NetworkInfo";
 import EventService from "./services/backend/EventService";
 import WalletHelper from "./util/WalletHelper";
+import SwitchNetworkModal from "./ui/modals/SwitchNetworkModal";
 
 export default class App {
     public static User: User;
     public static Network: Network;
 
     constructor() {
-        console.log('App constructor');
         App.Network = NetworkInfo.getInstance();
         window.addEventListener('load', () => {
             // @ts-ignore
-            if (window.ethereum && window.ethereum.chainId != App.Network.ChainIdHex) {
-                // @ts-ignore
-                NetworkInfo.setNetworkByChainId(window.ethereum.chainId);
-                App.Network = NetworkInfo.getInstance();
+            let userWalletChainId = (window.ethereum && window.ethereum.chainId) ? parseInt(window.ethereum.chainId) : undefined;
+            if (userWalletChainId) {
+                let network = NetworkInfo.getNetworkInfoByChainId(userWalletChainId);
+                if (!network) {
+                    let switchNetwork = new SwitchNetworkModal();
+                    switchNetwork.show();
+                    return;
+                } else {
+                    NetworkInfo.setNetworkByChainId(userWalletChainId);
+                    App.Network = NetworkInfo.getInstance();
+                }
             }
-            console.log('network', App.Network);
         });
 
         App.User = new User(null, '', App.Network.ChainId, '');

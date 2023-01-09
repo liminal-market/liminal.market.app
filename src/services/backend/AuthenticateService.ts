@@ -64,9 +64,9 @@ export default class AuthenticateService extends BaseService {
 
             await AuthenticateService.enableWeb3();
 
-            App.User.address = obj.address;
-            App.User.alpacaId = obj.alpacaId;
-            App.User.chainId = obj.chainId;
+            App.User.address = result.address;
+            App.User.alpacaId = result.alpacaId;
+            App.User.chainId = result.chainId;
             App.User.isLoggedIn = true;
 
             return true;
@@ -138,6 +138,7 @@ export default class AuthenticateService extends BaseService {
                     //showBar('Your wallet is on wrong network. I expect you to be on ' + App.Network.Name + '(chainId:' + App.Network.ChainId + ') network');
                 } else {
                     showBar('Error signing in:' + e.message)
+                    return;
                 }
             })
 

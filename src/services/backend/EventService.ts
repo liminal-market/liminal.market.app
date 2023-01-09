@@ -47,14 +47,44 @@ export default class EventService {
             } else if (obj.methodName == 'UpdateAUsdOnChain') {
                 FakeAUSDFund.writingToChain();
             } else if (obj.methodName == 'BalanceSet') {
+
+                if (App.Network.TestNetwork) {
+                    let sandbox_registration_waiting = document.getElementById('sandbox_registration_waiting')
+                    if (sandbox_registration_waiting) {
+                        let sandbox_funding_status = document.getElementById('sandbox_funding_status')
+                        if (sandbox_funding_status) sandbox_funding_status.innerHTML = 'Funding done 🎉 - Reloading page'
+
+                        location.reload();
+                        return;
+                    }
+                }
                 let aUsdBalance = new AUsdBalance();
-                let balance = new BigNumber(ethers.utils.formatEther(obj.balance));
-                aUsdBalance.updateUIBalance(roundBigNumber(balance));
+                aUsdBalance.updateUIBalance(new BigNumber(obj.balance));
 
                 if (obj.balance != '0') {
                     ExecuteOrderButton.Instance.renderButton();
                 }
+
+
             } else if (obj.methodName == 'AccountValidated') {
+                if (App.Network.TestNetwork) {
+                    let li_sandbox_account_status = document.getElementById('li_sandbox_account_status');
+                    if (li_sandbox_account_status) {
+                        li_sandbox_account_status.setAttribute('aria-busy', 'false');
+                        let sandbox_account_status = document.getElementById('sandbox_account_status')
+                        if (sandbox_account_status) sandbox_account_status.innerHTML = 'Account created 🎉'
+                        let li_sandbox_funding_status = document.getElementById('li_sandbox_funding_status')
+                        if (li_sandbox_funding_status) {
+                            li_sandbox_funding_status.setAttribute('aria-busy', 'true');
+                        }
+                    }
+
+                    clearInterval(ExecuteOrderButton.Instance.kycIdDoneTimeout);
+                    ExecuteOrderButton.Instance.renderButton();
+
+                    return;
+                }
+
                 let hasBuyingPower = obj.hasBuyingPower;
                 if (!hasBuyingPower) {
                     let kycApproved = new KycApproved();

@@ -599,3 +599,10 @@ progress.invalid {
     left: 0;
     z-index: 1;
 }
+
+.waiting_list {
+    text-align: left;
+    margin: 1rem auto;
+    width: 65%;
+    display: inline-block;
+}

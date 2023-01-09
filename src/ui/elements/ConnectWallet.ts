@@ -1,7 +1,6 @@
 import UserInfo from "../elements/UserInfo";
 import AuthenticateService from "../../services/backend/AuthenticateService";
 import walletButton from '../../html/elements/ConnectWalletButton.html';
-import Modal from "./Modal";
 import ProviderInfo from "../../wallet/ProviderInfo";
 import ErrorInfo from "../../errors/ErrorInfo";
 import TradePage from "../pages/TradePage";
@@ -19,7 +18,7 @@ export default class ConnectWallet {
         if (!document.getElementById(elementId)) return;
 
         document.getElementById(elementId)!.innerHTML = walletButton;
-
+        LoadingHelper.removeLoading();
         let elements = document.querySelectorAll(".liminal_market_connect_wallet");
         elements.forEach(async (el) => {
             el.addEventListener('click', async (evt) => {
@@ -31,6 +30,9 @@ export default class ConnectWallet {
 
     public async connectWallet(button: HTMLElement) {
         LoadingHelper.setLoading(button);
+
+        let magicIframe = document.querySelector('.magic-iframe') as HTMLElement;
+        if (magicIframe && magicIframe.style.display == 'none') magicIframe.style.display = 'block'
 
         let authenticationService = new AuthenticateService();
         await authenticationService.authenticateUser(

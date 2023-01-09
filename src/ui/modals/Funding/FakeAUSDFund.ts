@@ -46,9 +46,7 @@ export default class FakeAUSDFund {
         this.modal.showModal('Fund my account (Fake money)', content);
 
         let addToWallet = document.getElementById('addTokenToWallet');
-        if (!addToWallet) return;
-
-        addToWallet.addEventListener('click', async (evt) => {
+        addToWallet?.addEventListener('click', async (evt) => {
             let contractInfo = ContractInfo.getContractInfo();
 
             let walletHelper = new WalletHelper();

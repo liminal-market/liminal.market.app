@@ -81,19 +81,72 @@ export default class WalletHelper {
         return !!ua.match(webviewRegExp)
     }
 
-    public async isMagic() {
+    public isMagic() {
         const walletInfo = App.User.providerInfo
         const walletType = walletInfo.walletType;
         return (walletType === "magic");
     }
 
     public async switchNetwork(network: Network): Promise<boolean> {
-        NetworkInfo.setNetworkByChainId(network.ChainId);
-        return true;
+        if (this.isMagic()) {
+            NetworkInfo.setNetworkByChainId(network.ChainId);
+            return true;
+        }
+
+        // @ts-ignore
+        let eth = window.ethereum;
+        if (!eth) return false;
+
+
+        return await eth.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{chainId: '0x' + network.ChainId.toString(16)}]
+        })
+            .then((result: any) => {
+                console.log('switch result:', result);
+                return true;
+            })
+            .catch(async (err: any) => {
+                // This error code indicates that the chain has not been added to MetaMask
+                if (err.code === 4902) {
+                    return await eth.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                            {
+                                chainName: network.ChainName,
+                                chainId: '0x' + network.ChainId.toString(16),
+                                nativeCurrency: {
+                                    name: network.NativeCurrencyName,
+                                    decimals: network.NativeDecimal,
+                                    symbol: network.NativeSymbol
+                                },
+                                rpcUrls: [network.RpcUrl]
+                            }
+                        ]
+                    })
+                        .then((result: any) => {
+                            console.log('addChain result:' + result);
+                            return true;
+                        }).catch((error: any) => {
+                            console.log('error on addNetwork:', error);
+                            throw new GeneralError(error);
+                        });
+                } else {
+                    throw new GeneralError(err);
+                }
+
+            });
     }
 
     static hideMagicWallet() {
         let magicIframe = document.querySelector('.magic-iframe') as HTMLElement;
         if (magicIframe && magicIframe.style.display == 'block') magicIframe.style.display = 'none'
+
+        let liminal_market_connect_wallet = document.querySelectorAll('.liminal_market_connect_wallet')
+        if (!liminal_market_connect_wallet) return;
+
+        liminal_market_connect_wallet.forEach(item => {
+            item.setAttribute('aria-busy', 'false')
+        });
     }
 }

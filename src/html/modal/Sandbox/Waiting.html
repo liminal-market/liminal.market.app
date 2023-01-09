@@ -1,0 +1,18 @@
+<div class="center" id="sandbox_registration_waiting">
+    We are registering your account at the broker and funding your account.
+    <br/><br/>
+    This will take couple of minutes.
+
+    <ol class="waiting_list">
+        <li>We will update you here when it's done.</li>
+        <li>While you wait, <a href="#" id="addTokenToWallet">add aUSD to your wallet</a>
+            <blockquote id="needToCopy" class="d-none">
+                If the button didn't work, you can copy the address here and import it into your wallet
+                <input value="{{aUSDAddress}}"/>
+            </blockquote>
+        </li>
+        <li aria-busy="true" id="li_sandbox_account_status">Account status: <span id="sandbox_account_status">Being created</span>
+        </li>
+        <li id="li_sandbox_funding_status">Funding status: <span id="sandbox_funding_status">Not funded</span></li>
+    </ol>
+</div>

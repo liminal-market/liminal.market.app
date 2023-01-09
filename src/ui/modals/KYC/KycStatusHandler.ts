@@ -14,7 +14,7 @@ export default class KycStatusHandler {
     }
 
     public getButtonText() {
-        let txt = 'Finish KYC';
+        let txt = 'Finish registration';
         switch (this.kycResponse.status) {
             case 'SUBMITTED':
             case 'ONBOARDING':

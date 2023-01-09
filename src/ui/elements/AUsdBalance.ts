@@ -33,37 +33,15 @@ export default class AUsdBalance {
             if (!App.User.ether) return;
         }
 
-        let userInfoAUsdBalance = document.getElementById('userInfoAUsdBalance');
-        let frontpageAUsdBalance = document.getElementById('frontpageAUsdBalance');
-
-        if (!App.User.alpacaId) {
-            frontpageAUsdBalance?.classList.add('hidden');
-            userInfoAUsdBalance?.classList.add('hidden');
-            //return;
-        } else {
-            frontpageAUsdBalance?.classList.remove('hidden');
-            userInfoAUsdBalance?.classList.remove('hidden');
-        }
-
         let aUSDService = new AUSDService();
         let aUsdValueWei = await aUSDService.getAUSDBalanceOf(App.User.address);
-        let aUsdValue = roundBigNumber(aUsdValueWei);
 
-        this.updateUIBalance(aUsdValue);
+
+        this.updateUIBalance(aUsdValueWei);
 
         this.bindEvents();
 
-        let balance_value = document.querySelector('.balance_value') as HTMLElement;
-        if (balance_value) {
-            balance_value.innerHTML = '$' + aUsdValue.toFixed();
-            balance_value.title = aUsdValueWei.toFixed();
-            balance_value.dataset['tooltip'] = aUsdValueWei.toFixed();
-        }
 
-        if (aUsdValue.isLessThan(10)) {
-            let frontpage_fund_account = document.getElementById('frontpage_fund_account');
-            frontpage_fund_account?.classList.remove('hidden');
-        }
     }
 
     private bindEvents() {
@@ -113,7 +91,31 @@ export default class AUsdBalance {
         })
     }
 
-    public updateUIBalance(aUsdValue: BigNumber) {
+    public updateUIBalance(aUsdValueWei: BigNumber) {
+        let aUsdValue = roundBigNumber(aUsdValueWei);
+
+        let balance_value = document.querySelector('.balance_value') as HTMLElement;
+        if (balance_value) {
+            balance_value.innerHTML = '$' + aUsdValue.toFixed();
+            balance_value.title = aUsdValueWei.toFixed();
+            balance_value.dataset['tooltip'] = aUsdValueWei.toFixed();
+        }
+
+        if (aUsdValue.isLessThan(10)) {
+            let frontpage_fund_account = document.getElementById('frontpage_fund_account');
+            frontpage_fund_account?.classList.remove('hidden');
+        }
+
+        let userInfoAUsdBalance = document.getElementById('userInfoAUsdBalance');
+        let frontpageAUsdBalance = document.getElementById('frontpageAUsdBalance');
+
+        if (!App.User.alpacaId) {
+            frontpageAUsdBalance?.classList.add('hidden');
+            userInfoAUsdBalance?.classList.add('hidden');
+        } else {
+            frontpageAUsdBalance?.classList.remove('hidden');
+            userInfoAUsdBalance?.classList.remove('hidden');
+        }
         let frontpageAUSDBalance = document.getElementById('front_page_aUSD_balance');
         if (frontpageAUSDBalance) frontpageAUSDBalance.innerHTML = '$' + aUsdValue.toString();
 

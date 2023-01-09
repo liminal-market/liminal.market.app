@@ -22,7 +22,7 @@ export default class SwitchNetworkModal {
         let content = template({testNetworks, mainNetworks});
 
         let modal = new Modal();
-        modal.showModal('Switch network', content, false);
+        modal.showModal('Switch network', content, false, undefined, false);
 
         let setNetworkLinks = document.querySelectorAll('.setNetwork');
         setNetworkLinks.forEach(setNetworkLink => {
@@ -38,6 +38,8 @@ export default class SwitchNetworkModal {
                     .catch((error: GeneralError) => {
                         let jsSwitchNetworkNotWorking = document.getElementById('jsSwitchNetworkNotWorking');
                         if (!jsSwitchNetworkNotWorking) throw error;
+
+                        if (error.message.toLowerCase().indexOf('user rejected') != -1) return;
 
                         jsSwitchNetworkNotWorking.classList.remove('d-none');
                         let switchNetworkInfo = document.getElementById('switchNetworkInfo')!;

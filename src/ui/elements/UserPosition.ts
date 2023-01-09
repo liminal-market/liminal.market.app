@@ -3,6 +3,8 @@ import UserInfo from "./UserInfo";
 import UserService from "../../services/backend/UserService";
 import BigNumber from "bignumber.js";
 import PositionsPage from "../pages/PositionsPage";
+import AUSDService from "../../services/blockchain/AUSDService";
+import AUsdBalance from "./AUsdBalance";
 
 export default class UserPosition {
 
@@ -14,6 +16,9 @@ export default class UserPosition {
         UserInfo.onUserLoggedIn.push(async () => {
             let userPosition = new UserPosition();
             userPosition.render();
+
+            let balance = new AUsdBalance();
+            balance.loadAUSDBalanceUI();
         })
     }
 

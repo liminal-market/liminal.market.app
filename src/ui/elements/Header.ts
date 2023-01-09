@@ -1,7 +1,8 @@
 import AuthenticateService from "../../services/backend/AuthenticateService";
-import ConnectWallet from "../modals/ConnectWallet";
+import ConnectWallet from "../elements/ConnectWallet";
 import UserInfo from "./UserInfo";
 import App from "../../main";
+import LoadingHelper from "../../util/LoadingHelper";
 
 export default class Header {
 
@@ -20,12 +21,17 @@ export default class Header {
     }
 
     public async showUserOptions() {
+        let user_header_info = document.getElementById('user_header_info');
+        if (user_header_info) user_header_info.innerHTML = 'Loading wallet..';
+        LoadingHelper.setLoading(user_header_info);
+
         let authenticationService = new AuthenticateService();
         let isAuthenticated = await authenticationService.isAuthenticated();
 
         if (!isAuthenticated) {
             let connectWallet = new ConnectWallet();
             connectWallet.renderButton('user_header_info');
+
             return;
         }
 

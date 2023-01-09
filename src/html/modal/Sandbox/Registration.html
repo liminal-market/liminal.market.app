@@ -1,0 +1,28 @@
+<fieldset class="sandbox_registration" data-form="1">
+    <p>
+        Register test trading account and receive $50 on you aUSD token to play with.<br/>
+        <small>You can always request more funding later with click of a button</small>
+    </p>
+    <div>
+        <label for="given_name">Legal First name</label>
+        <input required id="given_name" name="given_name"
+               placeholder="Ron"
+               value="" autocomplete="given-name">
+    </div>
+    <div>
+        <label for="family_name">Legal Last name</label>
+        <input required id="family_name" name="family_name"
+               placeholder="Swanson"
+               value="" autocomplete="family-name">
+    </div>
+    <div>
+        <label for="email_address">Email</label>
+        <input type="email" required class="form-control" id="email_address" name="email_address"
+               placeholder="name@example.com" autocomplete="email"
+               value="">
+    </div>
+    <div class="input_error" id="sandbox_reg_error"></div>
+    <div class="buttons">
+        <button type="button" id="register_and_fund">Register and fund account</button>
+    </div>
+</fieldset>

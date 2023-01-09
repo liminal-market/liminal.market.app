@@ -6,6 +6,8 @@ import KycDisclosures from "./KYC/KycDisclosures";
 import KycAccountAgreement from "./KYC/KycAccountAgreement";
 import KycTrustedContact from "./KYC/KycTrustedContact";
 import KycUpload from "./KYC/KycUpload";
+import App from "../../main";
+import Registration from "./Sandbox/Registration";
 
 
 export default class KYCForm {
@@ -35,6 +37,12 @@ export default class KYCForm {
     }
 
     public show(className: string) {
+        if (App.Network.TestNetwork) {
+            let registration = new Registration();
+            registration.show();
+            return;
+        }
+
 
         let kycForm = new KYCForm(() => {
         });
@@ -46,6 +54,12 @@ export default class KYCForm {
     }
 
     public showKYCForm(edit = false) {
+        if (App.Network.TestNetwork) {
+            let registration = new Registration();
+            registration.show();
+            return;
+        }
+
 
         let template = Handlebars.compile(KYCFormHtml);
         let obj = {
