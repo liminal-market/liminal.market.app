@@ -192,7 +192,14 @@ export default class TradePanelInput {
         pricePerShare.setAttribute('aria-busy', 'true');
 
         let stockPriceService = new StockPriceService();
-        let tradeInfo = await stockPriceService.getSymbolPrice(this.symbol, this.otherTradePanelInput.tradeType);
+        let tradeInfo = await stockPriceService.getSymbolPrice(this.symbol, this.otherTradePanelInput.tradeType)
+            .catch(reason => {
+                alert(reason.message);
+
+                aUsdPricePerShare.removeAttribute('aria-busy');
+                pricePerShare.removeAttribute('aria-busy');
+            });
+        if (!tradeInfo) return;
 
         this.lastPrice = tradeInfo.price;
         this.lastTraded = tradeInfo.lastTrade.toString();
