@@ -21,15 +21,17 @@
     </nav>
     <div>
         If you haven't already, add the {{buyingSymbol}} to your wallet.
-        <br /><br />
+        <br/><br/>
         <button id="addTokenToWallet" data-address="{{tokenAddress}}">Add {{buyingSymbol}} to wallet</button>
         <div id="addTokenToWalletFailed" class="d-none">
             You can copy the address, to import the token
-            <input value="{{tokenAddress}}" />
+            <input value="{{tokenAddress}}"/>
         </div>
-        <br />
+        <br/>
         Should be visible in your wallet on address {{shortEthAddress}}.
-        <br /><br />
+        <br/>
+        <a href="https://info.liminal.market/#/chain/{{chainId}}/{{ethAddress}}" target="_blank">View portfolio</a>
+        <br/><br/>
         <small>You can view the <a href="{{blockExplorerLink}}" target="_blank">block transaction here</a></small>
     </div>
 </article>

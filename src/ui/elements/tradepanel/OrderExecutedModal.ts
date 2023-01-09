@@ -71,7 +71,8 @@ export default class OrderExecutedModal {
             buyingRoundQuantity: roundNumberDecimal(buyingQuantity, 6) + ' shares',
             shortEthAddress: shortEth(ethAddress),
             ethAddress: ethAddress,
-            tokenAddress: tokenAddress
+            tokenAddress: tokenAddress,
+            chainId: App.Network.ChainId
         }
     }
 
@@ -91,7 +92,8 @@ export default class OrderExecutedModal {
             buyingRoundQuantity: '$' + roundBigNumberDecimal(buyingQuantity, 6).toFixed(),
             shortEthAddress: shortEth(ethAddress),
             ethAddress: ethAddress,
-            tokenAddress: tokenAddress
+            tokenAddress: tokenAddress,
+            chainId: App.Network.ChainId
         }
     }
 
