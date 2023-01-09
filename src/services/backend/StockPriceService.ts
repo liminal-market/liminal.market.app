@@ -17,6 +17,8 @@ export default class StockPriceService extends BaseService {
             .catch((e: any) => {
                 throw new CloudError(e);
             });
+        if (!result.quote) throw new Error('Quote could not be provided')
+
         let quote = result.quote;
         let price = (tradeType == TradeType.Sell) ? quote.ap : quote.bp;
         let tradeInfo = new TradeInfo(price, quote.t);
