@@ -70,6 +70,7 @@ export default class OrderExecutedModal {
             buyingQuantity: buyingQuantity,
             buyingRoundQuantity: roundNumberDecimal(buyingQuantity, 6) + ' shares',
             shortEthAddress: shortEth(ethAddress),
+            ethAddress: ethAddress,
             tokenAddress: tokenAddress
         }
     }
@@ -89,6 +90,7 @@ export default class OrderExecutedModal {
             buyingQuantity: buyingQuantity.toFixed(),
             buyingRoundQuantity: '$' + roundBigNumberDecimal(buyingQuantity, 6).toFixed(),
             shortEthAddress: shortEth(ethAddress),
+            ethAddress: ethAddress,
             tokenAddress: tokenAddress
         }
     }

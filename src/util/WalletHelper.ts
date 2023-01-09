@@ -40,7 +40,10 @@ export default class WalletHelper {
 
         }, timeout);
 
-        const wasAdded = await connector.provider.request({
+        // @ts-ignore
+        let eth = (window.ethereum) ? window.ethereum : connector.provider;
+
+        const wasAdded = await eth.request({
             method: 'wallet_watchAsset',
             params: [{
                 type: 'ERC20',
