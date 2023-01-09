@@ -59,7 +59,8 @@ export default class EventService {
                     }
                 }
                 let aUsdBalance = new AUsdBalance();
-                aUsdBalance.updateUIBalance(new BigNumber(obj.balance));
+                let balance = ethers.utils.formatEther(obj.balance)
+                aUsdBalance.updateUIBalance(new BigNumber(balance));
 
                 if (obj.balance != '0') {
                     ExecuteOrderButton.Instance.renderButton();
