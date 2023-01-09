@@ -45,7 +45,7 @@ export default class WalletHelper {
 
         const wasAdded = await eth.request({
             method: 'wallet_watchAsset',
-            params: [{
+            params: {
                 type: 'ERC20',
                 options: {
                     address: address,
@@ -53,7 +53,7 @@ export default class WalletHelper {
                     decimals: 18,
                     image: 'https://app.liminal.market/img/logos/' + asset.Logo,
                 },
-            }]
+            }
         }).then((result: any) => {
             WalletHelper.addTokenFallbackLoaded = false;
             return true;
