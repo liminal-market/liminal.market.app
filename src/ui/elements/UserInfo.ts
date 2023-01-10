@@ -93,7 +93,7 @@ export default class UserInfo {
             UserInfo.onUserLoggedIn[i]();
         }
 
-        if (networkInfo.TestNetwork) {
+        if (networkInfo.TestNetwork || !App.User.alpacaId) {
             let edit_account = document.querySelector('.edit_account');
             edit_account?.classList.add('hidden');
         }

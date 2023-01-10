@@ -15,14 +15,7 @@ export default class KycValidatorError {
 
         this.kycForm = kycForm;
         try {
-            if (error.serverError) {
-                this.message = error.serverError;
-                if (this.message.indexOf('account with the requested email address already exists') != -1) {
-                    this.inputName = 'email_address';
-                    this.labelText = 'Email';
-                }
-                obj = error;
-            } else if (!error.inputName && typeof error == 'string') {
+            if (!error.inputName && typeof error == 'string') {
                 obj = JSON.parse(error);
             } else {
                 obj = error;
@@ -34,6 +27,14 @@ export default class KycValidatorError {
             this.labelText = obj.labelText;
             this.pattern = obj.pattern;
             this.onshow = obj.onshow;
+
+            if (obj.serverError) {
+                this.message = obj.serverError;
+                if (this.message.indexOf('account with the requested email address already exists') != -1) {
+                    this.inputName = 'email_address';
+                    this.labelText = 'Email';
+                }
+            }
         } catch (e: any) {
             this.message = error.messsage;
         }
