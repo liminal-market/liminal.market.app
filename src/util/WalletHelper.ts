@@ -91,15 +91,13 @@ export default class WalletHelper {
     }
 
     public async switchNetwork(network: Network): Promise<boolean> {
-        if (this.isMagic()) {
+        // @ts-ignore
+        let eth = window.ethereum;
+
+        if (!eth && this.isMagic()) {
             NetworkInfo.setNetworkByChainId(network.ChainId);
             return true;
         }
-
-        // @ts-ignore
-        let eth = window.ethereum;
-        if (!eth) return false;
-
 
         return await eth.request({
             method: 'wallet_switchEthereumChain',
