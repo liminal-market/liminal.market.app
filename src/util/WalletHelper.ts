@@ -94,7 +94,7 @@ export default class WalletHelper {
         // @ts-ignore
         let eth = window.ethereum;
 
-        if (!eth && this.isMagic()) {
+        if (!eth || this.isMagic()) {
             NetworkInfo.setNetworkByChainId(network.ChainId);
             return true;
         }
