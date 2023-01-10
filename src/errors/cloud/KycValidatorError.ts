@@ -12,8 +12,16 @@ export default class KycValidatorError {
 
     constructor(error: any, kycForm: KYCForm) {
         let obj: any = {};
+
+        this.kycForm = kycForm;
         try {
-            if (!error.inputName) {
+            if (error.serverError) {
+                this.message = error.serverError;
+                if (this.message.indexOf('account with the requested email address already exists') != -1) {
+                    this.inputName = 'email_address';
+                    this.labelText = 'Email';
+                }
+            } else if (!error.inputName && typeof error == 'string') {
                 obj = JSON.parse(error);
             } else {
                 obj = error;
@@ -29,7 +37,7 @@ export default class KycValidatorError {
             this.message = error.messsage;
         }
 
-        this.kycForm = kycForm;
+
     }
 
     handle(): void {
