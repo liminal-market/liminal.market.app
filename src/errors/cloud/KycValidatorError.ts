@@ -21,6 +21,7 @@ export default class KycValidatorError {
                     this.inputName = 'email_address';
                     this.labelText = 'Email';
                 }
+                obj = error;
             } else if (!error.inputName && typeof error == 'string') {
                 obj = JSON.parse(error);
             } else {
@@ -48,11 +49,7 @@ export default class KycValidatorError {
                 if (this.validValues) {
                     inputError.innerHTML = this.validValues.toString();
                 } else {
-                    if (this.message && this.message.indexOf('Invalid function') != -1 || this.message.indexOf('Unable to connect to the Parse API') != -1) {
-                        inputError.innerHTML = 'We just deployed new version of our website. This can cause interruption. Please wait 30 seconds and submit again';
-                    } else {
-                        inputError.innerHTML = this.message;
-                    }
+                    inputError.innerHTML = this.message;
                 }
                 inputError.style.display = 'block';
                 inputError.scrollIntoView()
