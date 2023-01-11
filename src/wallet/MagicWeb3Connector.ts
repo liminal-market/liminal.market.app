@@ -25,6 +25,7 @@ console.log('accounts after new Magic', accounts);
         this.account = accounts[0];
         this.provider = this.ether.provider;
         this.chainId = networkInfo.ChainId;
+        console.log('walletInfo:', await this.magic.connect.getWalletInfo());
 
         this.subscribeToEvents(this.provider);
         return {

@@ -84,17 +84,20 @@ export default class WalletHelper {
         return !!ua.match(webviewRegExp)
     }
 
-    public isMagic() {
-        const walletInfo = App.User.providerInfo
-        const walletType = walletInfo.walletType;
-        return (walletType === "magic");
+    public async isMagic() {
+        if (!App.User.magic || !App.User.magic.connector) return false;
+        let walletInfo = await App.User.magic.connector.getWalletInfo();
+        if (walletInfo) {
+            return (walletInfo.walletType == 'magic');
+        }
+        return false;
     }
 
     public async switchNetwork(network: Network): Promise<boolean> {
         // @ts-ignore
         let eth = window.ethereum;
 
-        if (!eth || this.isMagic()) {
+        if (!eth || await this.isMagic()) {
             NetworkInfo.setNetworkByChainId(network.ChainId);
             return true;
         }
