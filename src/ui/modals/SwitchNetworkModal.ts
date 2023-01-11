@@ -61,7 +61,7 @@ export default class SwitchNetworkModal {
                     await authenticationService.logOut();
                     setTimeout(() => {
                         location.reload();
-                    }, 250);
+                    }, 1000);
 
                 }
             })
