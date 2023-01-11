@@ -24,6 +24,12 @@ export default class NetworkInfo {
 
     public static loadNetwork(networkName: string): void {
         NetworkInfo.instance = this.getNetworkInfo(networkName);
+        this.setNetworkByChainId(NetworkInfo.instance.ChainId)
+    }
+
+    public static setNetworkByName(name: string) {
+        let network = this.getNetworkByName(name);
+        this.setNetworkByChainId(network.ChainId);
     }
 
     public static setNetworkByChainId(chainId: number): void {
@@ -87,18 +93,8 @@ export default class NetworkInfo {
         if (!networkName) networkName = cookieHelper.getCookieValue('network');
         if (!networkName) networkName = 'polygon';
 
-        let networkInfo = null;
-        networkInfos.forEach(networkInfoType => {
-            let tmp = new networkInfoType();
-            if (tmp.Name == networkName) {
-                networkInfo = tmp;
-            }
-        });
-        if (networkInfo) return networkInfo;
-
-        console.error("Network '" + networkName + "' could not be found. Defaulting to Polygon network.");
-
-        return new polygonNetwork();
+        let networkInfo = this.getNetworkByName(networkName)
+        return networkInfo
     }
 
     private static getNetworkNameByChainIdHex(chainIdHex: string) {
@@ -110,6 +106,20 @@ export default class NetworkInfo {
             }
         });
         return networkInfo;
+    }
+
+    private static getNetworkByName(networkName: string) {
+        let networkInfo = null;
+        networkInfos.forEach(networkInfoType => {
+            let tmp = new networkInfoType();
+            if (tmp.Name == networkName) {
+                networkInfo = tmp;
+            }
+        });
+        if (networkInfo) return networkInfo;
+
+        console.error("Network '" + networkName + "' could not be found. Defaulting to Polygon network.");
+        return new polygonNetwork();
     }
 }
 

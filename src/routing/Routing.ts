@@ -23,6 +23,12 @@ export default class Routing {
 
     public async loadRoutes() {
         let path = window.location.hash.replace('#', '').replace('/', '');
+
+        if (path.indexOf('chain/') != -1) {
+            let network = window.location.hash.replace('#/chain/', '');
+            NetworkInfo.setNetworkByName(network);
+            path = '';
+        }
         if (path === '') path = 'stocks';
 
         this.attachNavLinks();
