@@ -5,7 +5,7 @@ export default class TestNetwork extends Network {
     constructor() {
         super();
 
-        this.ServerUrl = "https://cloud-testnet.onrender.com";
+        this.ServerUrl = "https://testnet.liminal.market";
         this.TestNetwork = true;
     }
 }
