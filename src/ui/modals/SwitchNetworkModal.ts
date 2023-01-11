@@ -57,12 +57,8 @@ export default class SwitchNetworkModal {
                 if (successAddingNetwork) {
                     modal.hideModal();
 
-                    let authenticationService = new AuthenticateService();
-                    await authenticationService.logOut();
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1000);
-
+                    location.href = location.origin + '/#/chain/' + NetworkInfo.getInstance().Name;
+                    location.reload();
                 }
             })
         })

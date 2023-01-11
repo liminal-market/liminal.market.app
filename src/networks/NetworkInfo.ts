@@ -6,7 +6,7 @@ import polygonNetwork from "./polygon-network";
 import {NetworkType} from "./NetworkType";
 
 
-const networkInfos = [localhostNetwork, mumbaiNetwork, polygonNetwork];
+const networkInfos = [localhostNetwork, mumbaiNetwork];
 
 
 export default class NetworkInfo {
@@ -91,7 +91,7 @@ export default class NetworkInfo {
         }
 
         if (!networkName) networkName = cookieHelper.getCookieValue('network');
-        if (!networkName) networkName = 'polygon';
+        if (!networkName) networkName = 'mumbai';
 
         let networkInfo = this.getNetworkByName(networkName)
         return networkInfo
@@ -118,8 +118,8 @@ export default class NetworkInfo {
         });
         if (networkInfo) return networkInfo;
 
-        console.error("Network '" + networkName + "' could not be found. Defaulting to Polygon network.");
-        return new polygonNetwork();
+        console.error("Network '" + networkName + "' could not be found. Defaulting to Mumbai network.");
+        return new mumbaiNetwork();
     }
 }
 

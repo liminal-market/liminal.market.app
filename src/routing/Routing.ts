@@ -5,6 +5,7 @@ import FakeAUSDFund from "../ui/modals/Funding/FakeAUSDFund";
 import NetworkInfo from "../networks/NetworkInfo";
 import WalletHelper from "../util/WalletHelper";
 import App from "../main";
+import User from "../dto/User";
 
 
 export default class Routing {
@@ -27,6 +28,7 @@ export default class Routing {
         if (path.indexOf('chain/') != -1) {
             let network = window.location.hash.replace('#/chain/', '');
             NetworkInfo.setNetworkByName(network);
+            App.User.chainId = App.Network.ChainId;
             path = '';
         }
         if (path === '') path = 'stocks';
