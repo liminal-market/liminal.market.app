@@ -495,17 +495,28 @@ progress.invalid {
 	.container {
 		max-width: 700px;
 	}
-	.mobileNavigation {display:none;}
-	.desktopNavigation {display:flex;}
+
+	.mobileNavigation {
+		display: none;
+	}
+
+	.desktopNavigation {
+		display: flex;
+	}
 
 	.tradeInput {
-		font-size:0.7rem;
+		font-size: 0.7rem;
+	}
+
+	.magic-iframe {
+		top: 84px !important;
 	}
 }
+
 @media (min-width: 992px) {
 	.container {
-        max-width: 920px;
-    }
+		max-width: 920px;
+	}
 }
 
 
@@ -575,9 +586,6 @@ progress.invalid {
 	float: right;
 }
 
-.magic-iframe {
-	top: 84px !important;
-}
 
 .pl_status {
     cursor: pointer;
