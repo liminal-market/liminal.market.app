@@ -37,7 +37,7 @@ export default class NetworkInfo {
 
         if (network) {
             NetworkInfo.instance = network;
-
+            console.log('setCookie', network.Name);
             let cookieHelper = new CookieHelper(document);
             cookieHelper.setCookie('network', network.Name);
         }
