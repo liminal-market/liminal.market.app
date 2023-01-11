@@ -85,8 +85,8 @@ export default class WalletHelper {
     }
 
     public async isMagic() {
-        if (!App.User.magic || !App.User.magic.connector) return false;
-        let walletInfo = await App.User.magic.connector.getWalletInfo();
+        if (!App.User.magic || !App.User.magic.connect) return false;
+        let walletInfo = await App.User.magic.connect.getWalletInfo();
         if (walletInfo) {
             return (walletInfo.walletType == 'magic');
         }
