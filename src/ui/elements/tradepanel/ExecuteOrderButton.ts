@@ -323,6 +323,7 @@ export default class ExecuteOrderButton {
     }
 
     private async isMarketOpen(button: HTMLElement): Promise<boolean> {
+        return true;
         let userService = new UserService();
         let isMarketOpen = await userService.isMarketOpenOrUserOffHours();
         if (isMarketOpen) return true;
