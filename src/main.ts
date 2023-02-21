@@ -43,7 +43,8 @@ export default class App {
         let header = new Header();
         header.load();
 
-        if (WalletHelper.isWebview()) {
+        // @ts-ignore
+        if (WalletHelper.isWebview() && window.VConsole) {
             // @ts-ignore
             var vConsole = new window.VConsole();
         }

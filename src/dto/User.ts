@@ -1,6 +1,6 @@
 import ProviderInfo from "../wallet/ProviderInfo";
 import CookieHelper from "../util/CookieHelper";
-
+import LiminalMarket from 'liminal.market';
 export default class User {
     provider: any;
     chainId: number;
@@ -14,6 +14,8 @@ export default class User {
     _token: string = '';
     isLoggedIn: boolean = false;
     signer: any;
+
+    LiminalMarket?: LiminalMarket;
 
     constructor(provider: any, address: string, chainId: number, ether: any) {
         this.provider = provider;

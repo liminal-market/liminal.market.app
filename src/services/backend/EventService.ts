@@ -17,6 +17,7 @@ export default class EventService {
 
     public static register() {
         UserInfo.onUserLoggedIn.push(async () => {
+            console.log('Doing EventService listening')
             let eventService = new EventService();
             eventService.listen();
         });
@@ -24,7 +25,7 @@ export default class EventService {
 
     public listen() {
         let network = App.Network;
-        let eventSource = new EventSource(network.ServerUrl + '/listenForChanges?jwt=' + App.User.token);
+        let eventSource = new EventSource(network.ServerUrl + '/listenForChanges?jwt=' + App.User.LiminalMarket!.account.token);
         eventSource.onmessage = async (e: any) => {
             let data = e.data;
             console.log(e);

@@ -8,7 +8,7 @@ export default class KycStatusHandler {
     kycResponse: KycStatus;
     executeTradeButton: ExecuteOrderButton;
 
-    constructor(kycResponse: KycStatus, executeTradeButton: ExecuteOrderButton) {
+    constructor(kycResponse: any, executeTradeButton: ExecuteOrderButton) {
         this.kycResponse = kycResponse;
         this.executeTradeButton = executeTradeButton;
     }

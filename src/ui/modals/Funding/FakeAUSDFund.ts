@@ -70,11 +70,9 @@ export default class FakeAUSDFund {
         requestFakeAUSD?.addEventListener('click', async (evt) => {
             requestFakeAUSD!.setAttribute('aria-busy', 'true');
 
-            let fundingService = new FundingService();
-            let result = await fundingService.requestFakeFunding()
-                .catch((reason) => {
-                    this.errorWhileFunding({})
-                });
+            let result = await App.User.LiminalMarket!.fundSandboxAccount(async (obj) => {
+                console.log('Funding is done', obj)
+            })
             if (!result) return;
 
             if (!result.success) {
