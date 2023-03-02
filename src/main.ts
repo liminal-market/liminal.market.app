@@ -7,6 +7,9 @@ import NetworkInfo from "./networks/NetworkInfo";
 import EventService from "./services/backend/EventService";
 import WalletHelper from "./util/WalletHelper";
 import SwitchNetworkModal from "./ui/modals/SwitchNetworkModal";
+import OrderExecutedModal from "./ui/elements/tradepanel/OrderExecutedModal";
+import OrderProgress from "./ui/elements/tradepanel/OrderProgress";
+import Listener from "liminal.market/dist/services/Listener";
 
 export default class App {
     public static User: User;
@@ -42,6 +45,7 @@ export default class App {
 
         let header = new Header();
         header.load();
+
 
         // @ts-ignore
         if (WalletHelper.isWebview() && window.VConsole) {

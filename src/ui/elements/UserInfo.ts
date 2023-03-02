@@ -173,7 +173,7 @@ export default class UserInfo {
                 return;
             }
 
-            App.User.magic.connect.showWallet()
+            App.User.magic?.connect.showWallet()
                 .catch(async (e: any) => {
                     this.walletLoaded = false;
                     if (e.message.indexOf('User denied account access') != -1) {

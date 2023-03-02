@@ -2,25 +2,21 @@ import NetworkInfo from "../../../networks/NetworkInfo";
 import UserService from "../../../services/backend/UserService";
 import AuthenticateService from "../../../services/backend/AuthenticateService";
 import ConnectWallet from "../../elements/ConnectWallet";
-import KYCService from "../../../services/blockchain/KYCService";
 import AUSDService from "../../../services/blockchain/AUSDService";
 import FakeAUSDFund from "../../modals/Funding/FakeAUSDFund";
 import SecurityTokenService from "../../../services/blockchain/SecurityTokenService";
-import LiminalMarketService from "../../../services/blockchain/LiminalMarketService";
-import {AddressZero, showBar} from "../../../util/Helper";
 import TradePanelInput from "./TradePanelInput";
 import ExecuteTradeButtonHtml from '../../../html/elements/tradepanel/ExecuteTradeButton.html';
-import BlockchainError from "../../../errors/BlockchainError";
 import NativeTokenNeeded from "../../modals/NativeTokenNeeded";
-import BigNumber from "bignumber.js";
 import KycStatusHandler from "../../modals/KYC/KycStatusHandler";
 import AUsdBalance from "../AUsdBalance";
 import App from "../../../main";
 import KycApproved from "../../modals/KYC/KycApproved";
 import OrderProgress from "./OrderProgress";
 import LiminalMarket from 'liminal.market'
-import {BigNumberish, ethers} from "ethers";
+import {ethers} from "ethers";
 import OrderExecutedModal from "./OrderExecutedModal";
+import Listener from "liminal.market/dist/services/Listener";
 
 
 export default class ExecuteOrderButton {
@@ -110,24 +106,31 @@ export default class ExecuteOrderButton {
 
             let liminalMarket = App.User.LiminalMarket!;
 
-            let qtyWei = ethers.utils.parseUnits(this.sellTradeInput.quantity.toString(), 'ether');
-            await liminalMarket.executeOrder(side, this.buyTradeInput.symbol, qtyWei,
-                async (event) => {
-                    console.log(event);
+            Listener.onOrderExecuted = async (event: any) => {
+                let orderExecutedModal = new OrderExecutedModal();
+                orderExecutedModal.show(event);
+                OrderProgress.getInstance().clearProgressText();
+            };
 
-                })
-                .then(transaction => {
+            Listener.onOrderSentToMarket = async (event: any) => {
+                OrderProgress.getInstance().setProgressText(0, 'Sent to stock market')
+            }
+
+            Listener.onOrderExecutedWritingToChain = async (event: any) => {
+                OrderProgress.getInstance().setProgressText(0, 'Order executed writing to blockchain')
+            }
+
+            let qtyWei = ethers.utils.parseUnits(this.sellTradeInput.quantity.toString(), 'ether');
+            await liminalMarket.executeOrder(side, this.buyTradeInput.symbol, qtyWei)
+                .then((result) => {
                     button.innerHTML = 'Execute trade';
-                    if (!transaction) return;
-                    OrderProgress.getInstance().setProgressText(0, 'Sending to blockchain', transaction.hash!)
-                }).catch(reason => {
-                    let msg = reason.toString();
-                    console.log('CATCH - liminalMarket.executeOrder', reason, reason.message);
-                    if (msg.indexOf('Market is closed') != -1) {
-                        this.button.innerHTML = 'Market is closed';
-                    } else {
-                        button.innerHTML = 'Execute trade';
-                    }
+                    OrderProgress.getInstance().setProgressText(0, 'Sending order')
+                })
+                .catch(reason => {
+                    OrderProgress.getInstance().setProgressText(100, reason.message, '', 10)
+                    button.innerHTML = 'Execute trade';
+                    return;
+
                 }).finally(() => {
                     this.stopLoadingButton(button);
                 });

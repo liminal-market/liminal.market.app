@@ -19,7 +19,7 @@ export default class EventService {
         UserInfo.onUserLoggedIn.push(async () => {
             console.log('Doing EventService listening')
             let eventService = new EventService();
-            eventService.listen();
+            //eventService.listen();
         });
     }
 
@@ -38,8 +38,8 @@ export default class EventService {
             }
 
             if (obj.methodName == 'OrderExecuted') {
-                let orderExecutedModal = new OrderExecutedModal();
-                orderExecutedModal.show(obj);
+                //let orderExecutedModal = new OrderExecutedModal();
+                //orderExecutedModal.show(obj);
             } else if (obj.methodName == 'SendingToExchange') {
                 await OrderProgress.getInstance().setProgressText(1, 'Received order, sending to stock exchange', obj.hash);
             } else if (obj.methodName == 'OrderExecutedWritingBlockchain') {

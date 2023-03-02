@@ -9,7 +9,7 @@ export default class User {
     providerInfo: any;
     alpacaId?: string;
     address: string;
-    magic: any;
+    magic: any | undefined;
     connector: any;
     _token: string = '';
     isLoggedIn: boolean = false;

@@ -36,7 +36,7 @@ export default class AuthenticateService extends BaseService {
             let connection = await AuthenticateService.enableWeb3();
             App.User.magic = connection.magic;
         }
-        App.User.magic.connect.disconnect();
+        App.User.magic?.connect.disconnect();
         App.User = new User(null, '', App.Network.ChainId, '');
     }
 
@@ -51,7 +51,7 @@ export default class AuthenticateService extends BaseService {
     public async isAuthenticated() {
 
         let provider = await AuthenticateService.enableWeb3();
-        let liminalMarket = await LiminalMarket.getBrowserInstance(provider.ether, '0x1b4d5b61f615b517f97447cba2b3ca8130e98094');
+        let liminalMarket = await LiminalMarket.getInstance(provider.ether, '0x19d5ABE7854b01960D4911e6536b26F8A38C3a18');
         if (liminalMarket.account.token == '') return false;
         App.User.address = liminalMarket.account.address;
         App.User.alpacaId = liminalMarket.account.brokerId;
@@ -59,7 +59,7 @@ export default class AuthenticateService extends BaseService {
         App.User.isLoggedIn = true;
         App.User.LiminalMarket = liminalMarket;
 
-        return true;
+        return liminalMarket;
     }
 
     public async authenticateUser(enableWeb3Callback?: (walletConnectionInfo: any) => void,
@@ -67,8 +67,8 @@ export default class AuthenticateService extends BaseService {
     ) {
 
         let connector = await AuthenticateService.enableWeb3();
-        let liminalMarket = await LiminalMarket.getBrowserInstance(connector, '0x3f41a3de135ac21c92905919be2292620217d14f');
-        if (liminalMarket.account.token == '') {
+        let liminalMarket = await this.isAuthenticated();
+        if (!liminalMarket) {
             await this.logOut();
             return;
         }
@@ -94,7 +94,6 @@ export default class AuthenticateService extends BaseService {
         App.User.alpacaId = liminalMarket.account.brokerId;
         App.User.address = liminalMarket.account.address;
         App.User.isLoggedIn = true;
-        App.User.LiminalMarket = liminalMarket;
         if (authenticatedCallback) {
             authenticatedCallback();
         } else {
