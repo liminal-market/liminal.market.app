@@ -8,6 +8,7 @@ import User from "../../dto/User";
 import {showBar} from "../../util/Helper";
 import WalletHelper from "../../util/WalletHelper";
 import LiminalMarket from "liminal.market";
+import {Account} from "liminal.market/dist/dto/Account";
 
 export default class AuthenticateService extends BaseService {
 
@@ -49,9 +50,18 @@ export default class AuthenticateService extends BaseService {
     }
 
     public async isAuthenticated() {
+        let cookieHelper = new CookieHelper(document);
+        if (!App.User.magic && !cookieHelper.getCookieValue('validate')) {
+            return false;
+        }
 
         let provider = await AuthenticateService.enableWeb3();
-        let liminalMarket = await LiminalMarket.getInstance(provider.ether, '0x19d5ABE7854b01960D4911e6536b26F8A38C3a18');
+        let liminalMarket = await LiminalMarket.getInstance(provider.ether, '0x19d5ABE7854b01960D4911e6536b26F8A38C3a18')
+            .catch(async (reason) => {
+                console.log(reason);
+                await this.logOut();
+                return {account: {token: ''}} as any as LiminalMarket;
+            })
         if (liminalMarket.account.token == '') return false;
         App.User.address = liminalMarket.account.address;
         App.User.alpacaId = liminalMarket.account.brokerId;

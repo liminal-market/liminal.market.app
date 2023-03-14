@@ -56,10 +56,7 @@ export default class ExecuteOrderButton {
         if (!this.chainIdIsCorrect(this.button)) {
             return;
         }
-        //native token is available
-        if (!await this.userHasNativeToken(this.button)) {
-            return;
-        }
+
         //kyc is done
         if (!await this.kycIsDone(this.button)) {
             return;
@@ -188,25 +185,6 @@ export default class ExecuteOrderButton {
 
     }
 
-    private async userHasNativeToken(button: HTMLElement): Promise<boolean> {
-        let networkInfo = App.Network;
-        let hasEnoughNativeTokens = await networkInfo.hasEnoughNativeTokens();
-        if (hasEnoughNativeTokens) return true;
-
-        button.classList.replace('enabled', 'disabled');
-
-        button.innerHTML = 'You need ' + networkInfo.NativeCurrencyName + ' tokens. Click me for some tokens';
-        button.addEventListener('click', () => {
-            let nativeTokenNeededModal = new NativeTokenNeeded(() => {
-                this.renderButton();
-            });
-            nativeTokenNeededModal.show()
-        });
-
-        this.stopLoadingButton(button);
-        return false;
-
-    }
 
     kycIdDoneTimeout: any;
 
