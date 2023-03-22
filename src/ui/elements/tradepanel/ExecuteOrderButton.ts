@@ -95,10 +95,13 @@ export default class ExecuteOrderButton {
             this.loadingButton(button);
 
             button.innerHTML = 'Confirm transaction in your wallet';
-
+            let symbol = this.buyTradeInput.symbol;
             let side = 'buy';
-            if (this.buyTradeInput.symbol == 'aUSD') {
+            let qtyWei = ethers.utils.parseUnits(this.sellTradeInput.quantity.toString(), 'ether');
+            if (symbol == 'aUSD') {
                 side = 'sell';
+                symbol = this.sellTradeInput.symbol
+                qtyWei = ethers.utils.parseUnits(this.buyTradeInput.quantity.toString(), 'ether');
             }
 
             let liminalMarket = App.User.LiminalMarket!;
@@ -117,8 +120,8 @@ export default class ExecuteOrderButton {
                 OrderProgress.getInstance().setProgressText(0, 'Order executed writing to blockchain')
             }
 
-            let qtyWei = ethers.utils.parseUnits(this.sellTradeInput.quantity.toString(), 'ether');
-            await liminalMarket.executeOrder(side, this.buyTradeInput.symbol, qtyWei)
+
+            await liminalMarket.executeOrder(side, symbol, qtyWei)
                 .then((result) => {
                     button.innerHTML = 'Execute trade';
                     OrderProgress.getInstance().setProgressText(0, 'Sending order')
