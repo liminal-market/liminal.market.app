@@ -52,6 +52,7 @@ export default class AuthenticateService extends BaseService {
     public async isAuthenticated() {
         let cookieHelper = new CookieHelper(document);
         if (!App.User.magic && !cookieHelper.getCookieValue('validate')) {
+            console.log('ble')
             return false;
         }
 
@@ -61,7 +62,9 @@ export default class AuthenticateService extends BaseService {
                 console.log(reason);
                 await this.logOut();
                 return {account: {token: ''}} as any as LiminalMarket;
-            })
+            });
+
+            console.log('liminalMarket', liminalMarket);
         if (liminalMarket.account.token == '') return false;
         App.User.address = liminalMarket.account.address;
         App.User.alpacaId = liminalMarket.account.brokerId;
@@ -78,6 +81,7 @@ export default class AuthenticateService extends BaseService {
 
         let connector = await AuthenticateService.enableWeb3();
         let liminalMarket = await this.isAuthenticated();
+        console.log(liminalMarket);
         if (!liminalMarket) {
             await this.logOut();
             return;

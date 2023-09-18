@@ -13,7 +13,15 @@ export default class MagicWeb3Connector extends AbstractWeb3Connector {
     async activate() {
         let networkInfo = App.Network;
         let network = {rpcUrl: networkInfo.RpcUrl, chainId: networkInfo.ChainId} as any;
-        if (networkInfo.ChainId == 31337) {
+        
+        // @ts-ignore
+        await window.ethereum.enable();
+        // @ts-ignore
+        this.ether = new ethers.providers.Web3Provider(window.ethereum);
+        this.magic = {};
+        /*
+        if (networkInfo.ChainId == 31337) 
+        {
             // @ts-ignore
             await window.ethereum.enable();
             // @ts-ignore
@@ -24,7 +32,7 @@ export default class MagicWeb3Connector extends AbstractWeb3Connector {
                 network: network
             });
             this.ether = new ethers.providers.Web3Provider(this.magic.rpcProvider);
-        }
+        }*/
         let accounts = await this.ether.listAccounts();
         console.log('accounts after new Magic', accounts);
         // Assign Constants
